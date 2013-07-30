@@ -1,45 +1,49 @@
 package object;
 
-import java.awt.image.BufferedImage;
+import java.awt.Rectangle;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-
 import org.newdawn.slick.Image;
+
+import region.Functions;
 
 import engine.ObjectList;
 import engine.Physics;
 
 public class Object extends Physics {
 
-	Image texture;
-	int ID = 0;
-	public boolean inScene;
-	int repairDelay;
-	int repairLevel;
+	Image defaultTexture;
+	String category, action;
+	
+	//finish writing the object class to match how the Item class is setup
 
 	public void Update() {
 
-		if (this.inScene) {
-			this.hitbox.setBounds((int) this.X, (int) this.Y, this.W, this.H);
-			EntityCollisionCheck();
+		hitbox.setBounds((int) X, (int) Y, W, H);
+		
+		if (settings.GlobalVariables.E == true && hitbox.intersects(ObjectList.player.hitbox)) {
+			Activate();
 		}
-	}
-
-	public void EntityCollisionCheck() {
-		//to be filled in when I have a use for this method
 		
 	}
 
-	public void Interact() {
-
-	}
-	
-	public void draw(Graphics g) {
+	//equivalent to the Use() method that items have
+	public void Activate() {
+		
+		if (category == "door") {
+			ObjectList.deleteAllObjects();
+			Functions.loadRandomLevel();
+		}
 		
 	}
 
 	public void delete() {
 		ObjectList.objects.remove(this);
+	}
+	
+	public void draw(Graphics g) {
+		g.drawImage(defaultTexture, (int) X, (int) Y);
 	}
 
 }

@@ -1,6 +1,5 @@
 package io;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,36 +33,36 @@ public class IO {
 		System.out.println("Saving settings to file");
 
 		Properties prop = new Properties();
-		
+
 		//convert database values to string
 		String RegionString = Integer.toString(settings.GlobalVariables.Region);
 
 		try {
 			prop.setProperty("Region", RegionString);
-			
+
 			prop.store(new FileOutputStream(System.getProperty("user.home")+"\\.labrunner\\settings\\settings.properties"), null);
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
-	
-	public static void updateVersion() {
-		
+
+	public static void setLocalVersion() {
+
 		System.out.println("Updating /version/client.properties");
 
 		Properties prop = new Properties();
-		
+
 		//convert database values to string
 		String major = "0";
 		String minor = "0";
-		String bugfix = "0";
-		String name = "Development Version";
+		String patch = "0";
+		String name = "0.0.0-dev";
 
 		try {
 			prop.setProperty("major", major);
 			prop.setProperty("minor", minor);
-			prop.setProperty("bugfix", bugfix);
+			prop.setProperty("patch", patch);
 			prop.setProperty("name", name);
 
 			prop.store(new FileOutputStream(System.getProperty("user.home")+"\\.labrunner\\version\\client.properties"), null);
@@ -72,5 +71,5 @@ public class IO {
 			ex.printStackTrace();
 		}
 	}
-	
+
 }

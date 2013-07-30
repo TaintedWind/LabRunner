@@ -1,13 +1,11 @@
 package gui;
 
-import enemy.AI;
-import enemy.Scientist;
-import engine.ObjectList;
-import item.Item;
-import item.Plunger;
-import item.Sword;
+import item.explosives.Bomb;
+import item.tools.Plunger;
+import item.weapons.Sword;
+import liquid.Lava;
+import liquid.Liquid;
 import main.Display;
-import object.Platform;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
@@ -19,15 +17,14 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import platform.NormalPlatform;
 import player.Inventory;
-import player.Player;
-import region.Functions;
+import engine.ObjectList;
 
 public class GameScreen extends BasicGameState {
 
 	int p = 0, pp = 0;
 	public static Image background;
-	int delay;
 
 	public GameScreen(int state) {
 	}
@@ -47,10 +44,10 @@ public class GameScreen extends BasicGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		g.setBackground(Color.white);
-		
+
 		if (background != null) {
 			try {
-			g.drawImage(background, 0, 0, null);
+				g.drawImage(background, 0, 0, null);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -70,7 +67,7 @@ public class GameScreen extends BasicGameState {
 	public void update (GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
 		settings.GlobalVariables.Delta = delta;
-		
+
 		ObjectList.updateAllObjects();
 
 		//key input
@@ -85,17 +82,19 @@ public class GameScreen extends BasicGameState {
 		} else {
 			p = 0;
 		}
-		
+
 		if (i.isMouseButtonDown(1)) {
-			Inventory.useSelectedItem();
-		}
-		
-		if (i.isKeyDown(Input.KEY_O)) {
-			new Sword(Mouse.getX(), 600 - Mouse.getY());
+			if (pp == 0) {
+				Inventory.useSelectedItem();
+				pp = 1;
+			}
+		} else {
+			pp = 0;
 		}
 		
 		if (i.isKeyDown(Input.KEY_P)) {
-			new Plunger(Mouse.getX(), 600 - Mouse.getY());
+			ObjectList.player = null;
+			new Bomb(Mouse.getX(), 600 - Mouse.getY());
 		}
 
 
@@ -139,15 +138,24 @@ public class GameScreen extends BasicGameState {
 
 		if (i.isKeyDown(Input.KEY_SPACE)) {
 			settings.GlobalVariables.SPACE = true;
+			if (ObjectList.player.isCollidingWithLiquid() == true && ObjectList.player.getCollidingLiquid(ObjectList.player.hitbox).getClass() != Lava.class) {
+				ObjectList.player.Y -= ((Liquid)ObjectList.player.getCollidingLiquid(ObjectList.player.hitbox)).sinkSpeed * 2 * settings.GlobalVariables.Delta;
+			}
+			
+			ObjectList.player.fallSpeed = -1;
+			ObjectList.player.fallHeight = 0;
+			
+			ObjectList.player.dy = -1;
+			
 		} else {
 			settings.GlobalVariables.SPACE = false;
 		}
 
-		if (i.isKeyDown(Input.KEY_ESCAPE)) {
+		if (i.isKeyDown(Input.KEY_ESCAPE) && i.isKeyDown(Input.KEY_ENTER) == false) {
 			sbg.enterState(-1);
 			ObjectList.deleteAllObjects();
 		}
-		
+
 		if (i.isKeyDown(Input.KEY_DELETE)) {
 		}
 
@@ -159,20 +167,9 @@ public class GameScreen extends BasicGameState {
 			Display.ToggleFullScreen();
 		}
 		
-		if (Mouse.getDWheel() > 0) {
-			Inventory.selectedSlotNumber++;
-			Inventory.selectSlot(Inventory.selectedSlotNumber);
-			if (Inventory.selectedSlotNumber > 3) {
-				Inventory.selectedSlotNumber = 1;
-			}
-		} else if (Mouse.getDWheel() < 0) {
-			Inventory.selectedSlotNumber--;
-			Inventory.selectSlot(Inventory.selectedSlotNumber);
-			if (Inventory.selectedSlotNumber < 1) {
-				Inventory.selectedSlotNumber = 3;
-			}
+		if (ObjectList.player.health == 0) {
+			sbg.enterState(-1); //return to main menu when you die
 		}
-
 	}
 
 }

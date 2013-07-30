@@ -1,5 +1,6 @@
 package enemy;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
@@ -15,74 +16,75 @@ import engine.Timer;
 public class AI extends Physics {
 	
 	int damage;
-	double health;
-	Image icon;
-
-	public boolean inScene;
-	Object player;
-
-	String State;
+	double health, maxHealth;
+	Image defaultTexture;
+	String state;
+	
+	Color skinColor = Color.white;
+	
+	Timer attackTimer, idleTimer;
 
 	public void Update() {
-		if (this.inScene) {
+		
+		if (attackTimer == null) {
+			attackTimer = new Timer();
+		}
+		
+		if (idleTimer == null) {
+			
+		}
+		
+		attackTimer.updateTimer();
+		
+		
 
-			this.hitbox.setBounds((int) this.X, (int) this.Y, this.W, this.H);
-			this.bottomHitbox.setBounds((int) this.X, (int) this.Y + (this.H / 2), this.W, this.H / 2);
+		hitbox.setBounds((int) this.X, (int) this.Y, this.W, this.H);
+		bottomHitbox.setBounds((int) this.X, (int) this.Y + (this.H / 2), this.W, this.H / 2);
+		range.setBounds((int)X - 300, (int)Y - 50, 650, H + 50);
 
-			EntityCollisionCheck();
-			Gravity();
-
-			if (this.State == "idle") {
-				IdleMovements();
-			} else {
-				FollowPlayer();
-			}
-
+		Gravity();
+		
+		if (hitbox.intersects(ObjectList.player.hitbox)) {
+			Attack(ObjectList.player);
 		}
 
-	}
-	
-	//AI jumping (including knockback when hit, that is what 'dir' is for)
-	public void Jump(String dir) {
-		if (dir == "left") {
-			Y += 10;
-			X--;
-		} else {
-			Y += 10;
-			X++;
-		}
+		IdleMovements();
+		
 	}
 	
 	public void FollowPlayer() {
-		if (ObjectList.player.X > X) {
-			X += 0.2 * settings.GlobalVariables.Delta;
-		} else {
-			X -= 0.2 * settings.GlobalVariables.Delta;;
+		if (range.contains(ObjectList.player.hitbox) && hitbox.contains(ObjectList.player.hitbox) == false) {
+			if (ObjectList.player.X > X) {
+				X += 0.2 * settings.GlobalVariables.Delta;
+			} else {
+				X -= 0.2 * settings.GlobalVariables.Delta;				
+			}
 		}
 	}
 
 	public void Attack(Object target) {
-
-		//the parameter for attack is the player that is colliding with this instance
-
-		if (Timer.getCurrentTime() > 300 && Timer.getCurrentTime() < 400) {
+		
+		if (attackTimer.getTime() > 1000) {
 			System.out.println(this+ " is attacking "+target);
 			((Player) target).Health(-this.damage);
+			attackTimer.reset();
 		}
 
-	}
-
-	public void EntityCollisionCheck() {
-		if (hitbox.intersects(ObjectList.player.hitbox)) {
-			Attack(ObjectList.player);
-		}
 	}
 
 	@Override
 	public void Health(double amount) {
+		
+		if (amount < 0) {
+			skinColor = Color.red;
+		} else if (amount > 0){
+
+		}
+		
 		this.health += amount;
-		if (this.health > 100) {
-			this.health = 100;
+		
+		if (this.health > maxHealth) {
+			this.health = maxHealth;
 		} else if (this.health < 0 || this.health == 0) {
 			this.health = 0;
 			this.delete();
@@ -90,7 +92,7 @@ public class AI extends Physics {
 	}
 
 	public void IdleMovements() {
-
+		
 	}
 	
 	public void delete() {
@@ -99,7 +101,22 @@ public class AI extends Physics {
 
 	public void draw(Graphics g) {
 
+		g.setColor(skinColor);
+		g.drawImage(this.defaultTexture, (int) this.X, (int) this.Y, null);
+
+
+		g.setColor(Color.gray);
+		g.fillRect((int)X, (int)Y - 10, 50, 5);
+		g.setColor(Color.green);
+		g.fillRect((int)X, (int)Y - 10, (float) (health * (50 / maxHealth)), 5);
 		
+		skinColor = Color.white;
+		g.setColor(Color.white);
+
+		g.setColor(Color.red);
+		g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+		g.setColor(Color.blue);
+		g.drawRect(range.x, range.y, range.width, range.height);
 	}
 
 }

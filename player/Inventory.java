@@ -1,8 +1,8 @@
 package player;
 
-import java.util.ArrayList;
-
 import item.Item;
+
+import java.util.ArrayList;
 
 public class Inventory {
 
@@ -13,7 +13,7 @@ public class Inventory {
 	public static Object slotOne;
 	public static Object slotThree;
 	public static Object slotTwo;
-	
+
 	public static ArrayList<Object> inventory = new ArrayList<Object>();
 
 	/*In order for the item to work properly with inventory, it needs to extend Item, have a constructor, and
@@ -50,7 +50,7 @@ public class Inventory {
 
 
 	}
-	
+
 	public static void remove(Object o) {
 		if (slotOne == o) {
 			((Item) o).UnEquip();
@@ -65,7 +65,7 @@ public class Inventory {
 			slotThree = null;
 		}
 	}
-	
+
 	public static boolean contains(Object o) {
 		if (slotOne == o) {
 			return true;
@@ -76,7 +76,7 @@ public class Inventory {
 		if (slotThree == o) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -96,11 +96,11 @@ public class Inventory {
 		slotTwo = null;
 		slotThree = null;
 		selectedItem = null;
-		
+
 		selectedSlotNumber = 1;
-		
+
 	}
-	
+
 	public static void ResetInventory() {
 
 		if (slotOne != null) {
@@ -117,9 +117,9 @@ public class Inventory {
 		slotTwo = null;
 		slotThree = null;
 		selectedItem = null;
-		
+
 	}
-	
+
 	public static void useSelectedItem() {
 		//calls the Use() method on the selected item.
 

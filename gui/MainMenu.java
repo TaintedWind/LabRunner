@@ -8,13 +8,13 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import engine.ObjectList;
 
-import player.Player;
+import java.util.Calendar;
+import java.sql.Date;
 
 
 public class MainMenu extends BasicGameState {
@@ -37,7 +37,6 @@ public class MainMenu extends BasicGameState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		this.background = new Image("title_screen_background.png");
 		this.title = new Image("title.png");
-
 	}
 
 	@Override
@@ -60,13 +59,13 @@ public class MainMenu extends BasicGameState {
 	public void update (GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
 		settings.GlobalVariables.GamePaused = true;
-		
 		settings.GlobalVariables.Delta = delta;
 
 		Input i = gc.getInput();
 
-		if (i.isKeyDown(Input.KEY_ENTER)) {
+		if (i.isKeyDown(Input.KEY_ENTER) && i.isKeyDown(Input.KEY_ESCAPE) == false) {
 			sbg.enterState(0);
+			ObjectList.deleteAllObjects();
 			region.Spawn.loadLevel();
 			ObjectList.player.Reset();
 		}

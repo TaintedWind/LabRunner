@@ -7,8 +7,6 @@ import org.newdawn.slick.SlickException;
 
 import engine.ObjectList;
 
-
-
 public class Scientist extends AI {
 
 	public Scientist(int x, int y) {
@@ -16,30 +14,18 @@ public class Scientist extends AI {
 		this.Y = y;
 		this.W = 48;
 		this.H = 96;
-		this.damage = 5;
-		this.health = 10;
-		this.State = "else";
-		this.inScene = true;
-		ObjectList.enemies.add(this);
-	}
-
-	public void draw(Graphics g) {
+		this.damage = 10;
+		this.maxHealth = 30;
+		this.health = 30;
+		
 		try {
-			this.icon = new Image("scientist.png");
+			this.defaultTexture = new Image("scientist.png");
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
+		
+		ObjectList.enemies.add(this);
 
-		if (this.inScene) {
-			g.drawImage(this.icon, (int) this.X, (int) this.Y, null);
-		}
-		
-		g.setColor(Color.gray);
-		g.fillRect((int)X, (int)Y - 10, 50, 5);
-		g.setColor(Color.green);
-		g.fillRect((int)X, (int)Y - 10, (int)health * 5, 5);
-		
-		g.setColor(Color.red);
-		g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
 	}
+
 }

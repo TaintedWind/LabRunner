@@ -1,8 +1,8 @@
 package gui;
 
-import java.awt.Point;
-
 import item.Item;
+
+import java.awt.Point;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
@@ -10,7 +10,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import player.Inventory;
-import player.Player;
 import enemy.AI;
 import engine.ObjectList;
 
@@ -77,51 +76,51 @@ public class Overlay {
 		if (Inventory.slotThree != null) {
 			g.drawImage(((Item)Inventory.slotThree).defaultTexture, 102, 15, null);
 		}
-		
+
 		drawToolTip(g);
 
 		g.setColor(Color.white);
 
 	}
-	
+
 	public static void drawToolTip(Graphics g) {
-		
+
 		Point mouseLocation = new Point(Mouse.getX(), 600 - Mouse.getY());
-		
+
 		g.setColor(Color.black);
 
 		try {
 			for (int i = 0; i <= ObjectList.items.size(); i++) {
 				if (((Item)ObjectList.items.get(i)).hitbox.contains(mouseLocation)) {
-					g.drawString(((Item) ObjectList.items.get(i)).getClass().toString(), (int)Mouse.getX(), 600 - (int)Mouse.getY());
+					g.drawString(((Item) ObjectList.items.get(i)).getClass().toString(), Mouse.getX(), 600 - Mouse.getY());
 				}
 
 			}
 		} catch (Exception e) {
 
 		}
-		
+
 		try {
 			for (int i = 0; i <= ObjectList.objects.size(); i++) {
 				if (((object.Object)ObjectList.objects.get(i)).hitbox.contains(mouseLocation)) {
-					g.drawString(((object.Object) ObjectList.objects.get(i)).getClass().toString(), (int)Mouse.getX(), 600 - (int)Mouse.getY());
+					g.drawString(((object.Object) ObjectList.objects.get(i)).getClass().toString(), Mouse.getX(), 600 - Mouse.getY());
 				}
 
 			}
 		} catch (Exception e) {
 
 		}
-		
+
 		try {
 			for (int i = 0; i <= ObjectList.enemies.size(); i++) {
 				if (((AI)ObjectList.enemies.get(i)).hitbox.contains(mouseLocation)) {
-					g.drawString(((AI) ObjectList.enemies.get(i)).getClass().toString(), (int)Mouse.getX(), 600 - (int)Mouse.getY());
+					g.drawString(((AI) ObjectList.enemies.get(i)).getClass().toString(), Mouse.getX(), 600 - Mouse.getY());
 				}
 
 			}
 		} catch (Exception e) {
 
 		}
-		
+
 	}
 }

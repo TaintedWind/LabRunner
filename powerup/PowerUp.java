@@ -1,35 +1,41 @@
 package powerup;
 
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
-import player.Player;
 import engine.ObjectList;
 import engine.Physics;
 
-//All items extend this class.
 public class PowerUp extends Physics {
 
-	Image icon;
-	public boolean inScene;
-
-	String type;
-
-	public void EntityCollisionCheck() {
-		//look for collision with the player
-	}
+	public Image defaultTexture;
+	public String category;
+	public int strength;
 
 	public void Update() {
-		if (this.inScene) {
-			this.hitbox.setBounds((int) this.X, (int) this.Y, this.W, this.H);
-			Gravity();
-			EntityCollisionCheck();
+
+		hitbox.setBounds((int) X, (int) Y, W, H);
+		Gravity();
+
+		if (hitbox.intersects(ObjectList.player.hitbox)) {
+			Affect(ObjectList.player.hitbox);
 		}
 
 	}
 
-	//overriden by the individual powerup's useOn method
-	public void UseOn(Object target) {
+	public void delete() {
+		ObjectList.powerups.remove(this);
+	}
 
+	public void Affect(Object target) {
+		if (category == "healing") {
+			ObjectList.player.Health(strength);
+			delete();
+		}
+	}
+
+	public void draw(Graphics g) {
+		g.drawImage(defaultTexture, (int) X, (int) Y, null);
 	}
 
 }
