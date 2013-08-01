@@ -1,5 +1,9 @@
 package enemy;
 
+import java.awt.Rectangle;
+
+import org.lwjgl.util.Point;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -16,72 +20,85 @@ import engine.Timer;
 public class AI extends Physics {
 	
 	int damage;
+	int delay;
 	double health, maxHealth;
 	Image defaultTexture;
 	String state;
-	
+	Rectangle cliffDetection = new Rectangle();
+	Point target, t1, t2;
 	Color skinColor = Color.white;
-	
 	Timer attackTimer, idleTimer;
 
-	public void Update() {
+	public void update() {
 		
 		if (attackTimer == null) {
 			attackTimer = new Timer();
 		}
 		
 		if (idleTimer == null) {
-			
+			idleTimer = new Timer();
 		}
 		
 		attackTimer.updateTimer();
-		
-		
-
+		idleTimer.updateTimer();
+	
+		//update hitboxes
 		hitbox.setBounds((int) this.X, (int) this.Y, this.W, this.H);
 		bottomHitbox.setBounds((int) this.X, (int) this.Y + (this.H / 2), this.W, this.H / 2);
-		range.setBounds((int)X - 300, (int)Y - 50, 650, H + 50);
+		range.setBounds((int)X - 250, (int)Y - 50, 550, H + 50);
+		cliffDetection.setBounds((int)X - 50, (int)Y + H + 250, W + 100, H + 100);
 
-		Gravity();
+		//call gravity();
+		gravity();
+		velocity();
 		
 		if (hitbox.intersects(ObjectList.player.hitbox)) {
-			Attack(ObjectList.player);
+			attack(ObjectList.player);
 		}
 
-		IdleMovements();
+		if (range.contains(ObjectList.player.hitbox) && hitbox.contains(ObjectList.player.hitbox) == false || state == "hostile") {
+			followPlayer();
+		} else {
+			doIdleMovements();
+		}
 		
 	}
 	
-	public void FollowPlayer() {
-		if (range.contains(ObjectList.player.hitbox) && hitbox.contains(ObjectList.player.hitbox) == false) {
+	public void followPlayer() {
+		if (isCollidingWithGround()) {
 			if (ObjectList.player.X > X) {
-				X += 0.2 * settings.GlobalVariables.Delta;
+				X += 0.2 * database.GlobalVariables.deltaTime;
 			} else {
-				X -= 0.2 * settings.GlobalVariables.Delta;				
+				X -= 0.2 * database.GlobalVariables.deltaTime;
 			}
 		}
 	}
 
-	public void Attack(Object target) {
+	public void attack(Object target) {
 		
 		if (attackTimer.getTime() > 1000) {
 			System.out.println(this+ " is attacking "+target);
-			((Player) target).Health(-this.damage);
+			((Physics)target).knockBack(this, 0.01, -0.01);
+			((Physics) target).health(-this.damage, this);	
 			attackTimer.reset();
 		}
 
 	}
 
 	@Override
-	public void Health(double amount) {
+	public void health(double amount, Object attacker) {
+		
+		//System.out.println("Attacker: "+attacker);
+		
+		if (attacker == ObjectList.player) {
+			state = "hostile";
+		}
 		
 		if (amount < 0) {
 			skinColor = Color.red;
-		} else if (amount > 0){
-
 		}
 		
-		this.health += amount;
+		//this.health += amount;
 		
 		if (this.health > maxHealth) {
 			this.health = maxHealth;
@@ -91,7 +108,25 @@ public class AI extends Physics {
 		}
 	}
 
-	public void IdleMovements() {
+	public void doIdleMovements() {
+		
+		if (idleTimer.getTime() > delay * 1000 && delay > 3) {
+			if (target == t1) {
+				target = t2;
+			} else {
+				target = t1;
+			}
+			
+			idleTimer.reset();
+		}
+		
+		if (target == t2 && target.getX() > X) {
+			X += 0.2 * database.GlobalVariables.deltaTime;
+		} else if (target == t1 && target.getX() < X) {
+			X -= 0.2 * database.GlobalVariables.deltaTime;
+		} else {
+			
+		}
 		
 	}
 	
@@ -117,6 +152,8 @@ public class AI extends Physics {
 		g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
 		g.setColor(Color.blue);
 		g.drawRect(range.x, range.y, range.width, range.height);
+		g.setColor(Color.green);
+		g.drawRect(cliffDetection.x, cliffDetection.y, cliffDetection.width, cliffDetection.height);
 	}
 
 }

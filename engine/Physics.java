@@ -22,15 +22,15 @@ public class Physics {
 	public double X, Y, dx, dy; //x, y, velocity
 	public int W, H; //size
 
-	public void Gravity() {
+	public void gravity() {
 
 		if (isCollidingWithGround() == false && isCollidingWithLiquid() == false) {
 			this.fallHeight++;
-			this.fallSpeed = (this.fallHeight * settings.GlobalVariables.Delta) / 40;
+			this.fallSpeed = (this.fallHeight * database.GlobalVariables.deltaTime) / 50;
 			this.Y += this.fallSpeed;
 		} else if (isCollidingWithGround() == true) {
 			
-			this.Health(-fallHeight / 2);
+			this.health(-fallHeight / 5, null);
 			
 			fallHeight = 0;
 			fallSpeed = 0;
@@ -38,7 +38,7 @@ public class Physics {
 		
 		if (isCollidingWithLiquid()) {
 			fallSpeed = 0;
-			Y += ((Liquid)getCollidingLiquid(hitbox)).sinkSpeed * settings.GlobalVariables.Delta;
+			Y += ((Liquid)getCollidingLiquid(hitbox)).sinkSpeed * database.GlobalVariables.deltaTime;
 		}
 			
 		isCollidingWithBottom();
@@ -46,13 +46,19 @@ public class Physics {
 	}
 	
 	//moves the object according to dx and dy, great for knockback effects
-	public void Velocity() {
+	public void velocity() {
+		
 		if (isColliding() == false) {
-			X += dx * settings.GlobalVariables.Delta;
-			Y += dy * settings.GlobalVariables.Delta;
+			X += dx * database.GlobalVariables.deltaTime;
+			Y += dy * database.GlobalVariables.deltaTime;
 		}
 		
 		if (isCollidingWithGround()) {
+			dy = 0;
+			dx = 0;
+		}
+		
+		if (isCollidingWithLiquid()) {
 			dy = 0;
 		}
 		
@@ -68,6 +74,19 @@ public class Physics {
 			dy = 0;
 		}
 		
+	}
+	
+	public void knockBack(Object attacker, double xvel, double yvel) {
+		
+		if (((Physics)attacker).X < X) {
+			Y -= 1;
+			dy += yvel * database.GlobalVariables.deltaTime;
+			dx = xvel * database.GlobalVariables.deltaTime;
+		} else {
+			Y -= 1;
+			dy += yvel * database.GlobalVariables.deltaTime;
+			dx = -xvel * database.GlobalVariables.deltaTime;
+		}
 	}
 
 	public Object getCollidingEnemy(Rectangle r) {
@@ -104,6 +123,23 @@ public class Physics {
 		return null;
 	}
 	
+	public Object getCollidingPlatform(Rectangle r) {
+		
+		try {
+			for (int t = 0; t <= ObjectList.liquids.size(); t++) {
+				if (r.intersects(((Liquid)ObjectList.liquids.get(t)).hitbox)) {
+					return ObjectList.liquids.get(t);
+				}
+
+			}
+			
+		} catch (Exception e) {
+
+		}
+
+		return null;
+	}
+	
 	public Object getCollidingItem(Rectangle r) {
 		
 		try {
@@ -122,7 +158,7 @@ public class Physics {
 	}
 	
 	public boolean isColliding() {
-		if (isCollidingWithGround() || isCollidingWithLeftSide() || isCollidingWithRightSide()) {
+		if (isCollidingWithGround() || isCollidingWithLeftSide() || isCollidingWithRightSide() || isCollidingWithBottom()) {
 			return true;
 		} else {
 			return false;
@@ -133,8 +169,9 @@ public class Physics {
 
 		for (int i = 0; i < ObjectList.platforms.size(); i++) {
 
-			if (hitbox.intersects(((Platform)ObjectList.platforms.get(i)).top)) {
+			if (bottomHitbox.intersects(((Platform)ObjectList.platforms.get(i)).top)) {
 				Y = ((Platform)ObjectList.platforms.get(i)).Y - H + 1;
+				dy = 0;
 				return true;
 			}
 		}
@@ -160,7 +197,7 @@ public class Physics {
 
 		for (int i = 0; i < ObjectList.platforms.size(); i++) {
 
-			if (hitbox.intersects(((Platform)ObjectList.platforms.get(i)).bottom)) {
+			if (topHitbox.intersects(((Platform)ObjectList.platforms.get(i)).bottom)) {
 				Y = ((Platform)ObjectList.platforms.get(i)).bottom.y + ((Platform)ObjectList.platforms.get(i)).bottom.height;
 				return true;
 			}
@@ -196,8 +233,8 @@ public class Physics {
 
 	}
 
-	public void Health(double amount) {
-
+	public void health(double amount, Object attacker) {
+		
 	}
 
 }

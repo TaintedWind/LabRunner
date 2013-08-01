@@ -59,7 +59,7 @@ public class Main extends StateBasedGame {
 			//set window properties
 			window = new AppGameContainer(new Main(gameTitle));
 			window.setDisplayMode(800, 600, false);
-			window.setFullscreen(settings.Settings.FullScreenEnabled);
+			window.setFullscreen(database.Settings.fullScreenEnabled);
 			window.setShowFPS(false);
 			window.setVSync(true);
 			window.setTargetFrameRate(60);

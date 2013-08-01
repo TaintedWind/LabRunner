@@ -1,5 +1,6 @@
 package enemy;
 
+import org.lwjgl.util.Point;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -18,11 +19,17 @@ public class Scientist extends AI {
 		this.maxHealth = 30;
 		this.health = 30;
 		
+		this.state = "idle";
+		
 		try {
 			this.defaultTexture = new Image("scientist.png");
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
+		
+		t1 = new Point((int) (X - 50), (int) Y);
+		t2 = new Point((int) (X + 50), (int) Y);
+		target = t1;
 		
 		ObjectList.enemies.add(this);
 

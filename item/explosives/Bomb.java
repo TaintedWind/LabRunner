@@ -24,17 +24,7 @@ public class Bomb extends Explosive {
 
 		try {
 			defaultTexture = new Image("bomb.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			leftFacingTexture = new Image("bomb.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			rightFacingTexture = new Image("bomb.png", false, Image.FILTER_NEAREST);
 		} catch (SlickException e) {
 			e.printStackTrace();

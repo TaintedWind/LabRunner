@@ -1,6 +1,7 @@
 package item.weapons;
 
 import item.projectiles.Bullet;
+import item.projectiles.Missile;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -13,9 +14,9 @@ public class NukeLauncher extends Weapon {
 
 		this.X = x;
 		this.Y = y;
-		this.W = 12;
-		this.H = 48;
-		this.offsetX = -5;
+		this.W = 60;
+		this.H = 36;
+		this.offsetX = -32;
 		this.offsetY = 40;
 
 		this.numberOfHands = 1;
@@ -23,18 +24,9 @@ public class NukeLauncher extends Weapon {
 
 		try {
 			defaultTexture = new Image("nuke_launcher.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			leftFacingTexture = new Image("nuke_launcher_left.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			rightFacingTexture = new Image("nuke_launcher.png", false, Image.FILTER_NEAREST);
+			leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
+			inventoryTexture = new Image("nuke_launcher_icon.png", false, Image.FILTER_NEAREST);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -43,12 +35,12 @@ public class NukeLauncher extends Weapon {
 
 	}
 	
-	public void Shoot() {
+	public void shoot() {
 		
 		if (ObjectList.player.facingDir == "right") {
-			new Bullet((int)X, (int)Y, 2);
+			new Missile((int)X + W, (int)Y, 0.75, this);
 		} else {
-			new Bullet((int)X, (int)Y, -2);
+			new Missile((int)X, (int)Y, -0.75, this);
 		}
 		
 	}

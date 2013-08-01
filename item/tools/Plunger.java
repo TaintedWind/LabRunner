@@ -15,31 +15,20 @@ public class Plunger extends Tool {
 		this.Y = y;
 		this.W = 20;
 		this.H = 43;
-		this.offsetX = 30;
-		this.offsetY = 50;
+		this.offsetX = 0;
+		this.offsetY = 30;
 		this.damage = 1;
 
-		this.numberOfHands = 2;
-		this.category = "tool";
+		this.swings = true;
 
 		try {
 			defaultTexture = new Image("plunger.png", false, Image.FILTER_NEAREST);
+			leftFacingTexture =  new Image("plunger_inverted.png", false, Image.FILTER_NEAREST);
+			rightFacingTexture =  new Image("plunger_inverted.png", false, Image.FILTER_NEAREST);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-
-		try {
-			leftFacingTexture = new Image("plunger_left.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			rightFacingTexture = new Image("plunger_right.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
+		
 		ObjectList.items.add(this);
 
 	}

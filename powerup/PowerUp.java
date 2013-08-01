@@ -12,13 +12,13 @@ public class PowerUp extends Physics {
 	public String category;
 	public int strength;
 
-	public void Update() {
+	public void update() {
 
 		hitbox.setBounds((int) X, (int) Y, W, H);
-		Gravity();
+		gravity();
 
 		if (hitbox.intersects(ObjectList.player.hitbox)) {
-			Affect(ObjectList.player.hitbox);
+			affect(ObjectList.player.hitbox);
 		}
 
 	}
@@ -27,9 +27,9 @@ public class PowerUp extends Physics {
 		ObjectList.powerups.remove(this);
 	}
 
-	public void Affect(Object target) {
+	public void affect(Object target) {
 		if (category == "healing") {
-			ObjectList.player.Health(strength);
+			ObjectList.player.health(strength, this);
 			delete();
 		}
 	}

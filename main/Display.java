@@ -40,19 +40,19 @@ public class Display { //controls display modes such as refresh rate and bit dep
 
 	}
 
-	public static void ToggleFullScreen() throws SlickException {
+	public static void toggleFullScreen() throws SlickException {
 
-		if (settings.Settings.FullScreenEnabled == true) {
-			settings.Settings.FullScreenEnabled = false;
-		} else if (settings.Settings.FullScreenEnabled == false) {
-			settings.Settings.FullScreenEnabled = true;
+		if (database.Settings.fullScreenEnabled == true) {
+			database.Settings.fullScreenEnabled = false;
+		} else if (database.Settings.fullScreenEnabled == false) {
+			database.Settings.fullScreenEnabled = true;
 		}
 
 		try {
-			Main.window.setFullscreen(settings.Settings.FullScreenEnabled);
+			Main.window.setFullscreen(database.Settings.fullScreenEnabled);
 		} catch (Exception e) {
 			Main.window.setFullscreen(false);
-			settings.Settings.FullScreenEnabled = false;
+			database.Settings.fullScreenEnabled = false;
 		}
 
 	}

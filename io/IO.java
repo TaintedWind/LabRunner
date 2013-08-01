@@ -35,7 +35,7 @@ public class IO {
 		Properties prop = new Properties();
 
 		//convert database values to string
-		String RegionString = Integer.toString(settings.GlobalVariables.Region);
+		String RegionString = Integer.toString(database.GlobalVariables.regionID);
 
 		try {
 			prop.setProperty("Region", RegionString);

@@ -14,7 +14,7 @@ public class Explosive extends Item {
 	
 	Timer detonationTimer;
 	
-	public void Update() {
+	public void update() {
 		
 		if (detonationTimer != null) {
 			detonationTimer.updateTimer();
@@ -25,24 +25,37 @@ public class Explosive extends Item {
 		}
 		
 		hitbox.setBounds((int) X, (int) Y, W, H);
-		topHitbox.setBounds(hitbox.getBounds());
-		middleHitbox.setBounds(hitbox.getBounds());
-		bottomHitbox.setBounds(hitbox.getBounds());
+		topHitbox.setBounds((int) X, (int) Y, W, H / 3);
+		middleHitbox.setBounds((int) X, (int) Y + (H / 3), W, H / 2);
+		bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
 		
 		//move the explosive
-		Gravity();
-		Velocity();
+		gravity();
+		velocity();
 		
-		CheckForEquip();
+		checkForEquip();
 		
 		if (Inventory.contains(this)) {
-			AlignToPlayer();
+			if (Inventory.selectedItem == this) {
+				alignToPlayer();
+			} else {
+				X = -50;
+				Y = -50;
+			}
 		}
 		
 		
 	}
 	
-	public void Use() {
+	public void leftClickAction() {
+		
+	}
+	
+	public void rightClickAction() {
+		Throw();
+	}
+	
+	public void Throw() {
 		
 		detonationTimer = new Timer();
 		

@@ -18,6 +18,7 @@ public class Item extends Physics {
 	public Image defaultTexture;
 	public Image leftFacingTexture;
 	public Image rightFacingTexture;
+	public Image inventoryTexture;
 	
 	protected boolean isEquippable;
 	
@@ -32,17 +33,17 @@ public class Item extends Physics {
 	protected String category; //the category and action that the item falls under (used for reference below)
 
 	//this method is overriden by the different types of items (such as item.weapon or item.food)
-	public void Update() {
+	public void update() {
 
 	}
 	
-	public void CheckForEquip() {
-		if (settings.GlobalVariables.E == true && ObjectList.player.hitbox.intersects(hitbox) && Inventory.contains(this) == false) {
-			Equip();
+	public void checkForEquip() {
+		if (database.GlobalVariables.E == true && ObjectList.player.hitbox.intersects(hitbox) && Inventory.contains(this) == false) {
+			equip();
 		}
 	}
 	
-	public void AlignToPlayer() {
+	public void alignToPlayer() {
 		if (ObjectList.player.facingDir == "left") {
 			X = ObjectList.player.X - W + offsetX;
 			Y = ObjectList.player.Y + offsetY;
@@ -52,12 +53,12 @@ public class Item extends Physics {
 		}
 	}
 
-	public void Equip() {
+	public void equip() {
 		Inventory.add(this);
 	}
 
 
-	public void UnEquip() {
+	public void unEquip() {
 		
 		System.out.println("Unequipping "+this);
 		
@@ -73,22 +74,33 @@ public class Item extends Physics {
 		
 	}
 
-	public void Use() {
+	//does not follow lowerCamelCase because throw is a java keyword
+	public void use() {
 
 	}
 
-	public void Swing() {
+	public void swing() {
 
 	}
 	
-	public void Attack() {
-		((AI)getCollidingEnemy(ObjectList.player.range)).Health(-damage);
+	public void leftClickAction() {
+
+	}
+	
+	public void rightClickAction() {
+		
+	}
+	
+	public void attack() {
+		((Physics)getCollidingEnemy(ObjectList.player.range)).knockBack(this, 0.02, -0.01);
+		((AI)getCollidingEnemy(ObjectList.player.range)).health(-damage, this);
+		
 	}
 
 	public void delete() {
 		
 		if (Inventory.contains(this) == true) {
-			UnEquip();
+			unEquip();
 			Inventory.remove(this);
 		}
 
@@ -114,9 +126,9 @@ public class Item extends Physics {
 			g.drawImage(defaultTexture, (int)X, (int)Y, null);
 		}
 
-		//g.setColor(Color.red);
-		//g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
-		//g.setColor(Color.white);
+		/*g.setColor(Color.red);
+		g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+		g.setColor(Color.white);*/
 
 	}
 

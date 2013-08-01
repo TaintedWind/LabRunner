@@ -22,7 +22,6 @@ public class Lava extends Liquid {
 		try {
 			this.defaultTexture = new Image("lava.png");
 		} catch (SlickException e) {
-			
 			e.printStackTrace();
 		}
 		

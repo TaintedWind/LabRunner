@@ -1,5 +1,6 @@
 package gui;
 
+import item.Item;
 import item.explosives.Bomb;
 import item.tools.Plunger;
 import item.weapons.Sword;
@@ -19,6 +20,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import platform.NormalPlatform;
 import player.Inventory;
+import enemy.AI;
 import engine.ObjectList;
 
 public class GameScreen extends BasicGameState {
@@ -66,17 +68,25 @@ public class GameScreen extends BasicGameState {
 	@Override
 	public void update (GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
-		settings.GlobalVariables.Delta = delta;
-
+		database.GlobalVariables.deltaTime = delta;
+		Input i = gc.getInput();
 		ObjectList.updateAllObjects();
 
-		//key input
-		Input i = gc.getInput();
-
 		if (i.isMouseButtonDown(0)) {
-			ObjectList.player.Swing();
+			
+			if (Inventory.selectedItem != null) {
+				((Item)Inventory.selectedItem).leftClickAction();
+			}
+			
 			if (p == 0) {
-				ObjectList.player.Attack();
+				if (ObjectList.player.getCollidingEnemy(ObjectList.player.range) != null) {
+					if (Inventory.selectedItem != null) {
+						((Item)Inventory.selectedItem).attack();
+					} else {
+						((AI)ObjectList.player.getCollidingEnemy(ObjectList.player.range)).health(-1, this);
+					}
+
+				}
 				p = 1;
 			}
 		} else {
@@ -85,7 +95,9 @@ public class GameScreen extends BasicGameState {
 
 		if (i.isMouseButtonDown(1)) {
 			if (pp == 0) {
-				Inventory.useSelectedItem();
+				if (Inventory.selectedItem != null) {
+					((Item) Inventory.selectedItem).rightClickAction();
+				}
 				pp = 1;
 			}
 		} else {
@@ -107,48 +119,46 @@ public class GameScreen extends BasicGameState {
 		}
 
 		if (i.isKeyDown(Input.KEY_A)) {
-			settings.GlobalVariables.A = true;
+			database.GlobalVariables.A = true;
 		} else {
-			settings.GlobalVariables.A = false;
+			database.GlobalVariables.A = false;
 		}
 
 		if (i.isKeyDown(Input.KEY_W)) {
-			settings.GlobalVariables.W = true;
+			database.GlobalVariables.W = true;
 		} else {
-			settings.GlobalVariables.W = false;
+			database.GlobalVariables.W = false;
 		}
 
 		if (i.isKeyDown(Input.KEY_S)) {
-			settings.GlobalVariables.S = true;
+			database.GlobalVariables.S = true;
 		} else {
-			settings.GlobalVariables.S = false;
+			database.GlobalVariables.S = false;
 		}
 
 		if (i.isKeyDown(Input.KEY_E)) {
-			settings.GlobalVariables.E = true;
+			database.GlobalVariables.E = true;
 		} else {
-			settings.GlobalVariables.E = false;
+			database.GlobalVariables.E = false;
 		}
 
 		if (i.isKeyDown(Input.KEY_D)) {
-			settings.GlobalVariables.D = true;
+			database.GlobalVariables.D = true;
 		} else {
-			settings.GlobalVariables.D = false;
+			database.GlobalVariables.D = false;
 		}
 
 		if (i.isKeyDown(Input.KEY_SPACE)) {
-			settings.GlobalVariables.SPACE = true;
-			if (ObjectList.player.isCollidingWithLiquid() == true && ObjectList.player.getCollidingLiquid(ObjectList.player.hitbox).getClass() != Lava.class) {
-				ObjectList.player.Y -= ((Liquid)ObjectList.player.getCollidingLiquid(ObjectList.player.hitbox)).sinkSpeed * 2 * settings.GlobalVariables.Delta;
+			
+			database.GlobalVariables.SPACE = true;
+			
+			if (ObjectList.player.isColliding() == true && ObjectList.player.isCollidingWithLiquid() == false) {
+				ObjectList.player.Y -= 0.1;
+				ObjectList.player.dy = -0.6;
 			}
 			
-			ObjectList.player.fallSpeed = -1;
-			ObjectList.player.fallHeight = 0;
-			
-			ObjectList.player.dy = -1;
-			
 		} else {
-			settings.GlobalVariables.SPACE = false;
+			database.GlobalVariables.SPACE = false;
 		}
 
 		if (i.isKeyDown(Input.KEY_ESCAPE) && i.isKeyDown(Input.KEY_ENTER) == false) {
@@ -164,7 +174,7 @@ public class GameScreen extends BasicGameState {
 		}
 
 		if (i.isKeyDown(Input.KEY_F11)) {
-			Display.ToggleFullScreen();
+			Display.toggleFullScreen();
 		}
 		
 		if (ObjectList.player.health == 0) {

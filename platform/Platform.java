@@ -25,21 +25,21 @@ public class Platform extends Physics {
 	public Rectangle right = new Rectangle(0, 0, 0, 0);
 	public Rectangle top = new Rectangle(0, 0, 0, 0);
 	
-	public void Update() {
+	public void update() {
 		body.setBounds((int) X, (int) Y, W, H);
 		top.setBounds((int) X + 10, (int) Y, W - 10, H / 2);
 		left.setBounds((int) X, (int) Y, 10, H);
-		right.setBounds((int) X + W - 10, (int) Y, 10, H);
+		right.setBounds((int) X + W, (int) Y, 10, H);
 		bottom.setBounds((int) X + 10, (int) Y + H - (H / 2), W - 10, H / 2);
 		
 		if (category == "moving") {
-			Velocity();
+			velocity();
 		}
 	}
 	
-	public void Velocity() {
+	public void velocity() {
 		
-		//basic moving code for movable platforms
+		//basic moving code for movable platforms, work in progress
 		if (body.contains(target.x, target.y)) {
 			if (target.x == i.x || target.y == i.y) {
 				target.x = ii.x;
@@ -51,9 +51,9 @@ public class Platform extends Physics {
 		}
 		
 		if (X > target.x) {
-			X -= 0.3 * settings.GlobalVariables.Delta;
+			X -= 0.3 * database.GlobalVariables.deltaTime;
 		} else {
-			X += 0.3 * settings.GlobalVariables.Delta;
+			X += 0.3 * database.GlobalVariables.deltaTime;
 		}
 	}
 	
@@ -68,6 +68,7 @@ public class Platform extends Physics {
 		g.setColor(borderColor);
 		g.drawRect((int)X, (int)Y, W, H);
 		g.drawRect((int)X + 1, (int)Y + 1, W, H);
+		g.drawRect((int)X + 2, (int)Y + 2, W, H);
 		g.setColor(Color.white);
 
 		//For debugging

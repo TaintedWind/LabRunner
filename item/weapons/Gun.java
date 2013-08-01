@@ -13,30 +13,19 @@ public class Gun extends Weapon {
 
 		this.X = x;
 		this.Y = y;
-		this.W = 24;
-		this.H = 24;
+		this.W = 32;
+		this.H = 32;
 		this.handleLength = 0;
 		this.offsetX = -10;
 		this.offsetY = 40;
 
-		this.numberOfHands = 1;
 		this.category = "ranged";
 		this.damage = 10;
 
 		try {
 			defaultTexture = new Image("pistol.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			leftFacingTexture = new Image("pistol.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			rightFacingTexture = new Image("pistol.png", false, Image.FILTER_NEAREST);
+			leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -45,12 +34,12 @@ public class Gun extends Weapon {
 
 	}
 	
-	public void Shoot() {
+	public void shoot() {
 		
 		if (ObjectList.player.facingDir == "right") {
-			new Bullet((int)X, (int)Y, 2);
+			new Bullet((int)X + W, (int)Y, 2, this);
 		} else {
-			new Bullet((int)X, (int)Y, -2);
+			new Bullet((int)X, (int)Y, -2, this);
 		}
 		
 	}

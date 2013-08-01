@@ -40,7 +40,7 @@ public class Overlay {
 		}
 
 		try {
-			selectedSlotIcon = new Image("selected_inventory_slot.png");
+			selectedSlotIcon = new Image("inventory_slot_selected.png");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -65,16 +65,16 @@ public class Overlay {
 		}
 
 		//draw items in hotbar
-		if (Inventory.slotOne != null) {
-			g.drawImage(((Item)Inventory.slotOne).defaultTexture, 22, 15, null);
+		if (Inventory.slotOne != null && ((Item)Inventory.slotOne).inventoryTexture != null) {
+			g.drawImage(((Item)Inventory.slotOne).inventoryTexture, 16, 15, null);
 		}
 
-		if (Inventory.slotTwo != null) {
-			g.drawImage(((Item)Inventory.slotTwo).defaultTexture, 62, 15, null);
+		if (Inventory.slotTwo != null && ((Item)Inventory.slotTwo).inventoryTexture != null) {
+			g.drawImage(((Item)Inventory.slotTwo).inventoryTexture, 66, 18, null);
 		}
 
-		if (Inventory.slotThree != null) {
-			g.drawImage(((Item)Inventory.slotThree).defaultTexture, 102, 15, null);
+		if (Inventory.slotThree != null && ((Item)Inventory.slotThree).inventoryTexture != null) {
+			g.drawImage(((Item)Inventory.slotThree).inventoryTexture, 108, 15, null);
 		}
 
 		drawToolTip(g);

@@ -8,28 +8,42 @@ import item.projectiles.Bullet;
 
 public class Weapon extends Item {
 	int handleLength;
-	int numberOfHands;	
+	int numberOfHands;
 	
-	public void Update() {
+	boolean swings;
+	
+	public void update() {
 		
-		hitbox.setBounds((int)X, (int)Y, W, H);
+		hitbox.setBounds((int) X, (int) Y, W, H);
+		topHitbox.setBounds((int) X, (int) Y, W, H / 3);
+		middleHitbox.setBounds((int) X, (int) Y + (H / 3), W, H / 2);
+		bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
 		
-		Gravity();
-		CheckForEquip();
+		gravity();
+		checkForEquip();
 		
-		if (Inventory.selectedItem == this) {
-			AlignToPlayer();
+		if (Inventory.contains(this)) {
+			if (Inventory.selectedItem == this) {
+				alignToPlayer();
+			} else {
+				X = -50;
+				Y = -50;
+			}
 		}
 	}
 	
-	public void Swing() {
-		if (numberOfHands == 2) {
-			if (ObjectList.player.facingDir == "right") {
-				((Item)Inventory.selectedItem).X = X + offsetX + 25;
-			} else {
-				((Item)Inventory.selectedItem).X = X - offsetX - 25;
-			}
-		} else if (numberOfHands == 1 && category == "melee") {
+	public void leftClickAction() {
+		swing();
+	}
+	
+	public void rightClickAction() {
+		if (category == "ranged") {
+			shoot();
+		}
+	}
+	
+	public void swing() {
+		if (swings) {
 			if (ObjectList.player.facingDir == "right") {
 				((Item)Inventory.selectedItem).rightFacingTexture.setRotation(90);
 				Y += W;
@@ -42,42 +56,27 @@ public class Weapon extends Item {
 		}
 	}
 	
-	public void Use() {
-		if (category == "ranged") {
-			Shoot();
-		}
-	}
-	
-	public void Shoot() {
+	public void shoot() {
 		//overriden by the ranged weapon
 	}
 
 	
-	public void AlignToPlayer() {
+	public void alignToPlayer() {
 		
-		if (numberOfHands == 2) {
+		if (swings) {
+			leftFacingTexture.setRotation(-45);
+			rightFacingTexture.setRotation(45);
 			defaultTexture.setRotation(0);
-			leftFacingTexture.setRotation(0);
-			rightFacingTexture.setRotation(0);
-		} else if (numberOfHands == 1) {
-			if (category == "melee") {
-				leftFacingTexture.setRotation(-45);
-				rightFacingTexture.setRotation(45);
-			} else {
-				leftFacingTexture.setRotation(-180);
-				rightFacingTexture.setRotation(0);				
-			}
 		}
 		
-		if (numberOfHands == 1) {
-			if (ObjectList.player.facingDir == "left") {
-				X = ObjectList.player.X - W - offsetX;
-				Y = ObjectList.player.Y + offsetY;
-			} else if (ObjectList.player.facingDir == "right") {
-				X = ObjectList.player.X + ObjectList.player.W + offsetX;
-				Y = ObjectList.player.Y + offsetY;
-			}
+		if (ObjectList.player.facingDir == "left") {
+			X = ObjectList.player.X - W - offsetX;
+			Y = ObjectList.player.Y + offsetY;
+		} else if (ObjectList.player.facingDir == "right") {
+			X = ObjectList.player.X + ObjectList.player.W + offsetX;
+			Y = ObjectList.player.Y + offsetY;
 		}
+		
 	}
 	
 }

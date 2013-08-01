@@ -58,8 +58,8 @@ public class MainMenu extends BasicGameState {
 	@Override
 	public void update (GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
-		settings.GlobalVariables.GamePaused = true;
-		settings.GlobalVariables.Delta = delta;
+		database.GlobalVariables.gamePaused = true;
+		database.GlobalVariables.deltaTime = delta;
 
 		Input i = gc.getInput();
 
@@ -67,7 +67,7 @@ public class MainMenu extends BasicGameState {
 			sbg.enterState(0);
 			ObjectList.deleteAllObjects();
 			region.Spawn.loadLevel();
-			ObjectList.player.Reset();
+			ObjectList.player.reset();
 		}
 
 		if (i.isKeyDown(Input.KEY_ESCAPE)) {
@@ -80,7 +80,7 @@ public class MainMenu extends BasicGameState {
 		}
 
 		if (i.isKeyDown(Input.KEY_F11)) {
-			Display.ToggleFullScreen();
+			Display.toggleFullScreen();
 		}
 
 		if (i.isKeyDown(Input.KEY_S)) {

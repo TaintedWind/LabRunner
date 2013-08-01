@@ -28,11 +28,11 @@ public class ObjectList {
 
 	public static void updateAllObjects() {
 		
-		player.Update();
+		player.update();
 
 		try {
 			for (int i = 0; i <= ObjectList.items.size(); i++) {
-				((Item) ObjectList.items.get(i)).Update();
+				((Item) ObjectList.items.get(i)).update();
 
 			}
 		} catch (Exception e) {
@@ -41,7 +41,7 @@ public class ObjectList {
 
 		try {
 			for (int pl = 0; pl <= ObjectList.platforms.size(); pl++) {
-				((NormalPlatform) ObjectList.platforms.get(pl)).Update();
+				((NormalPlatform) ObjectList.platforms.get(pl)).update();
 
 			}
 		} catch (Exception e) {
@@ -51,7 +51,7 @@ public class ObjectList {
 
 		try {
 			for (int pl = 0; pl <= ObjectList.enemies.size(); pl++) {
-				((AI) ObjectList.enemies.get(pl)).Update();
+				((AI) ObjectList.enemies.get(pl)).update();
 
 			}
 		} catch (Exception e) {
@@ -60,7 +60,7 @@ public class ObjectList {
 
 		try {
 			for (int o = 0; o <= ObjectList.objects.size(); o++) {
-				((object.Object) ObjectList.objects.get(o)).Update();
+				((object.Object) ObjectList.objects.get(o)).update();
 
 			}
 		} catch (Exception e) {
@@ -69,7 +69,7 @@ public class ObjectList {
 
 		try {
 			for (int o = 0; o <= ObjectList.powerups.size(); o++) {
-				((PowerUp) ObjectList.powerups.get(o)).Update();
+				((PowerUp) ObjectList.powerups.get(o)).update();
 			}
 		} catch (Exception e) {
 
@@ -78,7 +78,7 @@ public class ObjectList {
 		for (int i = 0; i <= liquids.size(); i++) {
 			try {
 				if (liquids.get(i) != null) {
-					((Liquid) liquids.get(i)).Update();
+					((Liquid) liquids.get(i)).update();
 				}
 			} catch (Exception e) {
 
@@ -105,7 +105,7 @@ public class ObjectList {
 		//render all powerups
 		try {
 			for (int o = 0; o <= ObjectList.powerups.size(); o++) {
-				((PowerUp) ObjectList.powerups.get(o)).Update();
+				((PowerUp) ObjectList.powerups.get(o)).update();
 			}
 		} catch (Exception e) {
 

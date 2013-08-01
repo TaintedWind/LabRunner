@@ -6,31 +6,38 @@ import item.Item;
 
 public class Tool extends Item {
 	
-	int numberOfHands;
 	int handleLength;
+	
+	boolean swings;
 
-	public void Update() {
+	public void update() {
 		
-		hitbox.setBounds((int)X, (int)Y, W, H);
+		hitbox.setBounds((int) X, (int) Y, W, H);
+		topHitbox.setBounds((int) X, (int) Y, W, H / 3);
+		middleHitbox.setBounds((int) X, (int) Y + (H / 3), W, H / 2);
+		bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
 		
-		Gravity();
-		Velocity();
+		gravity();
+		velocity();
 		
-		CheckForEquip();
+		checkForEquip();
 		
-		if (Inventory.selectedItem == this) {
-			AlignToPlayer();
+		if (Inventory.contains(this)) {
+			if (Inventory.selectedItem == this) {
+				alignToPlayer();
+			} else {
+				X = -50;
+				Y = -50;
+			}
 		}
 	}
 	
-	public void Swing() {
-		if (numberOfHands == 2) {
-			if (ObjectList.player.facingDir == "right") {
-				((Item)Inventory.selectedItem).X = X + offsetX + 25;
-			} else {
-				((Item)Inventory.selectedItem).X = X - offsetX - 25;
-			}
-		} else if (numberOfHands == 1 && category == "melee") {
+	public void leftClickAction() {
+		swing();
+	}
+	
+	public void swing() {
+		if (swings) {
 			if (ObjectList.player.facingDir == "right") {
 				((Item)Inventory.selectedItem).rightFacingTexture.setRotation(90);
 				Y += W;
@@ -44,29 +51,21 @@ public class Tool extends Item {
 	}
 
 	
-	public void AlignToPlayer() {
+	public void alignToPlayer() {
 		
-		//set rotation
-		if (numberOfHands == 2) {
-			if (ObjectList.player.facingDir == "left") {
-				defaultTexture.setRotation(-90);	
-			} else {
-				defaultTexture.setRotation(90);
-			}
-		} else if (numberOfHands == 1 && category == "melee") {
+		if (swings) {
 			leftFacingTexture.setRotation(-45);
 			rightFacingTexture.setRotation(45);
+			defaultTexture.setRotation(0);
 		}
 		
-		//align position with player
-		if (numberOfHands == 1) {
-			if (ObjectList.player.facingDir == "left") {
-				X = ObjectList.player.X - W + offsetX;
-				Y = ObjectList.player.Y + offsetY;
-			} else if (ObjectList.player.facingDir == "right") {
-				X = ObjectList.player.X + ObjectList.player.W - offsetX;
-				Y = ObjectList.player.Y + offsetY;
-			}
+		if (ObjectList.player.facingDir == "left") {
+			X = ObjectList.player.X - W - offsetX;
+			Y = ObjectList.player.Y + offsetY;
+		} else if (ObjectList.player.facingDir == "right") {
+			X = ObjectList.player.X + ObjectList.player.W + offsetX;
+			Y = ObjectList.player.Y + offsetY;
 		}
+		
 	}
 }

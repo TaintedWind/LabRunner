@@ -10,7 +10,7 @@ public class Timer {
 
 	public void updateTimer() {
 
-		delta = settings.GlobalVariables.Delta;
+		delta = database.GlobalVariables.deltaTime;
 		time += delta;
 
 	}

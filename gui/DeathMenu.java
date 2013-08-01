@@ -46,8 +46,8 @@ public class DeathMenu extends BasicGameState {
 		Input i = gc.getInput();
 
 		if (i.isKeyDown(Input.KEY_ESCAPE)) {
-			settings.GlobalVariables.Region = -1;
-			sbg.enterState(settings.GlobalVariables.Region);
+			database.GlobalVariables.regionID = -1;
+			sbg.enterState(database.GlobalVariables.regionID);
 		}
 
 	}

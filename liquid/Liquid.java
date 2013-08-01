@@ -22,7 +22,7 @@ public class Liquid extends Physics {
 	
 	org.newdawn.slick.geom.Rectangle textureBox = new org.newdawn.slick.geom.Rectangle(0, 0, 0, 0);
 	
-	public void Update() {
+	public void update() {
 		
 		if (damageTimer == null) {
 			damageTimer = new Timer();
@@ -35,10 +35,10 @@ public class Liquid extends Physics {
 
 		if (damageTimer.getTime() > 500) {
 			if (getCollidingEnemy(hitbox) != null && category == "danger") {
-				((AI)getCollidingEnemy(hitbox)).Health(-damage);
+				((AI)getCollidingEnemy(hitbox)).health(-damage, this);
 			}
 			if (ObjectList.player.hitbox.intersects(hitbox)) {
-				ObjectList.player.Health(-damage);
+				ObjectList.player.health(-damage, this);
 			}
 			
 			damageTimer.reset();

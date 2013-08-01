@@ -38,21 +38,12 @@ public class Player extends Physics {
 		this.walkingDir = null;
 		this.isMoving = false;
 		this.isJumping = false;
+		this.dx = 0.1;
 
 		try {
 			defaultTexture = new Image("player.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			leftFacingTexture = new Image("walking_left.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			rightFacingTexture = new Image("walking_right.png", false, Image.FILTER_NEAREST);
+			rightFacingTexture = leftFacingTexture.getFlippedCopy(true, false);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -61,7 +52,7 @@ public class Player extends Physics {
 
 	}
 
-	public void Update() {
+	public void update() {
 
 		hitbox.setBounds((int) X, (int) Y, W, H);
 		topHitbox.setBounds((int) X, (int) Y, W, H / 3);
@@ -74,23 +65,22 @@ public class Player extends Physics {
 			range.setBounds((int) X + 25, (int) Y, 75, H);
 		}
 
-		Velocity();
-		Gravity();
+		gravity();
+		velocity();
+		checkForMovement();
 		
 		animationTimer.updateTimer();
 
 	}
 
 	@Override
-	public void Health(double amount) {
+	public void health(double amount, Object attacker) {
 
 		if (amount < 0) {
 			skinColor = Color.red;
-		} else if (amount > 0){
-			//playerColor = Color.green;
 		}
 
-		this.health += amount;
+		//this.health += amount;
 
 		if (this.health < 0) {
 			this.health = 0;
@@ -100,57 +90,35 @@ public class Player extends Physics {
 
 	}
 
-	//swings arm or equipped item, called continuously when left mouse button is held down
-	public void Swing() {
+	public void checkForMovement() {
 
-		if (Inventory.selectedItem != null) {
-			((Item)Inventory.selectedItem).Swing();
-		}
-
-	}
-
-	//called once when left mouse button is clicked
-	public void Attack() {
-
-		if (getCollidingEnemy(range) != null) {
-			if (Inventory.selectedItem != null) {
-				((Item)Inventory.selectedItem).Attack();
-			} else {
-				((AI)getCollidingEnemy(range)).Health(-1);
-			}
-
-			//((AI)getCollidingEnemy(range)).defaultTexture.setColor(Color.red);
-		}
-	}
-
-	public void Velocity() {
-
-		if (settings.GlobalVariables.A && isCollidingWithRightSide() == false) {
-			this.dx = -0.3;
+		if (database.GlobalVariables.A && isCollidingWithRightSide() == false) {
+			this.X -= 0.3 * database.GlobalVariables.deltaTime;
 			this.walkingDir = "left";
 			this.facingDir = "left";
 			this.isMoving = true;
-		} else if (settings.GlobalVariables.D && isCollidingWithLeftSide() == false) {
-			this.dx = 0.3;
+		} else if (database.GlobalVariables.D && isCollidingWithLeftSide() == false) {
+			this.X += 0.3 * database.GlobalVariables.deltaTime;
 			this.walkingDir = "right";
 			this.facingDir = "right";
 			this.isMoving = true;
 		} else {
-			this.dx = 0;
 			this.walkingDir = null;
 			this.isMoving = false;
 		}
 
-		this.X += this.dx * settings.GlobalVariables.Delta;
+		this.X += this.dx * database.GlobalVariables.deltaTime;
 		this.Y += fallSpeed;
 
 	}
 
-	public void Reset() {
+	public void reset() {
 		Inventory.dropInventory();
 		health = 100;
 		fallHeight = 0;
 		fallSpeed = 0;
+		dy = 0;
+		dx = 0;
 		
 	}
 

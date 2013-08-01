@@ -24,18 +24,9 @@ public class Bow extends Weapon {
 
 		try {
 			defaultTexture = new Image("bow.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			leftFacingTexture = new Image("bow.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			rightFacingTexture = new Image("bow.png", false, Image.FILTER_NEAREST);
+			leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
+			inventoryTexture = new Image("bow_icon.png", false, Image.FILTER_NEAREST);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -44,12 +35,12 @@ public class Bow extends Weapon {
 
 	}
 	
-	public void Shoot() {
+	public void shoot() {
 		
 		if (ObjectList.player.facingDir == "right") {
-			new Arrow((int)X, (int)Y, 1);
+			new Arrow((int)X + W, (int)Y, 1, this);
 		} else {
-			new Arrow((int)X, (int)Y, -1);
+			new Arrow((int)X, (int)Y, -1, this);
 		}
 		
 	}

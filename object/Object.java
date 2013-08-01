@@ -15,21 +15,18 @@ public class Object extends Physics {
 
 	Image defaultTexture;
 	String category, action;
-	
-	//finish writing the object class to match how the Item class is setup
 
-	public void Update() {
+	public void update() {
 
 		hitbox.setBounds((int) X, (int) Y, W, H);
 		
-		if (settings.GlobalVariables.E == true && hitbox.intersects(ObjectList.player.hitbox)) {
-			Activate();
+		if (database.GlobalVariables.E == true && hitbox.intersects(ObjectList.player.hitbox)) {
+			activate();
 		}
 		
 	}
 
-	//equivalent to the Use() method that items have
-	public void Activate() {
+	public void activate() {
 		
 		if (category == "door") {
 			ObjectList.deleteAllObjects();

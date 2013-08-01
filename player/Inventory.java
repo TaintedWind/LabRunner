@@ -53,15 +53,15 @@ public class Inventory {
 
 	public static void remove(Object o) {
 		if (slotOne == o) {
-			((Item) o).UnEquip();
+			((Item) o).unEquip();
 			slotOne = null;
 		}
 		if (slotTwo == o) {
-			((Item) o).UnEquip();
+			((Item) o).unEquip();
 			slotTwo = null;
 		}
 		if (slotThree == o) {
-			((Item) o).UnEquip();
+			((Item) o).unEquip();
 			slotThree = null;
 		}
 	}
@@ -83,13 +83,13 @@ public class Inventory {
 	public static void dropInventory() {
 
 		if (slotOne != null) {
-			((Item) slotOne).UnEquip();
+			((Item) slotOne).unEquip();
 		}
 		if (slotTwo != null) {
-			((Item) slotTwo).UnEquip();
+			((Item) slotTwo).unEquip();
 		}
 		if (slotThree != null) {
-			((Item) slotThree).UnEquip();
+			((Item) slotThree).unEquip();
 		}
 
 		slotOne = null;
@@ -120,14 +120,6 @@ public class Inventory {
 
 	}
 
-	public static void useSelectedItem() {
-		//calls the Use() method on the selected item.
-
-		if (selectedItem != null) {
-			((Item) selectedItem).Use();
-		}
-
-	}
 
 	public static void dropSelectedItem() {
 
@@ -137,19 +129,19 @@ public class Inventory {
 
 		if (selectedSlotNumber == 1) {
 			if (slotOne != null) {
-				((Item) slotOne).UnEquip();
+				((Item) slotOne).unEquip();
 				slotOne = null;
 			}
 
 		} else if (selectedSlotNumber == 2) {
 			if (slotTwo != null) {
-				((Item) slotTwo).UnEquip();
+				((Item) slotTwo).unEquip();
 				slotTwo = null;
 			}
 
 		} else if (selectedSlotNumber == 3) {
 			if (slotThree != null) {
-				((Item) slotThree).UnEquip();
+				((Item) slotThree).unEquip();
 				slotThree = null;
 			}
 		}
