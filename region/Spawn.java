@@ -16,49 +16,37 @@ import item.weapons.Sword;
 import object.Door;
 import platform.NormalPlatform;
 import enemy.Scientist;
-import engine.ObjectList;
+import database.ObjectList;
+import object.CraftingTable;
 
 public class Spawn {
 
-	public static void loadLevel() {
-		
-		createObjects();
-		setLevelBackground();
-		
-		ObjectList.player.X = 0;
-		ObjectList.player.Y = 0;
-		
-	}
+    public static void loadLevel() {
 
-	public static void createObjects() {
-		
-		System.out.println("Creating new level objects");
-		
-		//create level bounds
-		new NormalPlatform(0, 600, 800, 50, null, null);
-		new NormalPlatform(-50, 0, 40, 600, null, null);
-		new NormalPlatform(800, 0, 50, 600, null, null);
-		new NormalPlatform(0, -50, 800, 50, null, null);
-		
-		//create visible platforms
-		new NormalPlatform(0, 555, 800, 100, "concrete", Color.gray);
-		new NormalPlatform(300, 300, 800, 50, "concrete", Color.gray);
-		
-		//new Lava(0, 555, 800, 100);
-		new Sword(0, 0);
-		//new Bomb(75, 50);
-		new Bow(25, 0);
-		//new Cheeseburger(50, 0);
-		new Scientist(500, 0);
-		new NukeLauncher(0, 0);
-		new Gun(100, 0);
-		
-		new Plunger(0,0);
-		
+        createObjects();
+        setLevelBackground();
 
-	}
+        ObjectList.player.X = 400;
+        ObjectList.player.Y = 500;
 
-	public static void setLevelBackground() {
-		
-	}
+    }
+
+    public static void createObjects() {
+
+        System.out.println("Creating new level objects");
+
+        //create visible platforms
+        new NormalPlatform(0, 565, 800, 32, "metal", Color.gray);
+
+        new Bow(500, 510);
+        new Plunger(450, 510);
+        new CraftingTable(550, 532);
+
+
+    }
+
+    public static void setLevelBackground() {
+        gui.GameScreen.backgroundColor = new Color(30, 30, 30);
+        //gui.GameScreen.backgroundColor = Color.white;
+    }
 }

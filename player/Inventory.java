@@ -1,169 +1,409 @@
 package player;
 
+import database.ObjectList;
 import item.Item;
-
+import item.tools.Plunger;
+import item.weapons.Bow;
+import item.weapons.GrappleHook;
+import item.weapons.NukeLauncher;
+import java.awt.Rectangle;
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 
 public class Inventory {
 
-	public static Object selectedItem; 	//used as a reference and to directly control the equipped object
+    public static int selectedSlotNumber;
+    public static Image slotIcon, selectedSlotIcon;
+    
+    public static Object[] hotbar_backup;
+    public static Object[] hotbar = new Object[3];
+    public static ArrayList<Object> inv_copy;
+    public static ArrayList<Class> combine_array; //wip?
+    
+    public static Rectangle slotOneHitbox = new Rectangle(10, 10, 44, 44);
+    public static Rectangle slotTwoHitbox = new Rectangle(60, 10, 44, 44);
+    public static Rectangle slotThreeHitbox = new Rectangle(110, 10, 44, 44);
+    public static Rectangle slotFourHitbox = new Rectangle(160, 10, 44, 44);
+    public static Rectangle slotFiveHitbox = new Rectangle(210, 10, 44, 44);
+    public static Rectangle slotSixHitbox = new Rectangle(260, 10, 44, 44);
+    public static Rectangle slotSevenHitbox = new Rectangle(310, 10, 44, 44);
+    public static Rectangle slotEightHitbox = new Rectangle(360, 10, 44, 44);
+    public static Rectangle slotNineHitbox = new Rectangle(410, 10, 44, 44);
+    
+    public static void add(Object o) {
 
-	public static int selectedSlotNumber = 1;
+        /*Adds "Object o" to the selected slot and marks
+         * "selectedItem" as "o" for easier referencing of the currently equipped item
+         */
+        
+        if (selectedSlotNumber <= hotbar.length) {
+            if (hotbar[selectedSlotNumber] == null) {
+                hotbar[selectedSlotNumber] = o;
+            } else {
+                for (int i = 0; i <= hotbar.length; i++) {
+                    //if selected slot is full, add to an empty slot
+                    //if (hotbar[i] == null) {
+                    //    hotbar[i] = o;                       
+                    //}
+                }
+            }
+        }
+        
+    }
+    
+    public static Object combine(Object i, Object ii, Object iii) {
+        
+        String item1, item2, item3;
+        ArrayList<String> recipe = new ArrayList<String>();
+        System.out.println("Combining "+i+" and "+ii);
+        
+        if (i != null) {
+            item1 = i.getClass().toString();            
+        } else {
+            item1 = "null";
+        }
+        
+        if (ii != null) {
+            item2 = ii.getClass().toString();            
+        } else {
+            item2 = "null";
+        }
+                
+        if (iii != null) {
+            item3 = iii.getClass().toString();            
+        } else {
+            item3 = "null";
+        }
+        
+        recipe.add(item1);
+        recipe.add(item2);
+        recipe.add(item3);
+        
+        System.out.println(recipe);
+        
+        if (recipe.contains("class item.weapons.Bow") && recipe.contains("class item.tools.Plunger")) {
 
-	public static Object slotOne;
-	public static Object slotThree;
-	public static Object slotTwo;
+            Inventory.deleteItem(i);
+            Inventory.deleteItem(ii);
+            Inventory.deleteItem(iii);
+            
+            System.out.println("Crafting successful: grapple hook");
 
-	public static ArrayList<Object> inventory = new ArrayList<Object>();
+            return new GrappleHook((int)ObjectList.player.X, (int)ObjectList.player.Y);
+        }
+        
+        return null;
+        
+    
+    }
 
-	/*In order for the item to work properly with inventory, it needs to extend Item, have a constructor, and
-	 * also have the appropriate draw methods. See item.Plunger for a working example.
-	 */
+    public static boolean contains(Object o) {
+        
+        //checks to see if specified item is in inventory
+        
+        inv_copy = new ArrayList<Object>(Arrays.asList(hotbar));
+        
+        if (inv_copy.contains(o)) {
+            inv_copy.clear();
+            return true;
+        } else {
+            inv_copy.clear();
+            return false;  
+        }
 
-	public static void add(Object o) {
+    }
+    
+    public static void deleteItem(Object o) {
+        
+        try {
+            for (int i = 0; i <= hotbar.length; i++) {
+                if (hotbar[i] == o) {
 
-		/*Adds "Object o" to the selected slot and marks
-		 * "selectedItem" as "o" so the game knows that the item is in the player's hand
-		 */
+                    ((Item)hotbar[i]).delete();
+                    hotbar[i] = null;
+                }
+            }
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    public static void setInventorySize(int newSize) {
+        
+        hotbar_backup = new Object[hotbar.length];
+        
+        System.arraycopy(hotbar, 0, hotbar_backup, 0, hotbar.length);
+        
+        if (newSize > hotbar_backup.length) {
+            hotbar = null;
+            hotbar = new Object[newSize];
+            System.arraycopy(hotbar_backup, 0, hotbar, 0, hotbar_backup.length);
+        } else {
+            
+            for (int i = newSize; i <= hotbar.length; i++) {
+                dropItem(i);
+            }
+            
+            hotbar = null;
+            hotbar = new Object[newSize];
+            System.arraycopy(hotbar_backup, 0, hotbar, 0, newSize);
+            
+            selectedSlotNumber = 0;
+            
+        }
+        
+    }
+    
+    public static void dropAll() {
+        
+        //unequips all items in the inventory
+        
+       try {
+            for (int i = 0; i < hotbar.length; i++) {
 
-		if (selectedSlotNumber == 1) {
-			if (slotOne == null) {
-				slotOne = o;
-				selectedItem = o;
-				System.out.println("Added "+o);
-			}
-		}
-		if (selectedSlotNumber == 2) {
-			if (slotTwo == null) {
-				slotTwo = o;
-				selectedItem = o;
-				System.out.println("Added "+o);
-			}
-		}
-		if (selectedSlotNumber == 3) {
-			if (slotThree == null) {
-				slotThree = o;
-				selectedItem = o;
-				System.out.println("Added "+o);
-			}
-		}
+                if (ObjectList.player.facingDir == "right") {
+                    ((Item)hotbar[i]).X = ObjectList.player.X + 40;
+                } else {
+                    ((Item)hotbar[i]).X = ObjectList.player.X - 20;
+                }
 
+                ((Item)hotbar[i]).Y = ObjectList.player.Y;
+                ((Item)hotbar[i]).fallHeight = 0;
+                ((Item)hotbar[i]).fallSpeed = 0;
+                
+                hotbar[i] = null;
+            }
+       } catch (Exception e) {
+           
+       }
+       
+       System.out.println("Inventory dropped");
 
-	}
+    }
 
-	public static void remove(Object o) {
-		if (slotOne == o) {
-			((Item) o).unEquip();
-			slotOne = null;
-		}
-		if (slotTwo == o) {
-			((Item) o).unEquip();
-			slotTwo = null;
-		}
-		if (slotThree == o) {
-			((Item) o).unEquip();
-			slotThree = null;
-		}
-	}
+    public static void reset() {
+        
+        //clears the inventory without dropping all the items
+        
+        try {
+            for (int i = 0; i < hotbar.length; i++) {
+                ((Item)hotbar[i]).delete();
+                hotbar[i] = null;
+            }
+        } catch (Exception e) {
 
-	public static boolean contains(Object o) {
-		if (slotOne == o) {
-			return true;
-		}
-		if (slotTwo == o) {
-			return true;
-		}
-		if (slotThree == o) {
-			return true;
-		}
+        }
+        
+        hotbar = null;
+        hotbar = new Object[3];
+        
+        selectedSlotNumber = 0;
+        
 
-		return false;
-	}
+    }
 
-	public static void dropInventory() {
+    public static void dropSelectedItem() {
 
-		if (slotOne != null) {
-			((Item) slotOne).unEquip();
-		}
-		if (slotTwo != null) {
-			((Item) slotTwo).unEquip();
-		}
-		if (slotThree != null) {
-			((Item) slotThree).unEquip();
-		}
+        //drop the selected item beside the player
+        
+        try {
+            
+            System.out.println("Dropping "+hotbar[selectedSlotNumber]);
+            
+            if (ObjectList.player.facingDir == "right") {
+                ((Item)hotbar[selectedSlotNumber]).X = ObjectList.player.X + 40;
+            } else {
+                ((Item)hotbar[selectedSlotNumber]).X = ObjectList.player.X - 20;
+            }
 
-		slotOne = null;
-		slotTwo = null;
-		slotThree = null;
-		selectedItem = null;
+            ((Item)hotbar[selectedSlotNumber]).Y = ObjectList.player.Y;
+            ((Item)hotbar[selectedSlotNumber]).fallHeight = 0;
+            ((Item)hotbar[selectedSlotNumber]).fallSpeed = 0;
+            
+            hotbar[selectedSlotNumber] = null;
+            
+        } catch (Exception e) {
+            
+        }
 
-		selectedSlotNumber = 1;
+    }
+    
+    public static void dropItem(int slotNumber) {
 
-	}
+        //drop the specified slot item
 
-	public static void ResetInventory() {
+        try {
 
-		if (slotOne != null) {
-			((Item) slotOne).delete();
-		}
-		if (slotTwo != null) {
-			((Item) slotTwo).delete();
-		}
-		if (slotThree != null) {
-			((Item) slotThree).delete();
-		}
+            System.out.println("Dropping "+hotbar[slotNumber]);
 
-		slotOne = null;
-		slotTwo = null;
-		slotThree = null;
-		selectedItem = null;
+            if (ObjectList.player.facingDir == "right") {
+                ((Item)hotbar[slotNumber]).X = ObjectList.player.X + 40;
+            } else {
+                ((Item)hotbar[slotNumber]).X = ObjectList.player.X - 20;
+            }
 
-	}
+            ((Item)hotbar[slotNumber]).Y = ObjectList.player.Y;
+            ((Item)hotbar[slotNumber]).fallHeight = 0;
+            ((Item)hotbar[slotNumber]).fallSpeed = 0;
 
+            hotbar[slotNumber] = null; 
 
-	public static void dropSelectedItem() {
+        } catch (Exception e) {
 
-		/*Gets the selected slot number and unequips the object in the slot
-		 * if there is something in it. It then sets the slot and selected item to null
-		 */
+        }
 
-		if (selectedSlotNumber == 1) {
-			if (slotOne != null) {
-				((Item) slotOne).unEquip();
-				slotOne = null;
-			}
+    }
 
-		} else if (selectedSlotNumber == 2) {
-			if (slotTwo != null) {
-				((Item) slotTwo).unEquip();
-				slotTwo = null;
-			}
+    public static void selectSlot(int slot) {
 
-		} else if (selectedSlotNumber == 3) {
-			if (slotThree != null) {
-				((Item) slotThree).unEquip();
-				slotThree = null;
-			}
-		}
+        /*Takes a slot number as a parameter
+         * Sets the selectedSlotNumber to slot
+         * Then sets selectedItem to the item in the slot (easier to reference)
+         */
+        
+        if (slot <= hotbar.length - 1) {
+            selectedSlotNumber = slot;
+        }
+        
+    }
+    
+    public static Object getSelectedItem() {
+        
+        if (hotbar[selectedSlotNumber] != null) { 
+            return hotbar[selectedSlotNumber];
+        } else {
+            return null;
+        }
+    }
+    
+    public static Object getItemPreview(Object i, Object ii, Object iii) {
+        
+        String item1, item2, item3;
+        ArrayList<String> recipe = new ArrayList<String>();
+        
+        if (i != null) {
+            item1 = i.getClass().toString();            
+        } else {
+            item1 = "null";
+        }
+        
+        if (ii != null) {
+            item2 = ii.getClass().toString();            
+        } else {
+            item2 = "null";
+        }
+                
+        if (iii != null) {
+            item3 = iii.getClass().toString();            
+        } else {
+            item3 = "null";
+        }
+        
+        recipe.add(item1);
+        recipe.add(item2);
+        recipe.add(item3);
+        
+        if (recipe.contains("class item.weapons.Bow") && recipe.contains("class item.tools.Plunger")) {
 
-		selectedItem = null;
+            Inventory.deleteItem(i);
+            Inventory.deleteItem(ii);
+            Inventory.deleteItem(iii);
 
-	}
+            return new GrappleHook(-500, 1000);
+        }
+        
+        return null;
+        
+    
+    }
+    
+    public static int getClickedSlot() {
+        
+        int clickedSlot = -1;
+        
+        for (int i = 0; i <= hotbar.length; i++) {
+            if (slotOneHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 0;
+            } else if (slotTwoHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 1;
+            } else if (slotThreeHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 2;
+            } else if (slotFourHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 3;
+            } else if (slotFiveHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 4;
+            } else if (slotSixHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 5;
+            } else if (slotSevenHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 6;
+            } else if (slotEightHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 7;
+            } else if (slotNineHitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                clickedSlot = 8;
+            }
+        }
+        
+        if (clickedSlot < hotbar.length && clickedSlot >= 0) {
+            return clickedSlot;
+        } else {
+            return -1;
+        }
+        
+    }
+    
+    public static void draw(Graphics g) {
+        
+        //load images if null
+        try {
+            if (slotIcon == null) {
+                slotIcon = new Image("inventory_slot.png", false, Image.FILTER_NEAREST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	public static void selectSlot(int slot) {
+        try {
+            if (selectedSlotIcon == null) {
+                selectedSlotIcon = new Image("inventory_slot_selected.png", false, Image.FILTER_NEAREST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        //draw inventory bar
+        for (int i = 1; i <= hotbar.length * 50; i += 50) {
+            if (i / 50 == selectedSlotNumber) {
+                g.drawImage(selectedSlotIcon, i + 10, 10, null);            
+            } else {
+                g.drawImage(slotIcon, i + 10, 10, null);               
+            }
+        }
+        
+        
+        //draw items   
+        try {
+            for (int i = 0; i <= hotbar.length; i++) {
 
-		/*Takes a slot number as a parameter
-		 * Sets the selectedSlotNumber to slot
-		 * Then sets selectedItem to the correct slot object (One, Two, etc)
-		 */
-
-		selectedSlotNumber = slot;
-		if (selectedSlotNumber == 1) {
-			selectedItem = slotOne;
-		} else if (selectedSlotNumber == 2) {
-			selectedItem = slotTwo;
-		} else if (selectedSlotNumber == 3) {
-			selectedItem = slotThree;
-		}
-	}
+                if (hotbar[i] != null) {
+                    if (((Item)hotbar[i]).inventoryTexture != null) {
+                        g.drawImage(((Item)hotbar[i]).inventoryTexture, 16 + (i * 50), 16, null);
+                    } else {
+                        
+                    }              
+                } else {
+                    
+                }
+                
+            }
+        } catch (Exception e) {
+            
+        }
+        
+    }
+    
 }

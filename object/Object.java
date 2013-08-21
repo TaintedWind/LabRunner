@@ -8,39 +8,40 @@ import org.newdawn.slick.Image;
 
 import region.Functions;
 
-import engine.ObjectList;
+import database.ObjectList;
 import engine.Physics;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.util.Point;
 
 public class Object extends Physics {
 
-	Image defaultTexture;
-	String category, action;
+    Image defaultTexture;
+    String category, action;
 
-	public void update() {
+    public void update() {
 
-		hitbox.setBounds((int) X, (int) Y, W, H);
-		
-		if (database.GlobalVariables.E == true && hitbox.intersects(ObjectList.player.hitbox)) {
-			activate();
-		}
-		
-	}
+        hitbox.setBounds((int) X, (int) Y, W, H);
+        topHitbox.setBounds((int) X, (int) Y, W, H / 3);
+        middleHitbox.setBounds((int) X, (int) Y + (H / 3), W, H / 2);
+        bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
+        
+        gravity();
 
-	public void activate() {
-		
-		if (category == "door") {
-			ObjectList.deleteAllObjects();
-			Functions.loadRandomLevel();
-		}
-		
-	}
+        if (gui.GameScreen.rightMouseDown == true && hitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1) && ObjectList.player.range.intersects(hitbox)) {
+            activate();
+        }
 
-	public void delete() {
-		ObjectList.objects.remove(this);
-	}
-	
-	public void draw(Graphics g) {
-		g.drawImage(defaultTexture, (int) X, (int) Y);
-	}
+    }
 
+    public void activate() {
+
+    }
+
+    public void delete() {
+        ObjectList.objects.remove(this);
+    }
+
+    public void draw(Graphics g) {
+        g.drawImage(defaultTexture, (int) X, (int) Y);
+    }
 }

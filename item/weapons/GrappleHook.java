@@ -8,9 +8,9 @@ import org.newdawn.slick.SlickException;
 
 import database.ObjectList;
 
-public class Bow extends Weapon {
+public class GrappleHook extends Weapon {
 
-    public Bow(int x, int y) {
+    public GrappleHook(int x, int y) {
 
         this.X = x;
         this.Y = y;
@@ -19,14 +19,14 @@ public class Bow extends Weapon {
         this.offsetX = -5;
         this.offsetY = 40;
         
-        this.ID = 2;
+        this.ID = 3;
 
         this.numberOfHands = 1;
         this.category = "ranged";
 
         try {
-            defaultTexture = new Image("bow.png", false, Image.FILTER_NEAREST);
-            rightFacingTexture = new Image("bow.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("grapple.png", false, Image.FILTER_NEAREST);
+            rightFacingTexture = new Image("grapple.png", false, Image.FILTER_NEAREST);
             leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
             inventoryTexture = new Image("bow_icon.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {

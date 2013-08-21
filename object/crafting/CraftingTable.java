@@ -6,29 +6,27 @@ import org.newdawn.slick.SlickException;
 
 import region.Functions;
 import database.ObjectList;
+import gui.CraftingMenu;
 
-public class Door extends Object {
+public class CraftingTable extends Object {
 
-    public Door(int x, int y) {
+    public CraftingTable(int x, int y) {
         this.X = x;
         this.Y = y;
-        this.W = 50;
-        this.H = 100;
+        this.W = 64;
+        this.H = 33;
 
         try {
-            this.defaultTexture = new Image("door.png", false, Image.FILTER_NEAREST);
+            this.defaultTexture = new Image("crafting_table.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }
-
-        this.category = "door";
 
         ObjectList.objects.add(this);
     }
     
     public void activate() {
-        ObjectList.deleteAllObjects(false);
-        Functions.loadRandomLevel();
+        gui.GameScreen.menuToEnter = -5;
     }
     
 }

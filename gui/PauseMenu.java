@@ -29,20 +29,21 @@ import java.awt.Rectangle;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 
-public class DeathMenu extends BasicGameState {
+public class PauseMenu extends BasicGameState {
     
     Image transparent_black, button, button_mouseover;
     int timeInMenu;
     UnicodeFont menuFont;
     
-    Rectangle quitButton;
+    Rectangle returnButton;
+    Rectangle saveAndQuitButton;
 
-    public DeathMenu(int state) {
+    public PauseMenu(int state) {
     }
 
     @Override
     public int getID() {
-        return -3;
+        return -4;
     }
 
     @Override
@@ -52,7 +53,8 @@ public class DeathMenu extends BasicGameState {
         button_mouseover = new Image("button_mouseover.png");
         timeInMenu = 0;
         
-        quitButton = new Rectangle(250, 300, 300, 50);
+        returnButton = new Rectangle(250, 200, 300, 50);
+        saveAndQuitButton = new Rectangle(250, 300, 300, 50);
         
         menuFont = new UnicodeFont("LabRunner.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
@@ -72,14 +74,21 @@ public class DeathMenu extends BasicGameState {
         
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
-        g.drawString("YOU DIED :(", 340, 100);
+        g.drawString("GAME PAUSED", 340, 100);
         
-        if (quitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
+        if (returnButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
+            g.drawImage(button_mouseover, 250, 200);
+        } else {
+            g.drawImage(button, 250, 200);
+        }
+        
+        if (saveAndQuitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
             g.drawImage(button_mouseover, 250, 300);
         } else {
             g.drawImage(button, 250, 300);
         }
         
+        g.drawString("RETURN TO GAME", 330, 215);
         g.drawString("SAVE AND QUIT", 335, 315);
         
     }
@@ -91,16 +100,22 @@ public class DeathMenu extends BasicGameState {
         database.GlobalVariables.deltaTime = delta;
         Input i = gc.getInput();
         
-        if (quitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
+        if (returnButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
+            if (i.isMouseButtonDown(0)) {
+                sbg.enterState(0);
+            }
+        }
+        
+        if (saveAndQuitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
             if (i.isMouseButtonDown(0)) {
                 sbg.enterState(-1);
             }
         }
-
         
         if (i.isKeyDown(Input.KEY_F11)) {
             Screen.toggleFullScreen();
         }
+        
 
     }
 }

@@ -5,44 +5,43 @@ import item.Item;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import engine.ObjectList;
+import database.ObjectList;
 
 public class Cheeseburger extends Food {
 
-	public Cheeseburger(int x, int y) {
+    public Cheeseburger(int x, int y) {
 
-		this.X = x;
-		this.Y = y;
-		this.W = 20;
-		this.H = 25;
-		this.offsetX = 20;
-		this.offsetY = 50;
-		
-		this.category = "food";
-		this.damage = 0;
+        this.X = x;
+        this.Y = y;
+        this.W = 20;
+        this.H = 25;
+        this.offsetX = 20;
+        this.offsetY = 50;
 
-		this.strength = 10;
+        this.category = "food";
+        this.damage = 0;
 
-		try {
-			defaultTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+        this.strength = 10;
 
-		try {
-			leftFacingTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+        try {
+            defaultTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
 
-		try {
-			rightFacingTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+        try {
+            leftFacingTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
 
-		ObjectList.items.add(this);
+        try {
+            rightFacingTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
 
-	}
+        ObjectList.items.add(this);
 
+    }
 }
