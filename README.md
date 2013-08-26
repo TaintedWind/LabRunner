@@ -1,4 +1,4 @@
-LabRunner
+Lab Runner
 =========
 
-A game where you collect and combine items to escape an underground lab. This is the source code. Feel free to point out things that need tweaking.
+This is the source code for a game I am writing to learn the art of game development. It is based on Java and Slick2D, and the goal is to collect and combine items to escape an underground laboratory. Feedback is appreciated.
