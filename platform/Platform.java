@@ -25,34 +25,11 @@ public class Platform extends Physics {
 
     public void update() {
         body.setBounds((int) X, (int) Y, W, H);
-        top.setBounds((int) X + 10, (int) Y, W - 10, H / 2);
-        left.setBounds((int) X, (int) Y, 10, H);
-        right.setBounds((int) X + W, (int) Y, 10, H);
-        bottom.setBounds((int) X + 10, (int) Y + H - (H / 2), W - 10, H / 2);
+        top.setBounds((int) X + 10, (int) Y, W - 20, 15);
+        left.setBounds((int) X, (int) Y + 5, W / 2, H - 10);
+        right.setBounds((int) X + W - (W / 2), (int) Y + 5, W / 2, H - 10);
+        bottom.setBounds((int) X + 10, (int) Y + H - 15, W - 20, 15);
 
-        if (category == "moving") {
-            velocity();
-        }
-    }
-
-    public void velocity() {
-
-        //basic moving code for movable platforms, work in progress
-        if (body.contains(target.x, target.y)) {
-            if (target.x == i.x || target.y == i.y) {
-                target.x = ii.x;
-                target.y = ii.y;
-            } else if (target.x == ii.x || target.y == ii.y) {
-                target.x = i.x;
-                target.x = i.y;
-            }
-        }
-
-        if (X > target.x) {
-            X -= 0.3 * database.GlobalVariables.deltaTime;
-        } else {
-            X += 0.3 * database.GlobalVariables.deltaTime;
-        }
     }
 
     public void delete() {
@@ -70,7 +47,7 @@ public class Platform extends Physics {
         g.setColor(Color.white);
 
         //For debugging
-		/*g.setColor(Color.gray);
+        /*g.setColor(Color.gray);
          g.setColor(Color.red);
          g.drawRect(this.top.x, this.top.y, this.top.width, this.top.height);
          g.setColor(Color.blue);

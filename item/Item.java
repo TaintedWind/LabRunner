@@ -53,6 +53,7 @@ public class Item extends Physics {
 
     //does not follow lowerCamelCase because throw is a java keyword
     public void use() {
+        
     }
 
     public void swing() {
@@ -65,13 +66,17 @@ public class Item extends Physics {
     }
 
     public void attack() {
-        ((Physics) getCollidingEnemy(ObjectList.player.range)).knockBack(this, 0.02, -0.01);
-        ((AI) getCollidingEnemy(ObjectList.player.range)).health(-damage, this);
+        
+        if (ObjectList.player.getCollidingEnemy(ObjectList.player.range) != null) {
+            ((Physics) getCollidingEnemy(ObjectList.player.range)).knockBack(this, 0.02, -0.01);
+            ((AI) getCollidingEnemy(ObjectList.player.range)).health(-damage, this);
+        }
 
     }
 
     public void delete() {
         
+        System.out.println("Deleting "+this+" via "+this+".delete()");
         ObjectList.items.remove(this);
 
     }

@@ -1,10 +1,10 @@
-package item.food;
+package item.potions;
 
 import player.Inventory;
 import database.ObjectList;
 import item.Item;
 
-public class Food extends Item {
+public class Potion extends Item {
 
     public void update() {
 
@@ -30,8 +30,6 @@ public class Food extends Item {
     }
 
     public void use() {
-        System.out.println("Using " + this);
-        ObjectList.player.health(strength, this);
-        delete();
+        
     }
 }

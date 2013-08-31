@@ -1,7 +1,8 @@
 package item.weapons;
 
 import item.Item;
-import item.projectiles.Arrow;
+
+import item.projectiles.grapple.Plunger;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -9,12 +10,14 @@ import org.newdawn.slick.SlickException;
 import database.ObjectList;
 
 public class GrappleHook extends Weapon {
+    
+    Object hook;
 
     public GrappleHook(int x, int y) {
 
         this.X = x;
         this.Y = y;
-        this.W = 12;
+        this.W = 28;
         this.H = 48;
         this.offsetX = -5;
         this.offsetY = 40;
@@ -23,6 +26,8 @@ public class GrappleHook extends Weapon {
 
         this.numberOfHands = 1;
         this.category = "ranged";
+        
+        this.ammoAmount = 9999;
 
         try {
             defaultTexture = new Image("grapple.png", false, Image.FILTER_NEAREST);
@@ -40,10 +45,11 @@ public class GrappleHook extends Weapon {
     public void shoot() {
 
         if (ObjectList.player.facingDir == "right") {
-            new Arrow((int) X + W, (int) Y, 1, this);
+            hook = new Plunger((int) X + W, (int) Y, 0.85, this);
         } else {
-            new Arrow((int) X, (int) Y, -1, this);
+            hook = new Plunger((int) X, (int) Y, -0.85, this);
         }
 
     }
+    
 }

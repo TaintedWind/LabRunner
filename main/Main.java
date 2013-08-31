@@ -21,10 +21,10 @@ public class Main extends StateBasedGame {
     public static final int menu = -1;
     public static final int pausemenu = -4;
     public static final int options = -2;
-    public static final int region1 = 1;
     public static final int gamescreen = 0;
     public static final int death = -3;
     public static final int crafting = -5;
+    public static final int brewing = -6;
     
     //create a window object
     public static AppGameContainer window;

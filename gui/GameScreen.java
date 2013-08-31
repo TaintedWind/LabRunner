@@ -29,15 +29,15 @@ import org.newdawn.slick.imageout.ImageOut;
 
 public class GameScreen extends BasicGameState {
 
-    int i = 0, ii = 0, iii = 0; 
     public static Image backgroundImage;
     public static Image screenshot;
     org.newdawn.slick.geom.Rectangle backgroundRectangle = new org.newdawn.slick.geom.Rectangle(0, 0, 800, 600);
     public static boolean isBackgroundImageTiled = false;
     public static Color backgroundColor = new Color(20, 20, 20);
-    
-    public static int menuToEnter = 0;
+
     public static boolean leftMouseDown, rightMouseDown;
+    
+    public static StateBasedGame state;
 
     public GameScreen(int state) {
         
@@ -89,60 +89,28 @@ public class GameScreen extends BasicGameState {
         Input i = gc.getInput();
         ObjectList.updateAllObjects();
         
-        if (menuToEnter != 0) {
-            int menuToEnter_copy = menuToEnter;
-            menuToEnter = 0;
-            sbg.enterState(menuToEnter_copy);
-        }
+        state = sbg; //copy the sbg so external objects can use it
         
-        if (i.isKeyPressed(Input.KEY_F2)) {
-            Screen.changeWindowSize(1000, 750);
-        }
 
         if (i.isMouseButtonDown(0)) {
-
-            leftMouseDown = true;
-            
             if (Inventory.getSelectedItem() != null) {
                 ((Item) Inventory.getSelectedItem()).leftClickAction();
             }
-
-            if (this.i == 0) {
-                
-                if (ObjectList.player.getCollidingEnemy(ObjectList.player.range) != null) {
-                    if (Inventory.getSelectedItem() != null) {
-                        ((Item) Inventory.getSelectedItem()).attack();
-                    } else {
-                        ((AI) ObjectList.player.getCollidingEnemy(ObjectList.player.range)).health(-1, this);
-                    }
-
-                }
-                this.i = 1;
-            }
+            leftMouseDown = true;
+            
         } else {
-            this.i = 0;
             leftMouseDown = false;
         }
 
         if (i.isMouseButtonDown(1)) {
-            if (ii == 0) {
-                rightMouseDown = true;
-                if (Inventory.getSelectedItem() != null) {
-                    ((Item) Inventory.getSelectedItem()).rightClickAction();
-                }
-                ii = 1;
+            if (Inventory.getSelectedItem() != null) {
+                ((Item) Inventory.getSelectedItem()).rightClickAction();
             }
+            rightMouseDown = true;
         } else {
-            ii = 0;
             rightMouseDown = false;
             
         }
-
-        if (i.isKeyDown(Input.KEY_P)) {
-            ObjectList.player = null;
-            new Bomb(Mouse.getX(), 600 - Mouse.getY());
-        }
-
 
         if (i.isKeyDown(Input.KEY_1)) {
             Inventory.selectSlot(0);
@@ -214,11 +182,8 @@ public class GameScreen extends BasicGameState {
         if (i.isKeyDown(Input.KEY_DELETE)) {
         }
 
-        if (i.isKeyDown(Input.KEY_Q) && iii == 0) {
-            iii = 1;
+        if (i.isKeyDown(Input.KEY_Q)) {
             Inventory.dropSelectedItem();
-        } else if (i.isKeyDown(Input.KEY_Q) == false) {
-            iii = 0;
         }
 
         if (i.isKeyDown(Input.KEY_F11)) {

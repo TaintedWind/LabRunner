@@ -7,6 +7,7 @@ package gui.overlay;
 import database.ObjectList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 import player.Inventory;
 
 /**
@@ -15,7 +16,7 @@ import player.Inventory;
  */
 public class Overlay {
     
-        public static void draw(Graphics g) {
+        public static void draw(Graphics g) throws SlickException {
 
             //draw health bar
             g.setColor(Color.gray);
@@ -25,6 +26,7 @@ public class Overlay {
             g.setColor(Color.white);
 
             Inventory.draw(g);
+            
             //ToolTip.drawToolTip(g);
 
             g.setColor(Color.white);

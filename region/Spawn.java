@@ -17,6 +17,9 @@ import object.Door;
 import platform.NormalPlatform;
 import enemy.Scientist;
 import database.ObjectList;
+import item.potions.HealingPotion;
+import item.tools.Wire;
+import item.weapons.GrappleHook;
 import object.CraftingTable;
 
 public class Spawn {
@@ -26,8 +29,8 @@ public class Spawn {
         createObjects();
         setLevelBackground();
 
-        ObjectList.player.X = 400;
-        ObjectList.player.Y = 500;
+        ObjectList.player.X = 75;
+        ObjectList.player.Y = 450;
 
     }
 
@@ -36,12 +39,16 @@ public class Spawn {
         System.out.println("Creating new level objects");
 
         //create visible platforms
-        new NormalPlatform(0, 565, 800, 32, "metal", Color.gray);
+        new NormalPlatform(0, 567, 200, 32, "metal", Color.gray);
+        new NormalPlatform(0, -32, 800, 32, "metal", Color.gray);
+        new NormalPlatform(668, 0, 150, 800, "metal", Color.gray);
+        new NormalPlatform(500, 567, 600, 32, "metal", Color.gray);
+        new NormalPlatform(-100, 0, 100, 800, "metal", Color.gray);
+        
+        new Lava(200, 570, 300, 1337);
 
-        new Bow(500, 510);
-        new Plunger(450, 510);
-        new CraftingTable(550, 532);
-
+        new GrappleHook(150, 450);
+        new CraftingTable(5, 532);
 
     }
 

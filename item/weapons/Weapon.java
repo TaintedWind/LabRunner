@@ -5,6 +5,7 @@ import player.Inventory;
 import item.Item;
 import item.projectiles.Arrow;
 import item.projectiles.Bullet;
+import org.lwjgl.input.Mouse;
 
 public class Weapon extends Item {
 
@@ -35,13 +36,26 @@ public class Weapon extends Item {
 
     public void leftClickAction() {
         swing();
+        if (gui.GameScreen.leftMouseDown == false) {
+            if (category == "ranged" && ammoAmount > 0) {
+                
+                if (Mouse.getX() > ObjectList.player.X) {
+                    ObjectList.player.facingDir = "right";
+                } else {
+                    ObjectList.player.facingDir = "left";  
+                }
+                
+                shoot();
+                ammoAmount--;
+                
+            } else {
+                attack();
+            }
+        }
     }
 
     public void rightClickAction() {
-        if (category == "ranged" /*&& ammoAmount > 0*/) {
-            shoot();
-            //ammoAmount--; decrease ammo ammount
-        }
+
     }
 
     public void swing() {

@@ -1,4 +1,4 @@
-package item.projectiles;
+package item.projectiles.grapple;
 
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
@@ -11,61 +11,76 @@ import engine.Physics;
 import engine.Timer;
 
 import item.Item;
+import item.projectiles.Projectile;
 import main.Screen;
 import org.lwjgl.util.Display;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.geom.Line;
+import player.Inventory;
 
-public class Projectile extends Item {
+public class Grapple extends Projectile {
 
-    boolean deleteOnTouch, explodesOnTouch, isAffectedByGravity;
+    boolean isAffectedByGravity;
     Object parentWeapon;
+    
+    double initialDX, initialDY;
+    int tether;
+    
     Timer despawnTimer = new Timer();
+    
+    Line rope = new Line(0, 0, 0, 0);
 
     public void update() {
-
-        despawnTimer.updateTimer();
-        if (despawnTimer.getTime() > 2000) {
-            delete();
-        }
-        
-
 
         hitbox.setBounds((int) X, (int) Y, W, H);
         topHitbox.setBounds((int) X, (int) Y, W, H / 3);
         middleHitbox.setBounds((int) X, (int) Y + (H / 3), W, H / 2);
         bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
         
+        rope.set((int)((Item)parentWeapon).X + (int)((Item)parentWeapon).W / 2, (int)((Item)parentWeapon).Y + ((Item)parentWeapon).H / 2, (int)X + (W / 2), (int)Y + H);
+
+        despawnTimer.updateTimer();
+        
+        if (despawnTimer.getTime() > 1500) {
+            delete();
+        }
+        
+        
         if (isCollidingWithGround()) {
             System.out.println(this+" is touching ground");
         }
         
-        if (isCollidingWithLeftSide()) {
-            System.out.println(this+" is touching left side");  
-        }
         
         //if projectile is not colliding, move based on X and Y velocity
         if (isColliding() == false) {
-            if (isAffectedByGravity) {
-                gravity();
+            //if rope reaches a certain length, shut. down. everything.
+            if (rope.length() < 400) {
+                velocity();
+            } else {
+                delete();
+                ObjectList.player.dx = 0;
+                ObjectList.player.dy = 0;
+                ObjectList.player.fallHeight = 0;
+                ObjectList.player.fallSpeed = 0;
             }
-
-            velocity();
-        }
-
-        //if the projectile is colliding and is set to delete on touch, then delete
-        if (isColliding() == true && deleteOnTouch == true) {
-            if (explodesOnTouch) {
-                explode();
+        } else {
+            if (ObjectList.player.hitbox.intersects(hitbox) == false && Inventory.getSelectedItem() == parentWeapon && rope.length() > 50) {
+                ObjectList.player.Y -= 0.1;
+                ObjectList.player.dx = initialDX / 2;
+                ObjectList.player.dy = initialDY - 0.6;
+                
+                System.out.println(initialDY);
+                
+            } else {
+                
+                ObjectList.player.dx = 0;
+                ObjectList.player.dy = 0;
+                ObjectList.player.fallHeight = 0;
+                ObjectList.player.fallSpeed = 0;
+                
+                delete();
+                
             }
-            
-            delete();
-            
-        }
-
-        //gets the colliding enemy and does damage (then deletes itself)
-        if (getCollidingEnemy(hitbox) != null) {
-            ((Physics) getCollidingEnemy(hitbox)).knockBack(this, 0.015, -0.01);
-            ((AI) getCollidingEnemy(hitbox)).health(-damage, ObjectList.player);
-            delete();
         }
 
     }
@@ -74,7 +89,7 @@ public class Projectile extends Item {
         ParticleFactory.createExplosion(X, Y);
         delete();
     }
-
+    
     public double getAngleOfElevation() {
 
         //takes the parent of the projectile (aka the gun that shot it) as a parameter
@@ -125,5 +140,12 @@ public class Projectile extends Item {
                 }
             }
         }
+    }
+    
+    public void draw(Graphics g) {
+        g.setColor(Color.white);
+        g.drawImage(defaultTexture, (int)X, (int)Y, null);
+        g.setColor(Color.black);
+        g.drawLine((float)rope.getX1(), (float)rope.getY1(), (float)rope.getX2(), (float)rope.getY2());
     }
 }

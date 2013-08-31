@@ -30,7 +30,6 @@ public class Player extends Physics {
         this.Y = y;
         this.W = 48;
         this.H = 96;
-        this.health = 10000;
         this.walkingDir = null;
         this.isMoving = false;
         this.isJumping = false;
@@ -44,7 +43,7 @@ public class Player extends Physics {
             e.printStackTrace();
         }
 
-        System.out.println("Creating new player");
+        System.out.println("Creating new player instance");
 
     }
 
@@ -77,11 +76,11 @@ public class Player extends Physics {
             skinColor = Color.red;
         }
 
-        //this.health += amount;
+        this.health += amount;
 
         if (this.health < 0) {
             this.health = 0;
-        } else if (this.health > 21000) {
+        } else if (this.health > 100) {
             this.health = 100;
         }
 

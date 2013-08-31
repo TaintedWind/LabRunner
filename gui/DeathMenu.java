@@ -72,7 +72,7 @@ public class DeathMenu extends BasicGameState {
         
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
-        g.drawString("YOU DIED :(", 340, 100);
+        g.drawString("YOU DIED :(", 350, 100);
         
         if (quitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
             g.drawImage(button_mouseover, 250, 300);

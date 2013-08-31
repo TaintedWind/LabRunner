@@ -18,7 +18,7 @@ import org.newdawn.slick.Image;
 public class Inventory {
 
     public static int selectedSlotNumber;
-    public static Image slotIcon, selectedSlotIcon;
+    public static Image slotIcon, selectedSlotIcon, craftedItemTexture;
     
     public static Object[] hotbar_backup;
     public static Object[] hotbar = new Object[3];
@@ -56,11 +56,11 @@ public class Inventory {
         
     }
     
-    public static Object combine(Object i, Object ii, Object iii) {
+    public static Object combine(Object i, Object ii, Object iii, boolean returnImage) {
         
         String item1, item2, item3;
         ArrayList<String> recipe = new ArrayList<String>();
-        System.out.println("Combining "+i+" and "+ii);
+        Object craftedItem;
         
         if (i != null) {
             item1 = i.getClass().toString();            
@@ -84,20 +84,29 @@ public class Inventory {
         recipe.add(item2);
         recipe.add(item3);
         
-        System.out.println(recipe);
+        if (recipe.contains("class item.weapons.Bow") && recipe.contains("class item.tools.Plunger") && recipe.contains("null")) {
+            craftedItem = new GrappleHook((int)ObjectList.player.X, (int)ObjectList.player.Y);
+        } else {
+            return null;
+        }
         
-        if (recipe.contains("class item.weapons.Bow") && recipe.contains("class item.tools.Plunger")) {
-
+        //if returnImage is false, delete the items after.
+        if (returnImage == false) {
             Inventory.deleteItem(i);
             Inventory.deleteItem(ii);
             Inventory.deleteItem(iii);
-            
-            System.out.println("Crafting successful: grapple hook");
-
-            return new GrappleHook((int)ObjectList.player.X, (int)ObjectList.player.Y);
         }
         
-        return null;
+        //if return image is true, set the image to the item texture, delete the created object and return null. else, return the object
+        if (returnImage == true) {
+            craftedItemTexture = ((Item)craftedItem).defaultTexture;
+            ((Item)craftedItem).delete();
+            return null;
+        } else {
+            System.out.println("Returning "+craftedItem);
+            craftedItemTexture = null;
+            return craftedItem;
+        }
         
     
     }
@@ -119,6 +128,8 @@ public class Inventory {
     }
     
     public static void deleteItem(Object o) {
+        
+        System.out.println("Deleting "+o+" (via deleteItem()");
         
         try {
             for (int i = 0; i <= hotbar.length; i++) {
@@ -146,7 +157,7 @@ public class Inventory {
         } else {
             
             for (int i = newSize; i <= hotbar.length; i++) {
-                dropItem(i);
+                dropSlot(i);
             }
             
             hotbar = null;
@@ -233,7 +244,7 @@ public class Inventory {
 
     }
     
-    public static void dropItem(int slotNumber) {
+    public static void dropSlot(int slotNumber) {
 
         //drop the specified slot item
 
@@ -260,11 +271,6 @@ public class Inventory {
     }
 
     public static void selectSlot(int slot) {
-
-        /*Takes a slot number as a parameter
-         * Sets the selectedSlotNumber to slot
-         * Then sets selectedItem to the item in the slot (easier to reference)
-         */
         
         if (slot <= hotbar.length - 1) {
             selectedSlotNumber = slot;
@@ -279,47 +285,7 @@ public class Inventory {
         } else {
             return null;
         }
-    }
-    
-    public static Object getItemPreview(Object i, Object ii, Object iii) {
         
-        String item1, item2, item3;
-        ArrayList<String> recipe = new ArrayList<String>();
-        
-        if (i != null) {
-            item1 = i.getClass().toString();            
-        } else {
-            item1 = "null";
-        }
-        
-        if (ii != null) {
-            item2 = ii.getClass().toString();            
-        } else {
-            item2 = "null";
-        }
-                
-        if (iii != null) {
-            item3 = iii.getClass().toString();            
-        } else {
-            item3 = "null";
-        }
-        
-        recipe.add(item1);
-        recipe.add(item2);
-        recipe.add(item3);
-        
-        if (recipe.contains("class item.weapons.Bow") && recipe.contains("class item.tools.Plunger")) {
-
-            Inventory.deleteItem(i);
-            Inventory.deleteItem(ii);
-            Inventory.deleteItem(iii);
-
-            return new GrappleHook(-500, 1000);
-        }
-        
-        return null;
-        
-    
     }
     
     public static int getClickedSlot() {

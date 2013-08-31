@@ -66,17 +66,17 @@ public class CraftingMenu extends BasicGameState {
         quitButton = new Rectangle(80, 500, 300, 50);
         craftButton = new Rectangle(420, 500, 300, 50);
         
-        menuFont = new UnicodeFont("LabRunner.ttf", 16, false, false);
-        menuFont.addAsciiGlyphs();
-        menuFont.addGlyphs(400, 600);
-        menuFont.getEffects().add(new ColorEffect());
-        menuFont.loadGlyphs();
-        
     }
 
     //draws state (screen) elements
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+        
+        menuFont = new UnicodeFont("LabRunner.ttf", 16, false, false);
+        menuFont.addAsciiGlyphs();
+        menuFont.addGlyphs(400, 600);
+        menuFont.getEffects().add(new ColorEffect());
+        menuFont.loadGlyphs();
         
         g.setFont(menuFont);
         
@@ -139,8 +139,8 @@ public class CraftingMenu extends BasicGameState {
         }
         
         //draw the item preview
-        if (itemPreview != null) {
-            g.drawImage(((Item)itemPreview).defaultTexture, 400 - ((Item)itemPreview).W / 2, 400 - ((Item)itemPreview).H - 10, null);
+        if (Inventory.craftedItemTexture != null) {
+            g.drawImage(Inventory.craftedItemTexture, 400 - Inventory.craftedItemTexture.getWidth() / 2, 400 - Inventory.craftedItemTexture.getHeight() - 10, null);
         }
         
     }
@@ -150,13 +150,13 @@ public class CraftingMenu extends BasicGameState {
     @Override
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
         
-        sbg2 = sbg;
-
-        database.GlobalVariables.deltaTime = delta;
         Input i = gc.getInput();
         
+        //make an arraylist copy of recipe to do contain checks
         recipe_backup = new ArrayList<Object>(Arrays.asList(recipe));
-        itemPreview = Inventory.getItemPreview(recipe[0], recipe[1], recipe[2]);
+        
+        //do a "fake" combine that returns the preview of the crafted item (for the render method to draw)
+        Inventory.combine(recipe[0], recipe[1], recipe[2], true);
         
         if (i.isMouseButtonDown(0)) {
            if (Inventory.getClickedSlot() != -1) {
@@ -171,7 +171,7 @@ public class CraftingMenu extends BasicGameState {
         if (craftButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
             if (i.isMouseButtonDown(0)) {
                 if (recipe.length > 0) {
-                    Inventory.combine(recipe[0], recipe[1], recipe[2]);
+                    Inventory.combine(recipe[0], recipe[1], recipe[2], false);
                     recipe = new Object[3];
                     sbg.enterState(0);
                 }

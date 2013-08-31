@@ -15,6 +15,7 @@ import powerup.PowerUp;
 public class Physics {
 
     public int fallHeight, jumpHeight, fallSpeed;
+    public boolean isCollidingWithGround, isCollidingWithLeftSide, isCollidingWithRightSide, isCollidingWithBottom, isColliding;
     public Rectangle hitbox = new Rectangle();
     public Rectangle bottomHitbox = new Rectangle();
     public Rectangle middleHitbox = new Rectangle();
@@ -45,7 +46,7 @@ public class Physics {
         }
         
         if (Y > 1000 && this.getClass() != Player.class) {
-            delete();
+            //delete();
         }
 
         isCollidingWithBottom();
@@ -55,28 +56,26 @@ public class Physics {
     //moves the object according to dx and dy, great for knockback effects
     public void velocity() {
 
-        if (isColliding() == false) {
+        if (isCollidingWithLeftSide() == false && isCollidingWithRightSide() == false) {
             X += dx * database.GlobalVariables.deltaTime;
+        }
+        
+        if (isCollidingWithGround() == false && isCollidingWithBottom() == false) {
             Y += dy * database.GlobalVariables.deltaTime;
         }
-
+        
         if (isCollidingWithGround() || isCollidingWithLiquid()) {
             dy = 0;
-            dx = 0;
         }
-
         if (isCollidingWithLiquid()) {
             dy = 0;
         }
-
         if (isCollidingWithLeftSide()) {
             dx = 0;
         }
-
         if (isCollidingWithRightSide()) {
             dx = 0;
         }
-
         if (isCollidingWithBottom()) {
             dy = 0;
         }
@@ -194,8 +193,10 @@ public class Physics {
 
     public boolean isColliding() {
         if (isCollidingWithGround() || isCollidingWithLeftSide() || isCollidingWithRightSide() || isCollidingWithBottom()) {
+            isColliding = true;
             return true;
         } else {
+            isColliding = false;
             return false;
         }
     }
@@ -205,12 +206,19 @@ public class Physics {
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
 
             if (bottomHitbox.intersects(((Platform) ObjectList.platforms.get(i)).top)) {
-                Y = ((Platform) ObjectList.platforms.get(i)).Y - H + 1;
-                dy = 0;
+                
+                if (isCollidingWithLeftSide == false && isCollidingWithRightSide == false) {
+                    Y = ((Platform) ObjectList.platforms.get(i)).Y - H + 1;
+                    dy = 0;
+                }
+                
+                isCollidingWithGround = true;
                 return true;
+                
             }
         }
 
+        isCollidingWithGround = false;
         return false;
 
     }
@@ -233,11 +241,19 @@ public class Physics {
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
 
             if (topHitbox.intersects(((Platform) ObjectList.platforms.get(i)).bottom)) {
-                Y = ((Platform) ObjectList.platforms.get(i)).bottom.y + ((Platform) ObjectList.platforms.get(i)).bottom.height;
+                if (isCollidingWithLeftSide == false && isCollidingWithRightSide == false) {
+                    Y = ((Platform) ObjectList.platforms.get(i)).bottom.y + ((Platform) ObjectList.platforms.get(i)).bottom.height;
+                }
+                
+                dy = 0;
+                dx = 0;
+                
+                isCollidingWithBottom = true;
                 return true;
             }
         }
-
+        
+        isCollidingWithBottom = false;
         return false;
 
     }
@@ -247,10 +263,12 @@ public class Physics {
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
             if (middleHitbox.intersects(((Platform) ObjectList.platforms.get(i)).left) || topHitbox.intersects(((Platform) ObjectList.platforms.get(i)).left)) {
                 X = ((Platform) ObjectList.platforms.get(i)).left.x - W + 1;
+                isCollidingWithLeftSide = true;
                 return true;
             }
         }
-
+        
+        isCollidingWithLeftSide = false;
         return false;
 
     }
@@ -259,11 +277,13 @@ public class Physics {
 
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
             if (middleHitbox.intersects(((Platform) ObjectList.platforms.get(i)).right) || topHitbox.intersects(((Platform) ObjectList.platforms.get(i)).right)) {
-                X = ((Platform) ObjectList.platforms.get(i)).right.x + ((Platform) ObjectList.platforms.get(i)).right.width - 1;
+                    X = ((Platform) ObjectList.platforms.get(i)).right.x + ((Platform) ObjectList.platforms.get(i)).right.width - 1;
+                isCollidingWithRightSide = true;
                 return true;
             }
         }
-
+        
+        isCollidingWithRightSide = false;
         return false;
 
     }
@@ -272,8 +292,8 @@ public class Physics {
        //only serves to allow the gravity method to do damage
     }
     
-    public void delete() {
+    //public void delete() {
         //only here so gravity can automatically call delete when the object/enemy falls into the void
-    }
+    //}
     
 }

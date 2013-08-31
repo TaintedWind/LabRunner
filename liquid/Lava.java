@@ -17,7 +17,7 @@ public class Lava extends Liquid {
 
         this.category = "danger";
         this.sinkSpeed = 0.05;
-        this.damage = 10;
+        this.damage = 20;
 
         try {
             this.defaultTexture = new Image("lava.png");

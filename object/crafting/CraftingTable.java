@@ -26,7 +26,8 @@ public class CraftingTable extends Object {
     }
     
     public void activate() {
-        gui.GameScreen.menuToEnter = -5;
+        System.out.println("Calling activate on "+this);
+        gui.GameScreen.state.enterState(-5);
     }
     
 }

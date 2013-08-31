@@ -18,10 +18,7 @@ public class Cheeseburger extends Food {
         this.offsetX = 20;
         this.offsetY = 50;
 
-        this.category = "food";
-        this.damage = 0;
-
-        this.strength = 10;
+        this.strength = 10; //heals 10 HP
 
         try {
             defaultTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);

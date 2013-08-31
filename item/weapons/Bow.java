@@ -1,6 +1,5 @@
 package item.weapons;
 
-import item.Item;
 import item.projectiles.Arrow;
 
 import org.newdawn.slick.Image;
@@ -23,6 +22,8 @@ public class Bow extends Weapon {
 
         this.numberOfHands = 1;
         this.category = "ranged";
+        
+        this.ammoAmount = 9999;
 
         try {
             defaultTexture = new Image("bow.png", false, Image.FILTER_NEAREST);

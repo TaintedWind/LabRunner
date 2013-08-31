@@ -31,24 +31,6 @@ public class Tool extends Item {
         }
     }
 
-    public void leftClickAction() {
-        swing();
-    }
-
-    public void swing() {
-        if (swings) {
-            if (ObjectList.player.facingDir == "right") {
-                ((Item) Inventory.getSelectedItem()).rightFacingTexture.setRotation(90);
-                Y += W;
-                X += handleLength;
-            } else if (ObjectList.player.facingDir == "left") {
-                ((Item) Inventory.getSelectedItem()).leftFacingTexture.setRotation(-90);
-                Y += W;
-                X -= handleLength;
-            }
-        }
-    }
-
     public void alignToPlayer() {
 
         if (swings) {
