@@ -22,11 +22,12 @@ public class Arrow extends Projectile {
         this.damage = 1;
 
         this.dx = xdir;
-        this.dy = getAngleOfElevation() * 2;
+        this.dy = getAngleOfElevation() * 1.5;
 
         this.deleteOnTouch = false;
         this.explodesOnTouch = true;
         this.isAffectedByGravity = true;
+        this.knockbackStrength = 0.02;
 
         this.parentWeapon = p;
 

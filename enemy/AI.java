@@ -16,6 +16,7 @@ import engine.Timer;
 /*this class defines all the movements that are possible for enemies (including those for land and air)
  * Enemies will override the update method to use only the appropriate methods
  */
+
 public class AI extends Physics {
 
     int damage;
@@ -23,7 +24,6 @@ public class AI extends Physics {
     double health, maxHealth;
     Image defaultTexture;
     String state;
-    Rectangle cliffDetection = new Rectangle();
     Point target, t1, t2;
     Color skinColor = Color.white;
     Timer attackTimer, idleTimer;
@@ -31,33 +31,32 @@ public class AI extends Physics {
     public void update() {
 
         if (attackTimer == null) {
-            attackTimer = new Timer();
+            attackTimer = new Timer(1000);
         }
 
         if (idleTimer == null) {
-            idleTimer = new Timer();
+            idleTimer = new Timer(-1);
         }
 
-        attackTimer.updateTimer();
-        idleTimer.updateTimer();
-
         //update hitboxes
-        hitbox.setBounds((int) this.X, (int) this.Y, this.W, this.H);
-        bottomHitbox.setBounds((int) this.X, (int) this.Y + (this.H / 2), this.W, this.H / 2);
+        hitbox.setBounds((int) X, (int) Y, W, H);
+        topHitbox.setBounds((int) X, (int) Y, W, H / 3);
+        middleHitbox.setBounds((int) X, (int) Y + (H / 3), W, H / 2);
+        bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
         range.setBounds((int) X - 250, (int) Y - 50, 550, H + 50);
-        cliffDetection.setBounds((int) X - 50, (int) Y + H + 250, W + 100, H + 100);
 
         //call gravity();
         gravity();
         velocity();
 
-        if (range.contains(ObjectList.player.hitbox) && hitbox.contains(ObjectList.player.hitbox) == false || state == "hostile") {
+        if (range.intersects(ObjectList.player.hitbox) && hitbox.intersects(ObjectList.player.hitbox) == false || state == "hostile") {
             followPlayer();
-        } else {
+        } else if (state == "idle") {
             doIdleMovements();
         }
         
-        if (hitbox.intersects(ObjectList.player.hitbox)) {
+        if (hitbox.intersects(ObjectList.player.hitbox) && attackTimer.getTime() >= 1000) {
+            System.out.println("Calling attack method");
             attack(ObjectList.player);
         }
 
@@ -75,12 +74,10 @@ public class AI extends Physics {
 
     public void attack(Object target) {
 
-        if (attackTimer.getTime() > 1000) {
-            System.out.println(this + " is attacking " + target);
-            ((Physics) target).knockBack(this, 0.01, -0.01);
-            ((Physics) target).health(-this.damage, this);
-            attackTimer.reset();
-        }
+        System.out.println("Attacking!"+"("+attackTimer.getTime()+")");
+        ObjectList.player.knockBack(this, 0.01, -0.01);
+        ObjectList.player.health(-damage, this);
+        attackTimer.reset();
 
     }
 
@@ -97,7 +94,7 @@ public class AI extends Physics {
             skinColor = Color.red;
         }
 
-        //this.health += amount;
+        this.health += amount;
 
         if (this.health > maxHealth) {
             this.health = maxHealth;
@@ -146,11 +143,9 @@ public class AI extends Physics {
         skinColor = Color.white;
         g.setColor(Color.white);
 
-        g.setColor(Color.red);
+        /*g.setColor(Color.red);
         g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
         g.setColor(Color.blue);
-        g.drawRect(range.x, range.y, range.width, range.height);
-        g.setColor(Color.green);
-        g.drawRect(cliffDetection.x, cliffDetection.y, cliffDetection.width, cliffDetection.height);
+        g.drawRect(range.x, range.y, range.width, range.height);*/
     }
 }

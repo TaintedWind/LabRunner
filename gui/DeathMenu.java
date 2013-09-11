@@ -18,7 +18,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import particles.ParticleFactory;
+import particle.ParticleFactory;
 import platform.NormalPlatform;
 import player.Inventory;
 import enemy.AI;
@@ -80,7 +80,7 @@ public class DeathMenu extends BasicGameState {
             g.drawImage(button, 250, 300);
         }
         
-        g.drawString("SAVE AND QUIT", 335, 315);
+        g.drawString("QUIT TO TITLE", 335, 315);
         
     }
 

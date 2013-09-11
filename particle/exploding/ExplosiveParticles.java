@@ -1,4 +1,4 @@
-package particles.exploding;
+package particle.exploding;
 
 import enemy.AI;
 import org.newdawn.slick.Graphics;
@@ -9,7 +9,7 @@ import engine.Physics;
 import engine.Timer;
 import item.Item;
 import java.awt.Rectangle;
-import particles.Particle;
+import particle.Particle;
 import powerup.PowerUp;
 
 public class ExplosiveParticles extends Particle {
@@ -28,17 +28,14 @@ public class ExplosiveParticles extends Particle {
         range.setBounds((int)X - 20, (int)Y - 20, W + 20, H + 20);
 
         if (animationTimer == null) {
-            animationTimer = new Timer();
+            animationTimer = new Timer(400);
         }
         
         if (knockbackTimer == null) {
-            knockbackTimer = new Timer();
-        } else {
-            knockbackTimer.updateTimer();
+            knockbackTimer = new Timer(-1);
         }
-
         if (isAnimated) {
-            Animate();
+            animate();
         }
         
         doKnockBack();
@@ -73,10 +70,7 @@ public class ExplosiveParticles extends Particle {
         
     }
 
-    public void Animate() {
-        
-        animationTimer.updateTimer();
-        
+    public void animate() {
         if (animationTimer.getTime() > 400) {
             delete();
         }

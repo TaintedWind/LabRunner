@@ -22,11 +22,13 @@ public class Plunger extends Tool {
         this.ID = 1;
 
         this.swings = true;
+        this.name = "PLUNGER";
 
         try {
             defaultTexture = new Image("plunger.png", false, Image.FILTER_NEAREST);
             leftFacingTexture = new Image("plunger_inverted.png", false, Image.FILTER_NEAREST);
             rightFacingTexture = new Image("plunger_inverted.png", false, Image.FILTER_NEAREST);
+            inventoryTexture = new Image("plunger_icon.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

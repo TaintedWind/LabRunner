@@ -4,7 +4,7 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import particles.ParticleFactory;
+import particle.ParticleFactory;
 import player.Inventory;
 
 import database.ObjectList;
@@ -18,7 +18,6 @@ public class Explosive extends Item {
     public void update() {
 
         if (detonationTimer != null) {
-            detonationTimer.updateTimer();
             if (detonationTimer.getTime() >= 750) {
                 System.out.println("BOOM");
                 ParticleFactory.createExplosion(X, Y);
@@ -58,7 +57,7 @@ public class Explosive extends Item {
 
     public void Throw() {
 
-        detonationTimer = new Timer();
+        detonationTimer = new Timer(750);
 
         if (Inventory.contains(this)) {
             dx = 0.75;

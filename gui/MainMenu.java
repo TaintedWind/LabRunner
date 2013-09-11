@@ -17,6 +17,7 @@ import java.awt.Rectangle;
 import java.util.Calendar;
 import java.sql.Date;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import region.Functions;
@@ -92,7 +93,7 @@ public class MainMenu extends BasicGameState {
         if (playButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
             if (i.isMouseButtonDown(0)) {
                  sbg.enterState(0);
-                 Functions.resetCanvas();
+                 Functions.resetCanvas(true);
                  region.Spawn.loadLevel();
                  ObjectList.player.reset();
             }

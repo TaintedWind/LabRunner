@@ -18,7 +18,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import particles.ParticleFactory;
+import particle.ParticleFactory;
 import platform.NormalPlatform;
 import player.Inventory;
 import enemy.AI;
@@ -74,7 +74,7 @@ public class PauseMenu extends BasicGameState {
         
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
-        g.drawString("GAME PAUSED", 340, 100);
+        g.drawString("GAME PAUSED", 345, 100);
         
         if (returnButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
             g.drawImage(button_mouseover, 250, 200);
@@ -89,7 +89,7 @@ public class PauseMenu extends BasicGameState {
         }
         
         g.drawString("RETURN TO GAME", 330, 215);
-        g.drawString("SAVE AND QUIT", 335, 315);
+        g.drawString("QUIT TO TITLE", 335, 315);
         
     }
 

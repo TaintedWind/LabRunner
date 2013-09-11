@@ -1,4 +1,4 @@
-package object;
+package levelobject.crafting;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -7,8 +7,9 @@ import org.newdawn.slick.SlickException;
 import region.Functions;
 import database.ObjectList;
 import gui.CraftingMenu;
+import levelobject.Level_Object;
 
-public class CraftingTable extends Object {
+public class CraftingTable extends Level_Object {
 
     public CraftingTable(int x, int y) {
         this.X = x;
@@ -21,6 +22,8 @@ public class CraftingTable extends Object {
         } catch (SlickException e) {
             e.printStackTrace();
         }
+        
+        this.name = "WORKBENCH";
 
         ObjectList.objects.add(this);
     }

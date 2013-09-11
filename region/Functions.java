@@ -8,23 +8,27 @@ public class Functions {
 
     public static void loadRandomLevel() {
 
-        resetCanvas();
+        resetCanvas(false);
 
         Random r = new Random();
-        int level = r.nextInt(2);
+        int level = r.nextInt(4);
         System.out.println("Loading level " + level);
 
         if (level == 0) {
             loadRandomLevel();
         } else if (level == 1) {
             Region1.loadLevel();
+        } else if (level == 2) {
+            Region2.loadLevel();
+        } else if (level == 3) {
+            Region3.loadLevel();
         } else {
             System.out.println("No level exists with ID " + level);
         }
 
     }
     
-    public static void resetCanvas() {
+    public static void resetCanvas(boolean destroyInventory) {
         
         System.out.println("Resetting level canvas");
         
@@ -32,7 +36,7 @@ public class Functions {
         gui.GameScreen.backgroundColor = null;
         gui.GameScreen.isBackgroundImageTiled = false;
         
-        ObjectList.deleteAllObjects(true);
+        ObjectList.deleteAllObjects(destroyInventory);
         
     }
     

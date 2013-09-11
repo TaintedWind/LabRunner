@@ -19,12 +19,13 @@ public class NukeLauncher extends Weapon {
         this.offsetX = -32;
         this.offsetY = 40;
 
-        this.ammoAmount = 5;
+        this.ammoAmount = 20;
         
         this.ID = 5;
 
         this.numberOfHands = 1;
         this.category = "ranged";
+        this.name = "ROCKET LAUNCHER";
 
         try {
             defaultTexture = new Image("nuke_launcher.png", false, Image.FILTER_NEAREST);

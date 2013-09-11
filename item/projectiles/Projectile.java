@@ -3,7 +3,7 @@ package item.projectiles;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 
-import particles.ParticleFactory;
+import particle.ParticleFactory;
 
 import enemy.AI;
 import database.ObjectList;
@@ -17,13 +17,13 @@ import org.lwjgl.util.Display;
 public class Projectile extends Item {
 
     boolean deleteOnTouch, explodesOnTouch, isAffectedByGravity;
-    Object parentWeapon;
-    Timer despawnTimer = new Timer();
+    double knockbackStrength;
+    public Object parentWeapon;
+    Timer despawnTimer = new Timer(10000);
 
     public void update() {
 
-        despawnTimer.updateTimer();
-        if (despawnTimer.getTime() > 2000) {
+        if (despawnTimer.getTime() >= 10000) {
             delete();
         }
         
@@ -45,14 +45,14 @@ public class Projectile extends Item {
         //if projectile is not colliding, move based on X and Y velocity
         if (isColliding() == false) {
             if (isAffectedByGravity) {
-                gravity();
+               // gravity();
             }
 
             velocity();
         }
 
         //if the projectile is colliding and is set to delete on touch, then delete
-        if (isColliding() == true && deleteOnTouch == true) {
+        if (isColliding() == true && deleteOnTouch == true || getCollidingLiquid(hitbox) != null) {
             if (explodesOnTouch) {
                 explode();
             }
@@ -63,7 +63,7 @@ public class Projectile extends Item {
 
         //gets the colliding enemy and does damage (then deletes itself)
         if (getCollidingEnemy(hitbox) != null) {
-            ((Physics) getCollidingEnemy(hitbox)).knockBack(this, 0.015, -0.01);
+            ((Physics) getCollidingEnemy(hitbox)).knockBack(this, knockbackStrength, -0.01); //finish this
             ((AI) getCollidingEnemy(hitbox)).health(-damage, ObjectList.player);
             delete();
         }

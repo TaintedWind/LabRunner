@@ -1,4 +1,4 @@
-package particles;
+package particle;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -18,17 +18,17 @@ public class Particle extends Physics {
     public void update() {
 
         if (animationTimer == null) {
-            animationTimer = new Timer();
+            animationTimer = new Timer(400);
         }
 
         if (isAnimated) {
-            Animate();
+            animate();
         }
 
     }
 
-    public void Animate() {
-        animationTimer.updateTimer();
+    public void animate() {
+        animationTimer.update();
     }
 
     public void delete() {
@@ -57,7 +57,7 @@ public class Particle extends Physics {
                 g.drawImage(anim7, (int) X, (int) Y, null);
             } else if (animationTimer.getTime() < 400) {
                 animationTimer = null;
-                animationTimer.updateTimer();
+                animationTimer.update();
                 delete();
             }
         }

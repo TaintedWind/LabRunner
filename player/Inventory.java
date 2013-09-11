@@ -4,7 +4,7 @@ import database.ObjectList;
 import item.Item;
 import item.tools.Plunger;
 import item.weapons.Bow;
-import item.weapons.GrappleHook;
+import item.weapons.GrapplingHook;
 import item.weapons.NukeLauncher;
 import java.awt.Rectangle;
 import java.sql.Array;
@@ -14,8 +14,13 @@ import java.util.Collections;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
 
 public class Inventory {
+    
+    static UnicodeFont size8;
 
     public static int selectedSlotNumber;
     public static Image slotIcon, selectedSlotIcon, craftedItemTexture;
@@ -23,7 +28,6 @@ public class Inventory {
     public static Object[] hotbar_backup;
     public static Object[] hotbar = new Object[3];
     public static ArrayList<Object> inv_copy;
-    public static ArrayList<Class> combine_array; //wip?
     
     public static Rectangle slotOneHitbox = new Rectangle(10, 10, 44, 44);
     public static Rectangle slotTwoHitbox = new Rectangle(60, 10, 44, 44);
@@ -47,9 +51,9 @@ public class Inventory {
             } else {
                 for (int i = 0; i <= hotbar.length; i++) {
                     //if selected slot is full, add to an empty slot
-                    //if (hotbar[i] == null) {
-                    //    hotbar[i] = o;                       
-                    //}
+                    if (hotbar[i] == null && Inventory.contains(o) == false) {
+                        hotbar[i] = o;                       
+                    }
                 }
             }
         }
@@ -84,17 +88,17 @@ public class Inventory {
         recipe.add(item2);
         recipe.add(item3);
         
-        if (recipe.contains("class item.weapons.Bow") && recipe.contains("class item.tools.Plunger") && recipe.contains("null")) {
-            craftedItem = new GrappleHook((int)ObjectList.player.X, (int)ObjectList.player.Y);
+        if (recipe.contains("class item.weapons.Bow") && recipe.contains("class item.tools.Plunger") && recipe.contains("class item.tools.Wire")) {
+            craftedItem = new GrapplingHook((int)ObjectList.player.X, (int)ObjectList.player.Y);
         } else {
             return null;
         }
         
         //if returnImage is false, delete the items after.
         if (returnImage == false) {
-            Inventory.deleteItem(i);
-            Inventory.deleteItem(ii);
-            Inventory.deleteItem(iii);
+            ((Item)i).delete();
+            ((Item)ii).delete();
+            ((Item)iii).delete();
         }
         
         //if return image is true, set the image to the item texture, delete the created object and return null. else, return the object
@@ -127,16 +131,15 @@ public class Inventory {
 
     }
     
-    public static void deleteItem(Object o) {
+    public static void remove(Object o) {
         
-        System.out.println("Deleting "+o+" (via deleteItem()");
+        //wipes the slot that the opject is in. called by item.delete()
         
         try {
             for (int i = 0; i <= hotbar.length; i++) {
                 if (hotbar[i] == o) {
-
-                    ((Item)hotbar[i]).delete();
                     hotbar[i] = null;
+                   System.out.println("Removed "+o+" from inventory slot "+i);
                 }
             }
         } catch (Exception e) {
@@ -223,8 +226,6 @@ public class Inventory {
         //drop the selected item beside the player
         
         try {
-            
-            System.out.println("Dropping "+hotbar[selectedSlotNumber]);
             
             if (ObjectList.player.facingDir == "right") {
                 ((Item)hotbar[selectedSlotNumber]).X = ObjectList.player.X + 40;
@@ -324,6 +325,18 @@ public class Inventory {
     
     public static void draw(Graphics g) {
         
+        try {
+            if (size8 == null) {
+                size8 = new UnicodeFont("LabRunner.ttf", 8, false, false);
+                size8.addAsciiGlyphs();
+                size8.addGlyphs(400, 600);
+                size8.getEffects().add(new ColorEffect());
+                size8.loadGlyphs();
+            }
+        } catch (SlickException e) {
+            
+        }
+        
         //load images if null
         try {
             if (slotIcon == null) {
@@ -355,9 +368,15 @@ public class Inventory {
         try {
             for (int i = 0; i <= hotbar.length; i++) {
 
+                g.setFont(size8);
+                
                 if (hotbar[i] != null) {
                     if (((Item)hotbar[i]).inventoryTexture != null) {
+                        String ammo = Integer.toString(((Item)hotbar[i]).ammoAmount);
                         g.drawImage(((Item)hotbar[i]).inventoryTexture, 16 + (i * 50), 16, null);
+                        if (((Item)hotbar[i]).ammoAmount != -1) {
+                            g.drawString(ammo, 18 + (i * 50), 18);
+                        }
                     } else {
                         
                     }              

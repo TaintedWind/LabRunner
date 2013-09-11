@@ -11,6 +11,7 @@ import enemy.AI;
 import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
+import liquid.Liquid;
 
 public class Player extends Physics {
 
@@ -18,7 +19,7 @@ public class Player extends Physics {
     Image leftFacingTexture;
     Image rightFacingTexture;
     Color skinColor = Color.white;
-    Timer animationTimer = new Timer();
+    Timer animationTimer = new Timer(300);
     public String walkingDir, facingDir;
     public double health;
     public int jumpHeight;
@@ -53,21 +54,21 @@ public class Player extends Physics {
         topHitbox.setBounds((int) X, (int) Y, W, H / 3);
         middleHitbox.setBounds((int) X, (int) Y + (H / 3), W, H / 2);
         bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
+        
+        range.setBounds((int)X - 50, (int)Y, W + 100, H);
 
         if (facingDir == "left") {
-            range.setBounds((int) X - 50, (int) Y, 75, H);
+            lineofsight.setBounds((int) X - 50, (int) Y, 75, H);
         } else {
-            range.setBounds((int) X + 25, (int) Y, 75, H);
+            lineofsight.setBounds((int) X + 25, (int) Y, 75, H);
         }
 
         gravity();
         velocity();
         checkForMovement();
 
-        animationTimer.updateTimer();
-
     }
-
+    
     public void health(double amount, Object attacker) {
         
         System.out.println("Adding: "+amount+" to player health");
@@ -106,6 +107,18 @@ public class Player extends Physics {
         this.X += this.dx * database.GlobalVariables.deltaTime;
         this.Y += fallSpeed;
 
+    }
+    
+    public void jump() {
+        if (isCollidingWithLiquid() == false && isCollidingWithGround() == true) {
+            Y -= 0.1;
+            dy = -0.6;
+        } else if (isCollidingWithLiquid() == true && isCollidingWithGround() == false) {
+            Y -= 0.1;
+            dy = ((Liquid)getCollidingLiquid(hitbox)).sinkSpeed * -1 - 0.1;            
+        } else {
+            
+        }
     }
 
     public void reset() {

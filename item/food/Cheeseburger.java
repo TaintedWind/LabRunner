@@ -19,6 +19,8 @@ public class Cheeseburger extends Food {
         this.offsetY = 50;
 
         this.strength = 10; //heals 10 HP
+        
+        this.name = "CHEESEBURGER";
 
         try {
             defaultTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);

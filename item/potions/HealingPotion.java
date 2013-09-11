@@ -22,6 +22,8 @@ public class HealingPotion extends Potion {
         this.damage = 0;
 
         this.strength = 50;
+        
+        this.name = "HEALTH POTION";
 
         try {
             defaultTexture = new Image("health_potion.png", false, Image.FILTER_NEAREST);

@@ -1,4 +1,4 @@
-package object;
+package levelobject;
 
 import java.awt.Rectangle;
 
@@ -13,10 +13,12 @@ import engine.Physics;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Point;
 
-public class Object extends Physics {
+public class Level_Object extends Physics {
 
-    Image defaultTexture;
-    String category, action;
+    public Image defaultTexture;
+    public String category, action, name;
+    
+    public Object[] storage;
 
     public void update() {
 
@@ -28,13 +30,14 @@ public class Object extends Physics {
         gravity();
 
         if (gui.GameScreen.rightMouseDown == true && hitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1) && ObjectList.player.range.intersects(hitbox)) {
+            System.out.println("Mouse is intersecting hitbox of "+this);
             activate();
         }
 
     }
 
     public void activate() {
-
+        System.out.println("Running default activate method");
     }
 
     public void delete() {

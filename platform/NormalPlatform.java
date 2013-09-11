@@ -1,6 +1,6 @@
 package platform;
 
-import object.Object;
+import levelobject.Level_Object;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;

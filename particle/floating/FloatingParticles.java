@@ -1,4 +1,4 @@
-package particles.floating;
+package particle.floating;
 
 import enemy.AI;
 import org.newdawn.slick.Graphics;
@@ -9,7 +9,7 @@ import engine.Physics;
 import engine.Timer;
 import item.Item;
 import java.awt.Rectangle;
-import particles.Particle;
+import particle.Particle;
 import powerup.PowerUp;
 
 public class FloatingParticles extends Particle {
@@ -18,12 +18,12 @@ public class FloatingParticles extends Particle {
     public Image defaultTexture;
     Rectangle range;
     
-    Timer deletionTimer = new Timer();
+    Timer deletionTimer = new Timer(1000);
 
     public void update() {
         velocity();
         
-        deletionTimer.updateTimer();
+        deletionTimer.update();
         
         if (deletionTimer.getTime() > 1000) {
             delete();
@@ -31,7 +31,7 @@ public class FloatingParticles extends Particle {
         
     }
 
-    public void Animate() {
+    public void animate() {
         
     }
 

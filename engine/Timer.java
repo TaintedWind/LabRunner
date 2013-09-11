@@ -1,16 +1,33 @@
 package engine;
 
+import database.ObjectList;
+
 public class Timer {
 
-    int time = 0, delta;
+    int time = 0, maxTime;
 
-    public Timer() {
+    public Timer(int max) {
+        
+        //if (max is greater than 0, it will reset when it reaches that number. if it is anything less, it means
+        //the creator probably wants to reset it manually
+        
+        if (maxTime > 0) { 
+            maxTime = max;
+        } else {
+            maxTime = 999999999 * 999999999;
+        }
+        
+        ObjectList.timers.add(this);
     }
 
-    public void updateTimer() {
+    public void update() {
 
-        delta = database.GlobalVariables.deltaTime;
-        time += delta;
+        time += database.GlobalVariables.deltaTime;
+        
+        if (time > maxTime) {
+            reset();
+        }
+        
 
     }
 

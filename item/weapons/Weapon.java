@@ -12,6 +12,7 @@ public class Weapon extends Item {
     int handleLength;
     int numberOfHands;
     boolean swings;
+    public Object currentProjectile;
 
     public void update() {
 
@@ -37,7 +38,7 @@ public class Weapon extends Item {
     public void leftClickAction() {
         swing();
         if (gui.GameScreen.leftMouseDown == false) {
-            if (category == "ranged" && ammoAmount > 0) {
+            if (category == "ranged" && ammoAmount > 0 || category == "ranged" && ammoAmount == -1) {
                 
                 if (Mouse.getX() > ObjectList.player.X) {
                     ObjectList.player.facingDir = "right";
@@ -46,7 +47,9 @@ public class Weapon extends Item {
                 }
                 
                 shoot();
-                ammoAmount--;
+                if (ammoAmount != -1) {
+                    ammoAmount--;
+                }
                 
             } else {
                 attack();

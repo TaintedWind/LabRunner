@@ -8,6 +8,7 @@ import liquid.Liquid;
 import platform.Platform;
 import enemy.AI;
 import item.Item;
+import item.projectiles.Projectile;
 import player.Inventory;
 import player.Player;
 import powerup.PowerUp;
@@ -19,7 +20,8 @@ public class Physics {
     public Rectangle hitbox = new Rectangle();
     public Rectangle bottomHitbox = new Rectangle();
     public Rectangle middleHitbox = new Rectangle();
-    public Rectangle topHitbox = new Rectangle();
+    public Rectangle topHitbox = new Rectangle();    
+    public Rectangle lineofsight = new Rectangle();
     public Rectangle range = new Rectangle();
     public double X, Y, dx, dy; //x, y, velocity
     public int W, H; //size
@@ -42,6 +44,7 @@ public class Physics {
 
         if (isCollidingWithLiquid()) {
             fallSpeed = 0;
+            fallHeight = 0;
             Y += ((Liquid) getCollidingLiquid(hitbox)).sinkSpeed * database.GlobalVariables.deltaTime;
         }
         
@@ -78,27 +81,33 @@ public class Physics {
         }
         if (isCollidingWithBottom()) {
             dy = 0;
+            dx = 0;
         }
 
     }
 
     public void knockBack(Object attacker, double xvel, double yvel) {
-
-        if (attacker == Inventory.getSelectedItem()) {
+        
+        if (attacker == Inventory.getSelectedItem() || ((Projectile)attacker).parentWeapon == Inventory.getSelectedItem()) {
             if (ObjectList.player.X + ObjectList.player.W / 2 < X) {
                 Y -= 1;
                 dx = +xvel * 1.5 * database.GlobalVariables.deltaTime;
+                System.out.println(attacker+" did knockback "+xvel+" on "+this);
             } else {
                 Y -= 1;
                 dx = -xvel * database.GlobalVariables.deltaTime;
+                System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
+
             }   
         } else {
             if (((Physics) attacker).X + ((Physics) attacker).W / 2 < X) {
                 Y -= 1;
-                dx = xvel * database.GlobalVariables.deltaTime;
+                dx = xvel * 1.5 * database.GlobalVariables.deltaTime;
+                System.out.println(attacker+" did knockback "+xvel+" on "+this);
             } else {
                 Y -= 1;
                 dx = -xvel * database.GlobalVariables.deltaTime;
+                System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
             }            
         }
 
@@ -207,13 +216,15 @@ public class Physics {
 
             if (bottomHitbox.intersects(((Platform) ObjectList.platforms.get(i)).top)) {
                 
-                if (isCollidingWithLeftSide == false && isCollidingWithRightSide == false) {
+                if (isCollidingWithLeftSide == false || isCollidingWithRightSide == false) {
                     Y = ((Platform) ObjectList.platforms.get(i)).Y - H + 1;
                     dy = 0;
+                    dx = 0;
+                    
+                    isCollidingWithGround = true;
+                    return true;
+                    
                 }
-                
-                isCollidingWithGround = true;
-                return true;
                 
             }
         }
@@ -241,8 +252,10 @@ public class Physics {
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
 
             if (topHitbox.intersects(((Platform) ObjectList.platforms.get(i)).bottom)) {
-                if (isCollidingWithLeftSide == false && isCollidingWithRightSide == false) {
+                if (isCollidingWithLeftSide == false && isCollidingWithRightSide == false && middleHitbox.intersects(((Platform)ObjectList.platforms.get(i)).bottom) == false) {
                     Y = ((Platform) ObjectList.platforms.get(i)).bottom.y + ((Platform) ObjectList.platforms.get(i)).bottom.height;
+                } else {
+                    Y = ((Platform) ObjectList.platforms.get(i)).Y - H + 1;
                 }
                 
                 dy = 0;
@@ -261,10 +274,12 @@ public class Physics {
     public boolean isCollidingWithLeftSide() {
 
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
-            if (middleHitbox.intersects(((Platform) ObjectList.platforms.get(i)).left) || topHitbox.intersects(((Platform) ObjectList.platforms.get(i)).left)) {
-                X = ((Platform) ObjectList.platforms.get(i)).left.x - W + 1;
-                isCollidingWithLeftSide = true;
-                return true;
+            if (middleHitbox.intersects(((Platform) ObjectList.platforms.get(i)).left)) {
+                if (isCollidingWithBottom == false) {
+                    X = ((Platform) ObjectList.platforms.get(i)).left.x - W + 1;
+                    isCollidingWithLeftSide = true;
+                    return true;
+                }
             }
         }
         
@@ -277,9 +292,11 @@ public class Physics {
 
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
             if (middleHitbox.intersects(((Platform) ObjectList.platforms.get(i)).right) || topHitbox.intersects(((Platform) ObjectList.platforms.get(i)).right)) {
+                if (isCollidingWithBottom == false) {
                     X = ((Platform) ObjectList.platforms.get(i)).right.x + ((Platform) ObjectList.platforms.get(i)).right.width - 1;
-                isCollidingWithRightSide = true;
-                return true;
+                    isCollidingWithRightSide = true;
+                    return true;
+                }
             }
         }
         

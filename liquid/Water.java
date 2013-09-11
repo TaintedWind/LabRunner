@@ -7,22 +7,19 @@ import org.newdawn.slick.SlickException;
 
 import database.ObjectList;
 
-public class Lava extends Liquid {
+public class Water extends Liquid {
 
-    public Lava(int x, int y, int w, int h) {
+    public Water(int x, int y, int w, int h) {
         this.X = x;
         this.Y = y;
         this.W = w;
         this.H = h;
 
-        this.category = "danger";
-        this.sinkSpeed = 0.05;
-        this.damage = 20;
-        
-        this.particles = "smoke";
+        this.sinkSpeed = 0.15;
+        this.damage = 0;
 
         try {
-            this.defaultTexture = new Image("lava.png");
+            this.defaultTexture = new Image("water.png");
         } catch (SlickException e) {
             e.printStackTrace();
         }

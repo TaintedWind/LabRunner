@@ -22,9 +22,10 @@ public class Bullet extends Projectile {
 
         this.deleteOnTouch = true;
         this.isAffectedByGravity = false;
+        this.knockbackStrength = 0.01;
 
         this.dx = xdir;
-        this.dy = getAngleOfElevation() * 2;
+        this.dy = getAngleOfElevation() * 1.5;
 
         try {
             defaultTexture = new Image("bullet.png", false, Image.FILTER_NEAREST);

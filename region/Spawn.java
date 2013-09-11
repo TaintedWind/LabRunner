@@ -1,26 +1,13 @@
 package region;
 
-import liquid.Lava;
-
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
-import item.explosives.Bomb;
-import item.food.Cheeseburger;
-import item.tools.Plunger;
-import item.weapons.Bow;
-import item.weapons.Gun;
-import item.weapons.NukeLauncher;
-import item.weapons.Sword;
-import object.Door;
-import platform.NormalPlatform;
-import enemy.Scientist;
+import item.tools.*;
+import item.weapons.*;
+import platform.*;
+import levelobject.crafting.*;
+import levelobject.*;
 import database.ObjectList;
-import item.potions.HealingPotion;
-import item.tools.Wire;
-import item.weapons.GrappleHook;
-import object.CraftingTable;
 
 public class Spawn {
 
@@ -28,32 +15,36 @@ public class Spawn {
 
         createObjects();
         setLevelBackground();
+        spawnPlayer();
+        
+        gui.GameScreen.levelName = "STORAGE DEMO #1";
 
-        ObjectList.player.X = 75;
-        ObjectList.player.Y = 450;
-
+    }
+    
+    public static void spawnPlayer() {
+        ObjectList.player.X = 50;
+        ObjectList.player.Y = 500;
     }
 
     public static void createObjects() {
-
-        System.out.println("Creating new level objects");
-
-        //create visible platforms
-        new NormalPlatform(0, 567, 200, 32, "metal", Color.gray);
-        new NormalPlatform(0, -32, 800, 32, "metal", Color.gray);
-        new NormalPlatform(668, 0, 150, 800, "metal", Color.gray);
-        new NormalPlatform(500, 567, 600, 32, "metal", Color.gray);
-        new NormalPlatform(-100, 0, 100, 800, "metal", Color.gray);
         
-        new Lava(200, 570, 300, 1337);
+        //create boundaries
+        new NormalPlatform(-32, 0, 32, 600, "metal", Color.black);
+        new NormalPlatform(800, 0, 32, 600, "metal", Color.black);
+        new NormalPlatform(0, -32, 800, 32, "metal", Color.black);
+        new NormalPlatform(-32, 0, 32, 600, "metal", Color.black);
 
-        new GrappleHook(150, 450);
-        new CraftingTable(5, 532);
-
+        //create objects
+        new NormalPlatform(0, 567, 800, 32, "metal", Color.gray);
+        new NormalPlatform(500, 300, 800, 32, "metal", Color.gray);
+        new CraftingTable(350, 550);
+        new Plunger(200, 500);
+        new Bow(250, 500);
+        new Wire(300, 500);
+        new Door(750, 200);
     }
 
     public static void setLevelBackground() {
         gui.GameScreen.backgroundColor = new Color(30, 30, 30);
-        //gui.GameScreen.backgroundColor = Color.white;
     }
 }

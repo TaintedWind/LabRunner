@@ -9,11 +9,9 @@ import org.newdawn.slick.SlickException;
 
 import database.ObjectList;
 
-public class GrappleHook extends Weapon {
-    
-    Object hook;
+public class GrapplingHook extends Weapon {
 
-    public GrappleHook(int x, int y) {
+    public GrapplingHook(int x, int y) {
 
         this.X = x;
         this.Y = y;
@@ -27,7 +25,9 @@ public class GrappleHook extends Weapon {
         this.numberOfHands = 1;
         this.category = "ranged";
         
-        this.ammoAmount = 9999;
+        this.ammoAmount = -1; //infinitew ammo
+        
+        this.name = "GRAPPLING HOOK";
 
         try {
             defaultTexture = new Image("grapple.png", false, Image.FILTER_NEAREST);
@@ -44,10 +44,14 @@ public class GrappleHook extends Weapon {
 
     public void shoot() {
 
-        if (ObjectList.player.facingDir == "right") {
-            hook = new Plunger((int) X + W, (int) Y, 0.85, this);
-        } else {
-            hook = new Plunger((int) X, (int) Y, -0.85, this);
+        if (currentProjectile == null) {
+
+            if (ObjectList.player.facingDir == "right") {
+                currentProjectile = new Plunger((int) X + W, (int) Y, 0.85, this);
+            } else {
+                currentProjectile = new Plunger((int) X, (int) Y, -0.85, this);
+            }
+
         }
 
     }

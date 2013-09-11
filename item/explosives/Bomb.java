@@ -20,6 +20,8 @@ public class Bomb extends Explosive {
 
         this.category = "explosives";
         this.isEquippable = true;
+        
+        this.name = "GRENADE";
 
         try {
             defaultTexture = new Image("bomb.png", false, Image.FILTER_NEAREST);

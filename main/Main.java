@@ -6,6 +6,7 @@ import gui.MainMenu;
 import gui.OptionsMenu;
 import gui.PauseMenu;
 import gui.CraftingMenu;
+import gui.StorageMenu;
 import io.IO;
 
 import org.newdawn.slick.AppGameContainer;
@@ -25,6 +26,7 @@ public class Main extends StateBasedGame {
     public static final int death = -3;
     public static final int crafting = -5;
     public static final int brewing = -6;
+    public static final int storage = -7;
     
     //create a window object
     public static AppGameContainer window;
@@ -40,6 +42,9 @@ public class Main extends StateBasedGame {
         addState(new GameScreen(gamescreen));
         addState(new DeathMenu(death));
         addState(new CraftingMenu(crafting));
+        //addState(new BrewingMenu(brewing));
+        addState(new StorageMenu(storage));
+        
     }
 
     @Override
@@ -51,6 +56,7 @@ public class Main extends StateBasedGame {
         getState(options).init(gc, this);
         getState(gamescreen).init(gc, this);
         getState(crafting).init(gc, this);
+        getState(storage).init(gc, this);
         //load "menu" state on startup
         this.enterState(menu);
     }
@@ -69,8 +75,7 @@ public class Main extends StateBasedGame {
             window.setDisplayMode(Screen.original.getWidth(), Screen.original.getHeight(), false);
             window.setFullscreen(database.Settings.fullScreenEnabled);
             window.setShowFPS(false);
-            //window.setVSync(true);
-            window.setTargetFrameRate(60);
+            window.setVSync(true);
             window.setResizable(false);
             window.setIcon("icon.png");
             window.start();

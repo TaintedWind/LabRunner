@@ -1,4 +1,4 @@
-package object;
+package levelobject;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -7,13 +7,13 @@ import org.newdawn.slick.SlickException;
 import region.Functions;
 import database.ObjectList;
 
-public class Door extends Object {
+public class Door extends Level_Object {
 
     public Door(int x, int y) {
         this.X = x;
         this.Y = y;
-        this.W = 50;
-        this.H = 100;
+        this.W = 48;
+        this.H = 96;
 
         try {
             this.defaultTexture = new Image("door.png", false, Image.FILTER_NEAREST);
@@ -22,6 +22,7 @@ public class Door extends Object {
         }
 
         this.category = "door";
+        this.name = "DOOR";
 
         ObjectList.objects.add(this);
     }

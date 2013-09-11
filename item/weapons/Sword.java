@@ -9,7 +9,7 @@ import database.ObjectList;
 
 public class Sword extends Weapon {
 
-    public Sword(int x, int y, String m) {
+    public Sword(double x, double y, String m) {
 
         this.X = x;
         this.Y = y;
@@ -22,8 +22,6 @@ public class Sword extends Weapon {
         
         this.material = m;
         
-        this.ID = 6;
-
         this.swings = true;
 
         if (material == "stone") {
@@ -31,6 +29,9 @@ public class Sword extends Weapon {
                 defaultTexture = new Image("sword_stone.png", false, Image.FILTER_NEAREST);
                 leftFacingTexture = new Image("sword_stone.png", false, Image.FILTER_NEAREST);
                 rightFacingTexture = new Image("sword_stone.png", false, Image.FILTER_NEAREST);
+                
+                this.name = "STONE SWORD";
+                
             } catch (SlickException e) {
                 e.printStackTrace();
             }
@@ -39,6 +40,9 @@ public class Sword extends Weapon {
                 defaultTexture = new Image("sword_iron.png", false, Image.FILTER_NEAREST);
                 leftFacingTexture = new Image("sword_iron.png", false, Image.FILTER_NEAREST);
                 rightFacingTexture = new Image("sword_iron.png", false, Image.FILTER_NEAREST);
+                inventoryTexture = new Image("sword_icon.png", false, Image.FILTER_NEAREST);
+                this.name = "IRON SWORD";
+                
             } catch (SlickException e) {
                 e.printStackTrace();
             }

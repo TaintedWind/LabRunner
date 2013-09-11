@@ -16,8 +16,8 @@ public class Scientist extends AI {
         this.W = 48;
         this.H = 96;
         this.damage = 10;
-        this.maxHealth = 30;
-        this.health = 30;
+        this.maxHealth = 300;
+        this.health = 300;
 
         this.state = "idle";
 
@@ -27,8 +27,8 @@ public class Scientist extends AI {
             e.printStackTrace();
         }
 
-        t1 = new Point((int) (X - 50), (int) Y);
-        t2 = new Point((int) (X + 50), (int) Y);
+        t1 = new Point((int) (X - Math.random() * 5), (int) Y);
+        t2 = new Point((int) (X + Math.random()) * 5, (int) Y);
         target = t1;
 
         ObjectList.enemies.add(this);

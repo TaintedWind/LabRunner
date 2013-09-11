@@ -10,16 +10,16 @@ import enemy.AI;
 import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
-import particles.ParticleFactory;
+import particle.ParticleFactory;
 import player.Inventory;
 
 public class Liquid extends Physics {
 
     Image defaultTexture;
-    String category;
+    String category, particles;
     int damage;
     public double sinkSpeed;
-    Timer damageTimer, smokeTimer;
+    Timer damageTimer, particleTimer;
     org.newdawn.slick.geom.Rectangle textureBox = new org.newdawn.slick.geom.Rectangle(0, 0, 0, 0);
 
     public void update() {
@@ -28,19 +28,20 @@ public class Liquid extends Physics {
         textureBox.setBounds((int) X, (int) Y, W, H);
 
         if (damageTimer == null) {
-            damageTimer = new Timer();
+            damageTimer = new Timer(500);
         }
         
-        if (smokeTimer == null) {
-            smokeTimer = new Timer();
+        if (particleTimer == null) {
+            particleTimer = new Timer(-1);
         }
-
-        damageTimer.updateTimer();
-        smokeTimer.updateTimer();
         
-        if (smokeTimer.getTime() > Math.random() * 100000) {
-            ParticleFactory.createSmoke(X, Y - 32, 0, -0.2, W);
-            smokeTimer.reset();
+        if (particleTimer.getTime() > Math.random() * 100000) {
+            if (particles == "smoke") {
+                ParticleFactory.createSmoke(X, Y - 32, 0, -0.2, W);
+            } else {
+                
+            }
+            particleTimer.reset();
         }
 
         if (damageTimer.getTime() > 500) {

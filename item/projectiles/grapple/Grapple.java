@@ -3,7 +3,7 @@ package item.projectiles.grapple;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 
-import particles.ParticleFactory;
+import particle.ParticleFactory;
 
 import enemy.AI;
 import database.ObjectList;
@@ -12,6 +12,7 @@ import engine.Timer;
 
 import item.Item;
 import item.projectiles.Projectile;
+import item.weapons.Weapon;
 import main.Screen;
 import org.lwjgl.util.Display;
 import org.newdawn.slick.Color;
@@ -26,7 +27,7 @@ public class Grapple extends Projectile {
     double initialDX, initialDY;
     int tether;
     
-    Timer despawnTimer = new Timer();
+    Timer despawnTimer = new Timer(1500);
     
     Line rope = new Line(0, 0, 0, 0);
 
@@ -38,51 +39,42 @@ public class Grapple extends Projectile {
         bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
         
         rope.set((int)((Item)parentWeapon).X + (int)((Item)parentWeapon).W / 2, (int)((Item)parentWeapon).Y + ((Item)parentWeapon).H / 2, (int)X + (W / 2), (int)Y + H);
-
-        despawnTimer.updateTimer();
         
-        if (despawnTimer.getTime() > 1500) {
+        if (despawnTimer.getTime() > 1500 || getCollidingLiquid(hitbox) != null) {
             delete();
         }
-        
-        
-        if (isCollidingWithGround()) {
-            System.out.println(this+" is touching ground");
-        }
-        
         
         //if projectile is not colliding, move based on X and Y velocity
         if (isColliding() == false) {
             //if rope reaches a certain length, shut. down. everything.
-            if (rope.length() < 400) {
+            if (rope.length() < 500) {
                 velocity();
             } else {
                 delete();
-                ObjectList.player.dx = 0;
-                ObjectList.player.dy = 0;
-                ObjectList.player.fallHeight = 0;
-                ObjectList.player.fallSpeed = 0;
             }
         } else {
             if (ObjectList.player.hitbox.intersects(hitbox) == false && Inventory.getSelectedItem() == parentWeapon && rope.length() > 50) {
-                ObjectList.player.Y -= 0.1;
                 ObjectList.player.dx = initialDX / 2;
-                ObjectList.player.dy = initialDY - 0.6;
+                ObjectList.player.dy = initialDY;
+                ObjectList.player.X += dx / 5;
+                ObjectList.player.Y -= 0.1;
+                ObjectList.player.fallHeight = 0;
+                ObjectList.player.fallSpeed = 0;                
                 
-                System.out.println(initialDY);
+                
                 
             } else {
-                
-                ObjectList.player.dx = 0;
-                ObjectList.player.dy = 0;
-                ObjectList.player.fallHeight = 0;
-                ObjectList.player.fallSpeed = 0;
                 
                 delete();
                 
             }
         }
 
+    }
+    
+    public void delete() {
+        ObjectList.items.remove(this);
+        ((Weapon)parentWeapon).currentProjectile = null;
     }
 
     public void explode() {
@@ -113,33 +105,6 @@ public class Grapple extends Projectile {
 
         return angle;
 
-    }
-
-    public void rotateImageToTarget() {
-
-        //System.out.println(getAngleOfElevation() * 80 + 180);
-
-        if (ObjectList.player.facingDir == "right") {
-            if (getAngleOfElevation() * 80 < 60 && getAngleOfElevation() * 80 > -60) {
-                defaultTexture.setRotation((float) getAngleOfElevation() * 80);
-            } else {
-                if (getAngleOfElevation() * 80 > 0) {
-                    defaultTexture.setRotation((float) 60);
-                } else {
-                    defaultTexture.setRotation((float) -60);
-                }
-            }
-        } else if (ObjectList.player.facingDir == "left") {
-            if (getAngleOfElevation() * 80 < 60 && getAngleOfElevation() * 80 > -60) {
-                defaultTexture.setRotation((float) -getAngleOfElevation() * 80 + 180);
-            } else {
-                if (getAngleOfElevation() * 80 < 0) {
-                    defaultTexture.setRotation((float) 60 + 180);
-                } else {
-                    defaultTexture.setRotation((float) -60 + 180);
-                }
-            }
-        }
     }
     
     public void draw(Graphics g) {

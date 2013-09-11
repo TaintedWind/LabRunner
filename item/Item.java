@@ -30,6 +30,7 @@ public class Item extends Physics {
     public int ammoAmount;
     protected String category; //the category and action that the item falls under (used for reference below)
     protected String material;
+    public String name;
 
     //this method is overriden by the different types of items (such as item.weapon or item.food)
     public void update() {
@@ -77,6 +78,7 @@ public class Item extends Physics {
     public void delete() {
         
         System.out.println("Deleting "+this+" via "+this+".delete()");
+        Inventory.remove(this);
         ObjectList.items.remove(this);
 
     }

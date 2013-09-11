@@ -18,19 +18,23 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import particles.ParticleFactory;
+import particle.ParticleFactory;
 import platform.NormalPlatform;
 import player.Inventory;
 import enemy.AI;
 import database.ObjectList;
 import gui.overlay.Overlay;
 import item.weapons.Bow;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import levelobject.storage.Chest;
 import org.newdawn.slick.imageout.ImageOut;
 
 public class GameScreen extends BasicGameState {
 
     public static Image backgroundImage;
     public static Image screenshot;
+    public static String levelName;
     org.newdawn.slick.geom.Rectangle backgroundRectangle = new org.newdawn.slick.geom.Rectangle(0, 0, 800, 600);
     public static boolean isBackgroundImageTiled = false;
     public static Color backgroundColor = new Color(20, 20, 20);
@@ -57,7 +61,9 @@ public class GameScreen extends BasicGameState {
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-        g.setBackground(backgroundColor);
+        if (backgroundColor != null) {
+            g.setBackground(backgroundColor);
+        }
         
         g.scale(Screen.getWindowWidth() / 800, Screen.getWindowHeight() / 600);
         
@@ -89,10 +95,11 @@ public class GameScreen extends BasicGameState {
         Input i = gc.getInput();
         ObjectList.updateAllObjects();
         
-        state = sbg; //copy the sbg so external objects can use it
+        state = sbg; //copy the sbg to a variable so external objects can use it
         
 
         if (i.isMouseButtonDown(0)) {
+            
             if (Inventory.getSelectedItem() != null) {
                 ((Item) Inventory.getSelectedItem()).leftClickAction();
             }
@@ -103,6 +110,7 @@ public class GameScreen extends BasicGameState {
         }
 
         if (i.isMouseButtonDown(1)) {
+            
             if (Inventory.getSelectedItem() != null) {
                 ((Item) Inventory.getSelectedItem()).rightClickAction();
             }
@@ -163,13 +171,8 @@ public class GameScreen extends BasicGameState {
         }
 
         if (i.isKeyDown(Input.KEY_SPACE)) {
-
             database.GlobalVariables.SPACE = true;
-
-            if (ObjectList.player.isCollidingWithGround() == true && ObjectList.player.isCollidingWithLiquid() == false) {
-                ObjectList.player.Y -= 0.1;
-                ObjectList.player.dy = -0.6;
-            }
+            ObjectList.player.jump();
 
         } else {
             database.GlobalVariables.SPACE = false;
@@ -190,8 +193,9 @@ public class GameScreen extends BasicGameState {
             Screen.toggleFullScreen();
         }
         
-        if (i.isKeyDown(Input.KEY_C)) {
-            sbg.enterState(-5);
+        if (i.isKeyDown(Input.KEY_X)) {
+            Inventory.setInventorySize(9);
+            new Sword(ObjectList.player.X, ObjectList.player.Y, "iron");
         }
         
         if (ObjectList.player.health == 0) {

@@ -18,7 +18,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import particles.ParticleFactory;
+import particle.ParticleFactory;
 import platform.NormalPlatform;
 import player.Inventory;
 import enemy.AI;
@@ -66,17 +66,17 @@ public class CraftingMenu extends BasicGameState {
         quitButton = new Rectangle(80, 500, 300, 50);
         craftButton = new Rectangle(420, 500, 300, 50);
         
-    }
-
-    //draws state (screen) elements
-    @Override
-    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-        
         menuFont = new UnicodeFont("LabRunner.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());
         menuFont.loadGlyphs();
+        
+    }
+
+    //draws state (screen) elements
+    @Override
+    public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
         g.setFont(menuFont);
         
@@ -132,7 +132,7 @@ public class CraftingMenu extends BasicGameState {
         //draw items in recipe slots
         try {
             for (int i = 0; i <= recipe.length; i++) {
-                g.drawImage(((Item)recipe[i]).defaultTexture, 300 + (i * 100) - ((Item)recipe[i]).W, 300 - ((Item)recipe[i]).H - 10, null);
+                g.drawImage(((Item)recipe[i]).defaultTexture, 300 + (i * 115) - ((Item)recipe[i]).W, 300 - ((Item)recipe[i]).H - 10, null);
             }
         } catch (Exception e) {
             

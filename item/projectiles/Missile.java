@@ -21,11 +21,12 @@ public class Missile extends Projectile {
         this.parentWeapon = p;
 
         this.dx = xdir;
-        this.dy = getAngleOfElevation();
+        this.dy = getAngleOfElevation() * 1.5;
 
         this.deleteOnTouch = true;
         this.explodesOnTouch = true;
         this.isAffectedByGravity = false;
+        this.knockbackStrength = 0.03;
 
         try {
             defaultTexture = new Image("rocket.png", false, Image.FILTER_NEAREST);

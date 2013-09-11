@@ -23,7 +23,7 @@ public class Plunger extends Grapple {
         this.damage = 1;
 
         this.dx = xdir;
-        this.dy = getAngleOfElevation() * 1.5;
+        this.dy = getAngleOfElevation();
         
         this.initialDX = dx;
         this.initialDY = dy;

@@ -1,12 +1,13 @@
 package database;
 
 import item.Item;
-import particles.Particle;
+import particle.Particle;
 import liquid.Liquid;
 import platform.NormalPlatform;
 import player.Player;
 import powerup.PowerUp;
 import enemy.AI;
+import engine.Timer;
 
 import java.util.LinkedList;
 import org.newdawn.slick.Graphics;
@@ -22,11 +23,20 @@ public class ObjectList {
     public static LinkedList<Object> platforms = new LinkedList<Object>();
     public static LinkedList<Object> particles = new LinkedList<Object>();
     public static LinkedList<Object> liquids = new LinkedList<Object>();
+    public static LinkedList<Object> timers = new LinkedList<Object>();
     public static Player player = new Player(0, 0);
 
     public static void updateAllObjects() {
 
         player.update();
+        
+       try {
+            for (int i = 0; i <= ObjectList.timers.size(); i++) {
+                ((Timer) ObjectList.timers.get(i)).update();
+
+            }
+        } catch (Exception e) {
+        }
 
         try {
             for (int i = 0; i <= ObjectList.items.size(); i++) {
@@ -62,7 +72,7 @@ public class ObjectList {
 
         try {
             for (int o = 0; o <= ObjectList.objects.size(); o++) {
-                ((object.Object) ObjectList.objects.get(o)).update();
+                ((levelobject.Level_Object) ObjectList.objects.get(o)).update();
 
             }
         } catch (Exception e) {
@@ -91,7 +101,7 @@ public class ObjectList {
         //render all objects
         try {
             for (int o = 0; o <= ObjectList.objects.size(); o++) {
-                ((object.Object) ObjectList.objects.get(o)).draw(g);
+                ((levelobject.Level_Object) ObjectList.objects.get(o)).draw(g);
 
             }
         } catch (Exception e) {
@@ -170,9 +180,10 @@ public class ObjectList {
                     if (items.get(i) != null) {
                         if (destroyInventory == true) {
                             ((Item)items.get(i)).delete();
-                            Inventory.deleteItem(items.get(i));
                         } else {
-                            ((Item)items.get(i)).delete();
+                            if (Inventory.contains(items.get(i)) == false) {
+                                ((Item)items.get(i)).delete();
+                            }                            
                         }
                     }
 
@@ -195,7 +206,7 @@ public class ObjectList {
             for (int i = 0; i <= objects.size(); i++) {
                 try {
                     if (objects.get(i) != null) {
-                        ((object.Object) objects.get(i)).delete();
+                        ((levelobject.Level_Object) objects.get(i)).delete();
                     }
                 } catch (Exception e) {                 
                 }

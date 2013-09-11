@@ -1,7 +1,7 @@
-package particles;
+package particle;
 
-import particles.exploding.Explosion;
-import particles.floating.Smoke;
+import particle.exploding.Explosion;
+import particle.floating.Smoke;
 
 public class ParticleFactory {
 

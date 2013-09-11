@@ -1,9 +1,9 @@
-package particles.exploding;
+package particle.exploding;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import particles.Particle;
+import particle.Particle;
 
 import database.ObjectList;
 import java.awt.Rectangle;

@@ -23,7 +23,9 @@ public class Bow extends Weapon {
         this.numberOfHands = 1;
         this.category = "ranged";
         
-        this.ammoAmount = 9999;
+        this.ammoAmount = 20;
+        
+        this.name = "BOW";
 
         try {
             defaultTexture = new Image("bow.png", false, Image.FILTER_NEAREST);

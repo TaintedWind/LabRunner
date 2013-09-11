@@ -59,8 +59,8 @@ public class IO {
         //convert database values to string
         String major = "0";
         String minor = "0";
-        String patch = "6";
-        String name = "0.0.6-dev";
+        String patch = "7";
+        String name = "0.0.7-dev";
 
         System.out.println("Updating /version/client.properties to "+name);
         
