@@ -67,7 +67,7 @@ public class StorageMenu extends BasicGameState {
         
         doneButton = new Rectangle(245, 500, 300, 50);
         
-        menuFont = new UnicodeFont("LabRunner.ttf", 16, false, false);
+        menuFont = new UnicodeFont("font.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());
@@ -92,7 +92,7 @@ public class StorageMenu extends BasicGameState {
             g.drawImage(button, 245, 500);
         }
         
-        g.drawString("DONE", 375, 515);
+        g.drawString("DONE", 375, 518);
         
         //draw hotbar
         for (int i = 1; i <= hotbar.length * 50; i += 50) {

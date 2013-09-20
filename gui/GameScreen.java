@@ -154,6 +154,7 @@ public class GameScreen extends BasicGameState {
 
         if (i.isKeyDown(Input.KEY_S)) {
             database.GlobalVariables.S = true;
+            ObjectList.player.Y += 5;
         } else {
             database.GlobalVariables.S = false;
         }

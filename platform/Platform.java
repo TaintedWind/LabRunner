@@ -26,8 +26,8 @@ public class Platform extends Physics {
     public void update() {
         body.setBounds((int) X, (int) Y, W, H);
         top.setBounds((int) X + 10, (int) Y, W - 20, 15);
-        left.setBounds((int) X, (int) Y + 5, W / 2, H - 10);
-        right.setBounds((int) X + W - (W / 2), (int) Y + 5, W / 2, H - 10);
+        left.setBounds((int) X, (int) Y + 5, W / 16, H - 10);
+        right.setBounds((int) X + W - (W / 16), (int) Y + 5, W / 16, H - 10);
         bottom.setBounds((int) X + 10, (int) Y + H - 15, W - 20, 15);
 
     }
@@ -47,15 +47,15 @@ public class Platform extends Physics {
         g.setColor(Color.white);
 
         //For debugging
-//        g.setColor(Color.gray);
-//        g.setColor(Color.red);
-//        g.drawRect(this.top.x, this.top.y, this.top.width, this.top.height);
-//        g.setColor(Color.blue);
-//        g.drawRect(this.bottom.x, this.bottom.y, this.bottom.width, this.bottom.height);
-//        g.setColor(Color.green);
-//        g.drawRect(this.left.x, this.left.y, this.left.width, this.left.height);
-//        g.setColor(Color.yellow);
-//        g.drawRect(this.right.x, this.right.y, this.right.width, this.right.height);
+        g.setColor(Color.gray);
+        g.setColor(Color.red);
+        g.drawRect(this.top.x, this.top.y, this.top.width, this.top.height);
+        g.setColor(Color.blue);
+        g.drawRect(this.bottom.x, this.bottom.y, this.bottom.width, this.bottom.height);
+        g.setColor(Color.green);
+        g.drawRect(this.left.x, this.left.y, this.left.width, this.left.height);
+        g.setColor(Color.yellow);
+        g.drawRect(this.right.x, this.right.y, this.right.width, this.right.height);
 
         g.setColor(Color.white);
     }

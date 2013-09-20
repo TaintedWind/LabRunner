@@ -39,35 +39,33 @@ public class Grapple extends Projectile {
         bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
         
         rope.set((int)((Item)parentWeapon).X + (int)((Item)parentWeapon).W / 2, (int)((Item)parentWeapon).Y + ((Item)parentWeapon).H / 2, (int)X + (W / 2), (int)Y + H);
-        
-        if (despawnTimer.getTime() > 1500 || getCollidingLiquid(hitbox) != null) {
-            delete();
+
+        if (isColliding() == true) {
+
+            ObjectList.player.fallHeight = 0;
+            ObjectList.player.fallSpeed = 0; 
+            ObjectList.player.Y -= 0.01;
+            ObjectList.player.dx = initialDX / 2;
+            ObjectList.player.dy = initialDY;
+            
+            if (ObjectList.player.hitbox.intersects(hitbox)) {
+                ObjectList.player.dx = 0;
+                ObjectList.player.dy = 0;
+                delete();
+            }
+            
+            if (ObjectList.player.isCollidingWithLeftSide()) {
+                ObjectList.player.X -= 0.01;
+            } else if (ObjectList.player.isCollidingWithRightSide()) {
+                ObjectList.player.X += 0.01;
+            }
+            
+        } else {
+            velocity();
         }
         
-        //if projectile is not colliding, move based on X and Y velocity
-        if (isColliding() == false) {
-            //if rope reaches a certain length, shut. down. everything.
-            if (rope.length() < 500) {
-                velocity();
-            } else {
-                delete();
-            }
-        } else {
-            if (ObjectList.player.hitbox.intersects(hitbox) == false && Inventory.getSelectedItem() == parentWeapon && rope.length() > 50) {
-                ObjectList.player.dx = initialDX / 2;
-                ObjectList.player.dy = initialDY;
-                ObjectList.player.X += dx / 5;
-                ObjectList.player.Y -= 0.1;
-                ObjectList.player.fallHeight = 0;
-                ObjectList.player.fallSpeed = 0;                
-                
-                
-                
-            } else {
-                
-                delete();
-                
-            }
+        if (despawnTimer.getTime() > 1500 || getCollidingLiquid(hitbox) != null || rope.length() > 500) {
+            delete();
         }
 
     }
@@ -108,6 +106,10 @@ public class Grapple extends Projectile {
     }
     
     public void draw(Graphics g) {
+        
+        g.setColor(Color.green);
+        g.drawRect((float)X, (float)Y, H, W);
+        
         g.setColor(Color.white);
         g.drawImage(defaultTexture, (int)X, (int)Y, null);
         g.setColor(Color.black);

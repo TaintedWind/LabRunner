@@ -17,7 +17,7 @@ import org.newdawn.slick.state.StateBasedGame;
 public class Main extends StateBasedGame {
 
     //create the title string (used below)
-    public static final String gameTitle = "Lab Runner Development Version";
+    public static final String gameTitle = "Lab Runner";
     //set ids to the "states"
     public static final int menu = -1;
     public static final int pausemenu = -4;

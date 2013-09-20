@@ -14,7 +14,7 @@ public class Timer {
         if (maxTime > 0) { 
             maxTime = max;
         } else {
-            maxTime = 999999999 * 999999999;
+            maxTime = 999999999 * 999999999 * 999999999 * 999999999;
         }
         
         ObjectList.timers.add(this);

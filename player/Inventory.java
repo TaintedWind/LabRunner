@@ -49,7 +49,7 @@ public class Inventory {
             if (hotbar[selectedSlotNumber] == null) {
                 hotbar[selectedSlotNumber] = o;
             } else {
-                for (int i = 0; i <= hotbar.length; i++) {
+                for (int i = 0; i < hotbar.length; i++) {
                     //if selected slot is full, add to an empty slot
                     if (hotbar[i] == null && Inventory.contains(o) == false) {
                         hotbar[i] = o;                       
@@ -327,7 +327,7 @@ public class Inventory {
         
         try {
             if (size8 == null) {
-                size8 = new UnicodeFont("LabRunner.ttf", 8, false, false);
+                size8 = new UnicodeFont("font.ttf", 8, false, false);
                 size8.addAsciiGlyphs();
                 size8.addGlyphs(400, 600);
                 size8.getEffects().add(new ColorEffect());

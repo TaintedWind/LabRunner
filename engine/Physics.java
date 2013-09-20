@@ -79,10 +79,9 @@ public class Physics {
         if (isCollidingWithRightSide()) {
             dx = 0;
         }
-        if (isCollidingWithBottom()) {
-            dy = 0;
-            dx = 0;
-        }
+//        if (isCollidingWithBottom()) {
+//            dy = 0;
+//        }
 
     }
 
@@ -250,19 +249,10 @@ public class Physics {
     public boolean isCollidingWithBottom() {
 
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
-
             if (topHitbox.intersects(((Platform) ObjectList.platforms.get(i)).bottom)) {
-                if (isCollidingWithLeftSide == false && isCollidingWithRightSide == false && middleHitbox.intersects(((Platform)ObjectList.platforms.get(i)).bottom) == false) {
-                    Y = ((Platform) ObjectList.platforms.get(i)).bottom.y + ((Platform) ObjectList.platforms.get(i)).bottom.height;
-                } else {
-                    Y = ((Platform) ObjectList.platforms.get(i)).Y - H + 1;
-                }
-                
-                dy = 0;
-                dx = 0;
-                
-                isCollidingWithBottom = true;
-                return true;
+                    Y = ((Platform) ObjectList.platforms.get(i)).Y + ((Platform) ObjectList.platforms.get(i)).H - 1;
+                    isCollidingWithBottom = true;
+                    return true;
             }
         }
         

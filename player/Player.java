@@ -89,19 +89,21 @@ public class Player extends Physics {
 
     public void checkForMovement() {
 
-        if (database.GlobalVariables.A && isCollidingWithRightSide() == false) {
-            this.X -= 0.3 * database.GlobalVariables.deltaTime;
-            this.walkingDir = "left";
-            this.facingDir = "left";
-            this.isMoving = true;
-        } else if (database.GlobalVariables.D && isCollidingWithLeftSide() == false) {
-            this.X += 0.3 * database.GlobalVariables.deltaTime;
-            this.walkingDir = "right";
-            this.facingDir = "right";
-            this.isMoving = true;
-        } else {
-            this.walkingDir = null;
-            this.isMoving = false;
+        if (dx == 0) {
+            if (database.GlobalVariables.A && isCollidingWithRightSide() == false) {
+                this.X -= 0.3 * database.GlobalVariables.deltaTime;
+                this.walkingDir = "left";
+                this.facingDir = "left";
+                this.isMoving = true;
+            } else if (database.GlobalVariables.D && isCollidingWithLeftSide() == false) {
+                this.X += 0.3 * database.GlobalVariables.deltaTime;
+                this.walkingDir = "right";
+                this.facingDir = "right";
+                this.isMoving = true;
+            } else {
+                this.walkingDir = null;
+                this.isMoving = false;
+            }
         }
 
         this.X += this.dx * database.GlobalVariables.deltaTime;
@@ -110,14 +112,9 @@ public class Player extends Physics {
     }
     
     public void jump() {
-        if (isCollidingWithLiquid() == false && isCollidingWithGround() == true) {
-            Y -= 0.1;
+        if (getCollidingLiquid(hitbox) == null) {
+            Y -= 0.01;
             dy = -0.6;
-        } else if (isCollidingWithLiquid() == true && isCollidingWithGround() == false) {
-            Y -= 0.1;
-            dy = ((Liquid)getCollidingLiquid(hitbox)).sinkSpeed * -1 - 0.1;            
-        } else {
-            
         }
     }
 

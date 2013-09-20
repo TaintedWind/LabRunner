@@ -52,7 +52,7 @@ public class MainMenu extends BasicGameState {
         
         this.playButton = new Rectangle(260, 510, 300, 50);
         
-        menuFont = new UnicodeFont("LabRunner.ttf", 16, false, false);
+        menuFont = new UnicodeFont("font.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());
@@ -77,8 +77,8 @@ public class MainMenu extends BasicGameState {
         } else {
             g.drawImage(button, 260, 510, null);
         }
-        g.drawString("PLAY GAME", 365, 525);
-        g.drawString("DEVELOPMENT VERSION", 540, 160);
+        g.drawString("PLAY GAME", 365, 528);
+        g.drawString("0.0.7-DEV", 645, 160);
 
 
     }

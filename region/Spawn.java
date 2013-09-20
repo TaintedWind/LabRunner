@@ -8,6 +8,7 @@ import platform.*;
 import levelobject.crafting.*;
 import levelobject.*;
 import database.ObjectList;
+import powerup.ammunition.Quiver;
 
 public class Spawn {
 
@@ -23,7 +24,7 @@ public class Spawn {
     
     public static void spawnPlayer() {
         ObjectList.player.X = 50;
-        ObjectList.player.Y = 500;
+        ObjectList.player.Y = 450;
     }
 
     public static void createObjects() {
@@ -36,12 +37,15 @@ public class Spawn {
 
         //create objects
         new NormalPlatform(0, 567, 800, 32, "metal", Color.gray);
-        new NormalPlatform(500, 300, 800, 32, "metal", Color.gray);
+        new NormalPlatform(500, 0, 32, 200, "metal", Color.gray);
+        new NormalPlatform(500, 300, 300, 32, "metal", Color.gray);
         new CraftingTable(350, 550);
         new Plunger(200, 500);
         new Bow(250, 500);
         new Wire(300, 500);
         new Door(750, 200);
+        
+        new Quiver(300, 500, 50);
     }
 
     public static void setLevelBackground() {

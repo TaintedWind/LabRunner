@@ -54,7 +54,7 @@ public class DeathMenu extends BasicGameState {
         
         quitButton = new Rectangle(250, 300, 300, 50);
         
-        menuFont = new UnicodeFont("LabRunner.ttf", 16, false, false);
+        menuFont = new UnicodeFont("font.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());
@@ -80,7 +80,7 @@ public class DeathMenu extends BasicGameState {
             g.drawImage(button, 250, 300);
         }
         
-        g.drawString("QUIT TO TITLE", 335, 315);
+        g.drawString("QUIT TO TITLE", 335, 318);
         
     }
 

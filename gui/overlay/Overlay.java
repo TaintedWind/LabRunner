@@ -36,7 +36,7 @@ public class Overlay {
             //ToolTip.drawToolTip(g);
             
             if (size12 == null) {
-                size12 = new UnicodeFont("LabRunner.ttf", 12, false, false);
+                size12 = new UnicodeFont("font.ttf", 16, false, false);
                 size12.addAsciiGlyphs();
                 size12.addGlyphs(400, 600);
                 size12.getEffects().add(new ColorEffect());

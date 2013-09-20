@@ -10,12 +10,13 @@ public class PowerUp extends Physics {
 
     public Image defaultTexture;
     public String category;
-    public int strength;
+    public int strength; // the amount it adds or subtracts from the value (adding ammo or health)
 
     public void update() {
 
         hitbox.setBounds((int) X, (int) Y, W, H);
         gravity();
+        velocity();
 
         if (hitbox.intersects(ObjectList.player.hitbox)) {
             affect(ObjectList.player.hitbox);

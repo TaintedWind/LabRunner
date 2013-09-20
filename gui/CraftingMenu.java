@@ -66,7 +66,7 @@ public class CraftingMenu extends BasicGameState {
         quitButton = new Rectangle(80, 500, 300, 50);
         craftButton = new Rectangle(420, 500, 300, 50);
         
-        menuFont = new UnicodeFont("LabRunner.ttf", 16, false, false);
+        menuFont = new UnicodeFont("font.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());

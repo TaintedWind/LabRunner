@@ -31,9 +31,6 @@ public class ExplosiveParticles extends Particle {
             animationTimer = new Timer(400);
         }
         
-        if (knockbackTimer == null) {
-            knockbackTimer = new Timer(-1);
-        }
         if (isAnimated) {
             animate();
         }
@@ -44,29 +41,28 @@ public class ExplosiveParticles extends Particle {
     
     public void doKnockBack() {
         
-        if (knockbackTimer.getTime() < 1) {
+        System.out.println("Doing knockback via"+this);
         
-            if (getCollidingEnemy(range) != null) {
-                ((AI)getCollidingEnemy(range)).knockBack(this, 0.02, -0.01);
-                ((AI)getCollidingEnemy(range)).health(-5, range);
-            }
-
-            //explosion affects items and powerups (currently disabled for now)
-            
-            /*if (getCollidingItem(range) != null) {
-                ((Item)getCollidingItem(range)).knockBack(this, 0.02, -0.01);
-            }
-
-            if (getCollidingPowerup(range) != null) {
-                ((PowerUp)getCollidingPowerup(range)).knockBack(this, 0.02, -0.01);
-            }*/
-
-            if (ObjectList.player.hitbox.intersects(range)) {
-                ObjectList.player.knockBack(this, 0.02, -0.015);
-                ObjectList.player.health(-5, this);
-            }
-        
+        if (getCollidingEnemy(range) != null) {
+            ((AI)getCollidingEnemy(range)).knockBack(this, 0.02, -0.01);
+            ((AI)getCollidingEnemy(range)).health(-5, range);
         }
+
+        //explosion affects items and powerups (currently disabled for now)
+
+        /*if (getCollidingItem(range) != null) {
+            ((Item)getCollidingItem(range)).knockBack(this, 0.02, -0.01);
+        }
+
+        if (getCollidingPowerup(range) != null) {
+            ((PowerUp)getCollidingPowerup(range)).knockBack(this, 0.02, -0.01);
+        }*/
+
+        if (ObjectList.player.hitbox.intersects(range)) {
+            ObjectList.player.knockBack(this, 0.02, -0.015);
+            ObjectList.player.health(-5, this);
+        }
+        
         
     }
 
