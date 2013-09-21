@@ -9,7 +9,6 @@ import liquid.Liquid;
 import main.Screen;
 
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -31,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import levelobject.Level_Object;
 import levelobject.storage.Storage;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import static player.Inventory.hotbar;
@@ -42,7 +42,7 @@ public class StorageMenu extends BasicGameState {
     UnicodeFont menuFont;
     Rectangle doneButton;
     
-    Rectangle slothitbox = new Rectangle(0, 0, 1, 1);
+    Rectangle[] hitboxes;
     
     ArrayList<Object> storage_copy = new ArrayList<Object>();
     
@@ -143,6 +143,14 @@ public class StorageMenu extends BasicGameState {
             
         }
         
+        //draw inventory slot hitboxes
+        if (hitboxes != null) {
+            for (int i = 0; i <= 40; i += 1) {
+                g.setColor(Color.green);
+                g.drawRect(hitboxes[i].x, hitboxes[i].y, hitboxes[i].width, hitboxes[i].height);
+            }
+        }
+        
     }
 
     //key binding and calling update() in all objects
@@ -213,29 +221,38 @@ public class StorageMenu extends BasicGameState {
     }
     
     public Object getClickedItem() {
+        
+        Rectangle[] hitboxes = new Rectangle[((Storage)storageUnit).capacity];
+        
         if (storage != null) {
             for (int i = 0; i < storage.length; i++) {
                 
-                if (i <= 9) {
-                    slothitbox.setBounds(220 + (i * 36), 228, 32, 32);
-                } else if (i > 9 && i <= 19) {
-                    slothitbox.setBounds(220 + ((i - 10) * 36), 265, 32, 32);                   
-                } else if (i > 19 && i <= 29) {
-                    slothitbox.setBounds(220 + ((i - 20) * 36), 300, 32, 32);       
-                } else if (i > 29 && i <= 39) {
-                    slothitbox.setBounds(220 + ((i - 30) * 36), 336, 32, 32);
-                } else {
-                    slothitbox.setBounds(220 + ((i - 40) * 36), 336, 32, 32);   
-                }
+                System.out.println("lolol");
                 
-                if (slothitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
-                    //slothitbox = null;
-                    return ((Storage)storageUnit).storage[i];
+                if (i <= 9) {
+                    hitboxes[i] = new Rectangle(220 + (i * 36), 228, 32, 32);
+                } else if (i > 9 && i <= 19) {
+                    hitboxes[i] = new Rectangle(220 + ((i - 10) * 36), 265, 32, 32);                   
+                } else if (i > 19 && i <= 29) {
+                    hitboxes[i] = new Rectangle(220 + ((i - 20) * 36), 300, 32, 32);       
+                } else if (i > 29 && i <= 39) {
+                    hitboxes[i] = new Rectangle(220 + ((i - 30) * 36), 336, 32, 32);
                 } else {
-                    //slothitbox = null;
-                    return null;
+                    hitboxes[i] = new Rectangle(220 + ((i - 40) * 36), 336, 32, 32);   
                 }
+
             }
+            
+         for (int i = 0; i < storage.length; i++) {   
+            if (((Rectangle)hitboxes[i]).intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                System.out.println("Mouse is intersecting"+hitboxes[i]);
+                return ((Storage)storageUnit).storage[i];
+            } else {
+                //slothitbox = null;
+                return null;
+            }
+         }
+         
         } 
         return null;
      

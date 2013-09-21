@@ -79,9 +79,10 @@ public class Physics {
         if (isCollidingWithRightSide()) {
             dx = 0;
         }
-//        if (isCollidingWithBottom()) {
-//            dy = 0;
-//        }
+        
+        if (isCollidingWithBottom()) {
+            dy = 0;
+        }
 
     }
 

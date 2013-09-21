@@ -25,9 +25,9 @@ public class Grapple extends Projectile {
     Object parentWeapon;
     
     double initialDX, initialDY;
-    int tether;
+    float tether, lastLength;
     
-    Timer despawnTimer = new Timer(1500);
+    Timer despawnTimer;
     
     Line rope = new Line(0, 0, 0, 0);
 
@@ -39,8 +39,13 @@ public class Grapple extends Projectile {
         bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
         
         rope.set((int)((Item)parentWeapon).X + (int)((Item)parentWeapon).W / 2, (int)((Item)parentWeapon).Y + ((Item)parentWeapon).H / 2, (int)X + (W / 2), (int)Y + H);
+     
 
         if (isColliding() == true) {
+            
+            if (despawnTimer == null) {
+                despawnTimer = new Timer(1000);
+            }
 
             ObjectList.player.fallHeight = 0;
             ObjectList.player.fallSpeed = 0; 
@@ -48,9 +53,13 @@ public class Grapple extends Projectile {
             ObjectList.player.dx = initialDX / 2;
             ObjectList.player.dy = initialDY;
             
+            //if player reaches target, reset velocity and delete the projectile
             if (ObjectList.player.hitbox.intersects(hitbox)) {
                 ObjectList.player.dx = 0;
                 ObjectList.player.dy = 0;
+                delete();
+            //if the player does not reach the target in the set amount of time, delete the projectile
+            } else if (despawnTimer.getTime() >= 500 && ObjectList.player.hitbox.intersects(hitbox) == false) {
                 delete();
             }
             
@@ -64,7 +73,7 @@ public class Grapple extends Projectile {
             velocity();
         }
         
-        if (despawnTimer.getTime() > 1500 || getCollidingLiquid(hitbox) != null || rope.length() > 500) {
+        if (getCollidingLiquid(hitbox) != null || rope.length() > 500) {
             delete();
         }
 

@@ -19,7 +19,7 @@ public class Chest extends Storage {
         this.W = 32;
         this.H = 32;
         
-        this.capacity = 40;
+        this.capacity = 5;
         this.storage = new Object[capacity];
 
         try {

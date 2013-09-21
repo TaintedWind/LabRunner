@@ -42,9 +42,20 @@ public class Overlay {
                 size12.getEffects().add(new ColorEffect());
                 size12.loadGlyphs();
             }
-            
             g.setFont(size12);
+
+            g.setColor(Color.gray);
             
+            if (Inventory.getSelectedItem() != null) {
+                g.drawString(((Item)Inventory.getSelectedItem()).name, 12, 62);
+            }
+            
+            if (gui.GameScreen.levelName != null) {
+                g.drawString(gui.GameScreen.levelName, 12, 77);
+            }            
+            
+            g.setColor(Color.white);
+
             if (Inventory.getSelectedItem() != null) {
                 g.drawString(((Item)Inventory.getSelectedItem()).name, 10, 60);
             }
@@ -53,7 +64,7 @@ public class Overlay {
                 g.drawString(gui.GameScreen.levelName, 10, 75);
             }
             
-            g.setFont(size12);
+
 
             g.setColor(Color.white);
 

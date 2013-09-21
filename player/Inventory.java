@@ -41,10 +41,8 @@ public class Inventory {
     
     public static void add(Object o) {
 
-        /*Adds "Object o" to the selected slot and marks
-         * "selectedItem" as "o" for easier referencing of the currently equipped item
-         */
-        
+        //Adds "Object o" to the selected slot (if slot is full, adds to next empty slot
+
         if (selectedSlotNumber <= hotbar.length) {
             if (hotbar[selectedSlotNumber] == null) {
                 hotbar[selectedSlotNumber] = o;

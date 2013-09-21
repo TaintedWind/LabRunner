@@ -202,6 +202,19 @@ public class GameScreen extends BasicGameState {
         if (ObjectList.player.health == 0) {
             sbg.enterState(-3); //go to death screen if you die
         }
+        
+        if (ObjectList.player.X < 0) {
+            ObjectList.player.X = 0;
+        } else if (ObjectList.player.X > 800) {
+            ObjectList.player.X = 800 - ObjectList.player.W;
+        }
+        
+        if (ObjectList.player.Y > 600) {
+            ObjectList.player.Y = 600 - ObjectList.player.H;
+        } else if (ObjectList.player.Y < 0) {
+            ObjectList.player.Y = 0;
+        }
+        
     }
     
 }

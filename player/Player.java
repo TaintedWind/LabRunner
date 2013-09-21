@@ -112,7 +112,7 @@ public class Player extends Physics {
     }
     
     public void jump() {
-        if (getCollidingLiquid(hitbox) == null) {
+        if (getCollidingLiquid(hitbox) == null && isCollidingWithGround() == true) {
             Y -= 0.01;
             dy = -0.6;
         }

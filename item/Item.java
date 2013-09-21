@@ -77,7 +77,6 @@ public class Item extends Physics {
 
     public void delete() {
         
-        System.out.println("Deleting "+this+" via "+this+".delete()");
         Inventory.remove(this);
         ObjectList.items.remove(this);
 
