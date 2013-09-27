@@ -28,11 +28,11 @@ public class Liquid extends Physics {
         textureBox.setBounds((int) X, (int) Y, W, H);
 
         if (damageTimer == null) {
-            damageTimer = new Timer(500);
+            damageTimer = new Timer(500, true, true);
         }
         
         if (particleTimer == null) {
-            particleTimer = new Timer(-1);
+            particleTimer = new Timer(0, false, false);
         }
         
         if (particleTimer.getTime() > Math.random() * 100000) {

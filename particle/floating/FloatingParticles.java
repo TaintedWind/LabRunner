@@ -18,7 +18,7 @@ public class FloatingParticles extends Particle {
     public Image defaultTexture;
     Rectangle range;
     
-    Timer deletionTimer = new Timer(1000);
+    Timer deletionTimer = new Timer(1000, true, true);
 
     public void update() {
         velocity();

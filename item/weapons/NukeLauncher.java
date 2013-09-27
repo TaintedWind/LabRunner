@@ -28,10 +28,10 @@ public class NukeLauncher extends Weapon {
         this.name = "ROCKET LAUNCHER";
 
         try {
-            defaultTexture = new Image("nuke_launcher.png", false, Image.FILTER_NEAREST);
-            rightFacingTexture = new Image("nuke_launcher.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/nuke_launcher.png", false, Image.FILTER_NEAREST);
+            rightFacingTexture = new Image("./resources/nuke_launcher.png", false, Image.FILTER_NEAREST);
             leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
-            inventoryTexture = new Image("nuke_launcher_icon.png", false, Image.FILTER_NEAREST);
+            inventoryTexture = new Image("./resources/nuke_launcher_icon.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

@@ -4,35 +4,39 @@ import database.ObjectList;
 
 public class Timer {
 
-    int time = 0, maxTime;
+    int time, maxTime;
+    public boolean autoUpdate, autoReset;
 
-    public Timer(int max) {
+    public Timer(int max, boolean update, boolean reset) {
         
         //if (max is greater than 0, it will reset when it reaches that number. if it is anything less, it means
         //the creator probably wants to reset it manually
         
-        if (maxTime > 0) { 
-            maxTime = max;
-        } else {
-            maxTime = 999999999 * 999999999 * 999999999 * 999999999;
-        }
+        this.time = 0;
+        this.autoUpdate = update;
+        this.autoReset = reset;
+        this.maxTime = max;
         
         ObjectList.timers.add(this);
+        
     }
 
     public void update() {
 
-        time += database.GlobalVariables.deltaTime;
-        
         if (time > maxTime) {
-            reset();
+            if (autoReset == true) {
+                reset();
+            }
         }
+        
+        time += database.GlobalVariables.deltaTime;
         
 
     }
 
     public void reset() {
         time = 0;
+        
     }
 
     public int getTime() {

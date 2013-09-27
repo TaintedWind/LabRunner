@@ -57,7 +57,7 @@ public class Explosive extends Item {
 
     public void Throw() {
 
-        detonationTimer = new Timer(750);
+        detonationTimer = new Timer(750, true, true);
 
         if (Inventory.contains(this)) {
             dx = 0.75;

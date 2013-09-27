@@ -27,10 +27,10 @@ public class Pistol extends Weapon {
         this.name = "PISTOL";
 
         try {
-            defaultTexture = new Image("pistol.png", false, Image.FILTER_NEAREST);
-            rightFacingTexture = new Image("pistol.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/pistol.png", false, Image.FILTER_NEAREST);
+            rightFacingTexture = new Image("./resources/pistol.png", false, Image.FILTER_NEAREST);
             leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
-            inventoryTexture = new Image("pistol_icon.png", false, Image.FILTER_NEAREST);
+            inventoryTexture = new Image("./resources/pistol_icon.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

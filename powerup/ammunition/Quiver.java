@@ -13,15 +13,17 @@ public class Quiver extends Ammunition {
     public Quiver(double x, double y, int s) {
         this.X = x;
         this.Y = y;
+        this.W = 32;
+        this.H = 32;
         this.strength = s;
         
-        System.out.println("Creating new quiver");
-        
         try {
-            this.defaultTexture = new Image("placeholder.png", false, Image.FILTER_NEAREST);
+            this.defaultTexture = new Image("./resources/placeholder.png", false, Image.FILTER_NEAREST);
         } catch (SlickException ex) {
-            
+            ex.printStackTrace();
         }
+        
+        ObjectList.powerups.add(this);
         
     }
     

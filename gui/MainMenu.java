@@ -45,14 +45,14 @@ public class MainMenu extends BasicGameState {
     //loads images and such
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        this.background = new Image("title_screen_background.png");
-        this.title = new Image("title.png");
-        this.button = new Image("button.png");
-        this.button_mouseover = new Image("button_mouseover.png");
+        this.background = new Image("./resources/title_screen_background.png");
+        this.title = new Image("./resources/title.png");
+        this.button = new Image("./resources/button.png");
+        this.button_mouseover = new Image("./resources/button_mouseover.png");
         
         this.playButton = new Rectangle(260, 510, 300, 50);
         
-        menuFont = new UnicodeFont("font.ttf", 16, false, false);
+        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());
@@ -73,11 +73,11 @@ public class MainMenu extends BasicGameState {
 
         g.setColor(Color.white);
         if (playButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
-            g.drawImage(button_mouseover, 260, 510, null);
+            g.drawImage(button_mouseover, 250, 510, null);
         } else {
-            g.drawImage(button, 260, 510, null);
+            g.drawImage(button, 250, 510, null);
         }
-        g.drawString("PLAY GAME", 365, 528);
+        g.drawString("PLAY GAME", 355, 528);
         g.drawString("0.0.7-DEV", 645, 160);
 
 
@@ -92,7 +92,7 @@ public class MainMenu extends BasicGameState {
         
         if (playButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
             if (i.isMouseButtonDown(0)) {
-                 sbg.enterState(0);
+                 sbg.enterState(-8);
                  Functions.resetCanvas(true);
                  region.Spawn.loadLevel();
                  ObjectList.player.reset();
@@ -112,10 +112,8 @@ public class MainMenu extends BasicGameState {
             Screen.toggleFullScreen();
         }
 
-        if (i.isKeyDown(Input.KEY_S)) {
-
+        if (i.isKeyDown(Input.KEY_O)) {
             sbg.enterState(-2);
-
         }
 
     }

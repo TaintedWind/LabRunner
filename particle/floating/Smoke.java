@@ -21,7 +21,7 @@ public class Smoke extends FloatingParticles {
         this.dy = dy;
 
         try {
-            this.defaultTexture = new Image("smoke_particle.png");
+            this.defaultTexture = new Image("./resources/smoke_particle.png");
         } catch (SlickException e) {
             e.printStackTrace();
         }

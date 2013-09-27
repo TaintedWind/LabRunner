@@ -19,7 +19,7 @@ public class Water extends Liquid {
         this.damage = 0;
 
         try {
-            this.defaultTexture = new Image("water.png");
+            this.defaultTexture = new Image("./resources/water.png");
         } catch (SlickException e) {
             e.printStackTrace();
         }

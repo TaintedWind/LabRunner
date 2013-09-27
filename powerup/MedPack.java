@@ -17,7 +17,7 @@ public class MedPack extends PowerUp {
         ObjectList.powerups.add(this);
 
         try {
-            this.defaultTexture = new Image("medpack.png");
+            this.defaultTexture = new Image("./resources/medpack.png");
         } catch (SlickException e) {
             e.printStackTrace();
         }

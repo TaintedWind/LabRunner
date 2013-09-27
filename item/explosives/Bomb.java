@@ -24,9 +24,9 @@ public class Bomb extends Explosive {
         this.name = "GRENADE";
 
         try {
-            defaultTexture = new Image("bomb.png", false, Image.FILTER_NEAREST);
-            leftFacingTexture = new Image("bomb.png", false, Image.FILTER_NEAREST);
-            rightFacingTexture = new Image("bomb.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/bomb.png", false, Image.FILTER_NEAREST);
+            leftFacingTexture = new Image("./resources/bomb.png", false, Image.FILTER_NEAREST);
+            rightFacingTexture = new Image("./resources/bomb.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

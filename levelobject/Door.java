@@ -16,7 +16,7 @@ public class Door extends Level_Object {
         this.H = 96;
 
         try {
-            this.defaultTexture = new Image("door.png", false, Image.FILTER_NEAREST);
+            this.defaultTexture = new Image("./resources/door.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

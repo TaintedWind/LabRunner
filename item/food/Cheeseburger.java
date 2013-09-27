@@ -23,19 +23,19 @@ public class Cheeseburger extends Food {
         this.name = "CHEESEBURGER";
 
         try {
-            defaultTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/cheeseburger.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }
 
         try {
-            leftFacingTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
+            leftFacingTexture = new Image("./resources/cheeseburger.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }
 
         try {
-            rightFacingTexture = new Image("cheeseburger.png", false, Image.FILTER_NEAREST);
+            rightFacingTexture = new Image("./resources/cheeseburger.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

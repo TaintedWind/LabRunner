@@ -1,11 +1,12 @@
-package item.potions;
+package item.potions.instant;
 
 import player.Inventory;
 import database.ObjectList;
 import engine.Timer;
 import item.Item;
+import item.potions.Potion;
 
-public class Potion extends Item {
+public class InstantPotion extends Potion {
     
     int duration;
     boolean isActive = false;
@@ -36,6 +37,7 @@ public class Potion extends Item {
     
     public void rightClickAction() {
         affect();
+        delete();
     }
     
     public void affect() {

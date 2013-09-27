@@ -44,7 +44,7 @@ public class Grapple extends Projectile {
         if (isColliding() == true) {
             
             if (despawnTimer == null) {
-                despawnTimer = new Timer(1000);
+                despawnTimer = new Timer(1000, true, true);
             }
 
             ObjectList.player.fallHeight = 0;
@@ -115,9 +115,6 @@ public class Grapple extends Projectile {
     }
     
     public void draw(Graphics g) {
-        
-        g.setColor(Color.green);
-        g.drawRect((float)X, (float)Y, H, W);
         
         g.setColor(Color.white);
         g.drawImage(defaultTexture, (int)X, (int)Y, null);

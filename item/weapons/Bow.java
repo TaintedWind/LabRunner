@@ -28,10 +28,10 @@ public class Bow extends Weapon {
         this.name = "BOW";
 
         try {
-            defaultTexture = new Image("bow.png", false, Image.FILTER_NEAREST);
-            rightFacingTexture = new Image("bow.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/bow.png", false, Image.FILTER_NEAREST);
+            rightFacingTexture = new Image("./resources/bow.png", false, Image.FILTER_NEAREST);
             leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
-            inventoryTexture = new Image("bow_icon.png", false, Image.FILTER_NEAREST);
+            inventoryTexture = new Image("./resources/bow_icon.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

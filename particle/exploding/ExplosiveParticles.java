@@ -28,38 +28,31 @@ public class ExplosiveParticles extends Particle {
         range.setBounds((int)X - 20, (int)Y - 20, W + 20, H + 20);
 
         if (animationTimer == null) {
-            animationTimer = new Timer(400);
+            animationTimer = new Timer(400, true, true);
         }
         
+        if (knockbackTimer == null) {
+            knockbackTimer = new Timer(100, true, true);
+        }
+
         if (isAnimated) {
             animate();
         }
         
         doKnockBack();
-
+        
     }
     
     public void doKnockBack() {
         
-        System.out.println("Doing knockback via"+this);
-        
         if (getCollidingEnemy(range) != null) {
-            ((AI)getCollidingEnemy(range)).knockBack(this, 0.02, -0.01);
+            ((AI)getCollidingEnemy(range)).knockback(0.02, -0.01, this);
             ((AI)getCollidingEnemy(range)).health(-5, range);
         }
 
-        //explosion affects items and powerups (currently disabled for now)
-
-        /*if (getCollidingItem(range) != null) {
-            ((Item)getCollidingItem(range)).knockBack(this, 0.02, -0.01);
-        }
-
-        if (getCollidingPowerup(range) != null) {
-            ((PowerUp)getCollidingPowerup(range)).knockBack(this, 0.02, -0.01);
-        }*/
-
         if (ObjectList.player.hitbox.intersects(range)) {
-            ObjectList.player.knockBack(this, 0.02, -0.015);
+            System.out.println("Player intersects range of "+this);
+            ObjectList.player.knockback(0.02, -0.015, this);
             ObjectList.player.health(-5, this);
         }
         

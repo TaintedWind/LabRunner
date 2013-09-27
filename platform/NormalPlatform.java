@@ -27,27 +27,27 @@ public class NormalPlatform extends Platform {
 
         if (material == "concrete") {
             try {
-                defaultTexture = new Image("platform_concrete.png");
+                defaultTexture = new Image("./resources/platform_concrete.png");
             } catch (SlickException e) {
                 e.printStackTrace();
             }
         } else if (material == "hazard") {
             try {
-                defaultTexture = new Image("platform_hazard.png");
+                defaultTexture = new Image("./resources/platform_hazard.png");
             } catch (SlickException e) {
                 e.printStackTrace();
             }
             
         } else if (material == "metal") {
             try {
-                defaultTexture = new Image("platform_metal.png");
+                defaultTexture = new Image("./resources/platform_metal.png");
             } catch (SlickException e) {
                 e.printStackTrace();
             }
             
         } else {
             try {
-                defaultTexture = new Image("platform_null.png", false, Image.FILTER_NEAREST);
+                defaultTexture = new Image("./resources/platform_null.png", false, Image.FILTER_NEAREST);
             } catch (SlickException e) {
                 e.printStackTrace();
             }

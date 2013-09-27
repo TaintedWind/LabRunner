@@ -25,10 +25,10 @@ public class Plunger extends Tool {
         this.name = "PLUNGER";
 
         try {
-            defaultTexture = new Image("plunger.png", false, Image.FILTER_NEAREST);
-            leftFacingTexture = new Image("plunger_inverted.png", false, Image.FILTER_NEAREST);
-            rightFacingTexture = new Image("plunger_inverted.png", false, Image.FILTER_NEAREST);
-            inventoryTexture = new Image("plunger_icon.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/plunger.png", false, Image.FILTER_NEAREST);
+            leftFacingTexture = new Image("./resources/plunger_inverted.png", false, Image.FILTER_NEAREST);
+            rightFacingTexture = new Image("./resources/plunger_inverted.png", false, Image.FILTER_NEAREST);
+            inventoryTexture = new Image("./resources/plunger_icon.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

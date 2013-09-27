@@ -56,7 +56,7 @@ public class Physics {
 
     }
 
-    //moves the object according to dx and dy, great for knockback effects
+    //moves the object according to dx and dy
     public void velocity() {
 
         if (isCollidingWithLeftSide() == false && isCollidingWithRightSide() == false) {
@@ -86,20 +86,9 @@ public class Physics {
 
     }
 
-    public void knockBack(Object attacker, double xvel, double yvel) {
+    public void knockback(double xvel, double yvel, Object attacker) {
         
-        if (attacker == Inventory.getSelectedItem() || ((Projectile)attacker).parentWeapon == Inventory.getSelectedItem()) {
-            if (ObjectList.player.X + ObjectList.player.W / 2 < X) {
-                Y -= 1;
-                dx = +xvel * 1.5 * database.GlobalVariables.deltaTime;
-                System.out.println(attacker+" did knockback "+xvel+" on "+this);
-            } else {
-                Y -= 1;
-                dx = -xvel * database.GlobalVariables.deltaTime;
-                System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
-
-            }   
-        } else {
+        if (this == ObjectList.player) {
             if (((Physics) attacker).X + ((Physics) attacker).W / 2 < X) {
                 Y -= 1;
                 dx = xvel * 1.5 * database.GlobalVariables.deltaTime;
@@ -109,6 +98,29 @@ public class Physics {
                 dx = -xvel * database.GlobalVariables.deltaTime;
                 System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
             }            
+        } else {
+            if (attacker == Inventory.getSelectedItem() || ((Projectile)attacker).parentWeapon == Inventory.getSelectedItem()) {
+                if (ObjectList.player.X + ObjectList.player.W / 2 < X) {
+                    Y -= 1;
+                    dx = +xvel * 1.5 * database.GlobalVariables.deltaTime;
+                    System.out.println(attacker+" did knockback "+xvel+" on "+this);
+                } else {
+                    Y -= 1;
+                    dx = -xvel * database.GlobalVariables.deltaTime;
+                    System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
+
+                }  
+            } else {
+                if (((Physics) attacker).X + ((Physics) attacker).W / 2 < X) {
+                    Y -= 1;
+                    dx = xvel * 1.5 * database.GlobalVariables.deltaTime;
+                    System.out.println(attacker+" did knockback "+xvel+" on "+this);
+                } else {
+                    Y -= 1;
+                    dx = -xvel * database.GlobalVariables.deltaTime;
+                    System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
+                }            
+            }
         }
 
         if (((Physics)attacker).Y + ((Physics)attacker).H / 2 > Y) {
@@ -116,7 +128,7 @@ public class Physics {
         } else {
             dy -= yvel * database.GlobalVariables.deltaTime;            
         }
-        
+
     }
 
     public Object getCollidingEnemy(Rectangle r) {
@@ -130,7 +142,6 @@ public class Physics {
             }
 
         } catch (Exception e) {
-            
         }
 
         return null;
@@ -300,8 +311,8 @@ public class Physics {
        //only serves to allow the gravity method to do damage
     }
     
-    //public void delete() {
+    public void delete() {
         //only here so gravity can automatically call delete when the object/enemy falls into the void
-    //}
+    }
     
 }

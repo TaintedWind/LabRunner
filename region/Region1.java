@@ -17,7 +17,7 @@ import levelobject.Door;
 import platform.NormalPlatform;
 import enemy.Scientist;
 import database.ObjectList;
-import item.potions.HealingPotion;
+import item.potions.instant.HealingPotion;
 import item.tools.Wire;
 import item.weapons.GrapplingHook;
 import liquid.Water;

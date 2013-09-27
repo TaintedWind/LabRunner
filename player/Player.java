@@ -19,7 +19,7 @@ public class Player extends Physics {
     Image leftFacingTexture;
     Image rightFacingTexture;
     Color skinColor = Color.white;
-    Timer animationTimer = new Timer(300);
+    Timer animationTimer = new Timer(300, true, true);
     public String walkingDir, facingDir;
     public double health;
     public int jumpHeight;
@@ -37,8 +37,8 @@ public class Player extends Physics {
         this.dx = 0.1;
 
         try {
-            defaultTexture = new Image("player.png", false, Image.FILTER_NEAREST);
-            leftFacingTexture = new Image("walking_left.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/player.png", false, Image.FILTER_NEAREST);
+            leftFacingTexture = new Image("./resources/walking_left.png", false, Image.FILTER_NEAREST);
             rightFacingTexture = leftFacingTexture.getFlippedCopy(true, false);
         } catch (SlickException e) {
             e.printStackTrace();

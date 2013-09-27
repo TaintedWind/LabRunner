@@ -44,6 +44,8 @@ public class StorageMenu extends BasicGameState {
     
     Rectangle[] hitboxes;
     
+    Object clickedItem;
+    
     ArrayList<Object> storage_copy = new ArrayList<Object>();
     
     public static Object[] storage;
@@ -60,14 +62,14 @@ public class StorageMenu extends BasicGameState {
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        transparent_black = new Image("transparent_black.png");
-        button = new Image("button.png");
-        button_mouseover = new Image("button_mouseover.png");
-        storage_menu = new Image("storage_gui.png");
+        transparent_black = new Image("./resources/transparent_black.png");
+        button = new Image("./resources/button.png");
+        button_mouseover = new Image("./resources/button_mouseover.png");
+        storage_menu = new Image("./resources/storage_gui.png");
         
         doneButton = new Rectangle(245, 500, 300, 50);
         
-        menuFont = new UnicodeFont("font.ttf", 16, false, false);
+        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());
@@ -122,6 +124,17 @@ public class StorageMenu extends BasicGameState {
             
         }
         
+        g.setColor(Color.gray);
+        
+        //draw highlight when mouse intersects hitbox
+            for (int i = 0; i < hitboxes.length; i++) {
+                if (((Rectangle)hitboxes[i]).intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                    g.fillRect(hitboxes[i].x, hitboxes[i].y, hitboxes[i].width, hitboxes[i].height);
+                }
+            }
+        
+        g.setColor(Color.white);
+            
         //draw items in storage slots
         try {
             for (int i = 0; i < storage.length; i++) {
@@ -129,7 +142,7 @@ public class StorageMenu extends BasicGameState {
                     if (i <= 9) {
                         g.drawImage(((Item)storage[i]).inventoryTexture, 220 + (i * 36), 228, null);
                     } else if (i > 9 && i <= 19) {
-                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 10) * 36), 265, null);                    
+                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 10) * 36), 264, null);                    
                     } else if (i > 19 && i <= 29) {
                         g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 20) * 36), 300, null);                    
                     } else if (i > 29 && i <= 39) {
@@ -141,14 +154,6 @@ public class StorageMenu extends BasicGameState {
             }
         } catch (Exception e) {
             
-        }
-        
-        //draw inventory slot hitboxes
-        if (hitboxes != null) {
-            for (int i = 0; i <= 40; i += 1) {
-                g.setColor(Color.green);
-                g.drawRect(hitboxes[i].x, hitboxes[i].y, hitboxes[i].width, hitboxes[i].height);
-            }
         }
         
     }
@@ -163,12 +168,37 @@ public class StorageMenu extends BasicGameState {
         //make an arraylist copy of recipe to do contain checks
         storage = ((Level_Object)storageUnit).storage;
         storage_copy = new ArrayList<Object>(Arrays.asList(storage));
+        hitboxes = new Rectangle[storage.length];
         
+        //set slot hitboxes
+        for (int i = 0; i < hitboxes.length; i++) {
+
+            if (i <= 9 || i == 0) {
+                hitboxes[i] = new Rectangle(220 + (i * 36), 228, 32, 32);
+            } else if (i > 9 && i <= 19) {
+                hitboxes[i] = new Rectangle(220 + ((i - 10) * 36), 264, 32, 32);                   
+            } else if (i > 19 && i <= 29) {
+                hitboxes[i] = new Rectangle(220 + ((i - 20) * 36), 300, 32, 32);       
+            } else if (i > 29 && i <= 39) {
+                hitboxes[i] = new Rectangle(220 + ((i - 30) * 36), 336, 32, 32);
+            } else {
+                hitboxes[i] = new Rectangle(220 + ((i - 40) * 36), 336, 32, 32);   
+            }
+        }
+   
         //add the clicked inventory slot to the storage unit
         if (input.isMouseButtonDown(0)) {
+            
+            //get clicked item and set it
+            for (int i = 0; i < hitboxes.length; i++) {
+                if (((Rectangle)hitboxes[i]).intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                    clickedItem = ((Storage)storageUnit).storage[i];
+                }
+            }
            
-           if (getClickedItem() != null && Inventory.contains(getClickedItem()) == false) {
-               removeFromStorage(getClickedItem());
+           //remove from storage and add to inventory
+           if (clickedItem != null && Inventory.contains(clickedItem) == false) {
+               removeFromStorage(clickedItem);
            }
             
            if (Inventory.getClickedSlot() != -1) {
@@ -201,10 +231,9 @@ public class StorageMenu extends BasicGameState {
                         ((Storage)storageUnit).storage[i] = clickedItem;
                         Inventory.remove(clickedItem);
                         ((Item)clickedItem).Y = 9999;
+                        System.out.println("Added "+clickedItem+" to "+storageUnit);
                     }
                 }
-              
-                System.out.println("Added "+clickedItem+" to "+storageUnit);
             }
         }
     }
@@ -213,49 +242,12 @@ public class StorageMenu extends BasicGameState {
         for (int i = 0; i < storage.length; i++) {
             if (((Storage)storageUnit).storage[i] == clickedItem && Inventory.contains(clickedItem) == false) {
                 Inventory.add(clickedItem);
-                ((Storage)storageUnit).storage[i] = null;
-            } else {
-                
-            }
-        }        
-    }
-    
-    public Object getClickedItem() {
-        
-        Rectangle[] hitboxes = new Rectangle[((Storage)storageUnit).capacity];
-        
-        if (storage != null) {
-            for (int i = 0; i < storage.length; i++) {
-                
-                System.out.println("lolol");
-                
-                if (i <= 9) {
-                    hitboxes[i] = new Rectangle(220 + (i * 36), 228, 32, 32);
-                } else if (i > 9 && i <= 19) {
-                    hitboxes[i] = new Rectangle(220 + ((i - 10) * 36), 265, 32, 32);                   
-                } else if (i > 19 && i <= 29) {
-                    hitboxes[i] = new Rectangle(220 + ((i - 20) * 36), 300, 32, 32);       
-                } else if (i > 29 && i <= 39) {
-                    hitboxes[i] = new Rectangle(220 + ((i - 30) * 36), 336, 32, 32);
-                } else {
-                    hitboxes[i] = new Rectangle(220 + ((i - 40) * 36), 336, 32, 32);   
+                if (Inventory.contains(clickedItem)) {
+                    ((Storage)storageUnit).storage[i] = null;
+                    System.out.println("Removed "+clickedItem+" from "+storageUnit);
                 }
+            }
+        }
 
-            }
-            
-         for (int i = 0; i < storage.length; i++) {   
-            if (((Rectangle)hitboxes[i]).intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
-                System.out.println("Mouse is intersecting"+hitboxes[i]);
-                return ((Storage)storageUnit).storage[i];
-            } else {
-                //slothitbox = null;
-                return null;
-            }
-         }
-         
-        } 
-        return null;
-     
     }
-    
 }

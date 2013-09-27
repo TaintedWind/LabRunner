@@ -38,6 +38,7 @@ public class Weapon extends Item {
     public void leftClickAction() {
         swing();
         if (gui.GameScreen.leftMouseDown == false) {
+            
             if (category == "ranged" && ammoAmount > 0 || category == "ranged" && ammoAmount == -1) {
                 
                 if (Mouse.getX() > ObjectList.player.X) {
@@ -47,6 +48,7 @@ public class Weapon extends Item {
                 }
                 
                 shoot();
+                
                 if (ammoAmount != -1) {
                     ammoAmount--;
                 }

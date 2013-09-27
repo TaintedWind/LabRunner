@@ -26,18 +26,10 @@ public class AI extends Physics {
     String state;
     Point target, t1, t2;
     Color skinColor = Color.white;
-    Timer attackTimer, idleTimer;
+    Timer attackTimer = new Timer(1000, true, true), idleTimer = new Timer(0, false, false);
 
     public void update() {
-
-        if (attackTimer == null) {
-            attackTimer = new Timer(1000);
-        }
-
-        if (idleTimer == null) {
-            idleTimer = new Timer(-1);
-        }
-
+        
         //update hitboxes
         hitbox.setBounds((int) X, (int) Y, W, H);
         topHitbox.setBounds((int) X, (int) Y, W, H / 3);
@@ -55,8 +47,7 @@ public class AI extends Physics {
             doIdleMovements();
         }
         
-        if (hitbox.intersects(ObjectList.player.hitbox) && attackTimer.getTime() >= 1000) {
-            System.out.println("Calling attack method");
+        if (hitbox.intersects(ObjectList.player.hitbox) && attackTimer.getTime() > 1000) {
             attack(ObjectList.player);
         }
 
@@ -73,11 +64,8 @@ public class AI extends Physics {
     }
 
     public void attack(Object target) {
-
-        System.out.println("Attacking!"+"("+attackTimer.getTime()+")");
-        ObjectList.player.knockBack(this, 0.01, -0.01);
         ObjectList.player.health(-damage, this);
-        attackTimer.reset();
+        ObjectList.player.knockback(0.01, -0.01, this);
 
     }
 
@@ -113,7 +101,7 @@ public class AI extends Physics {
                 target = t1;
             }
 
-            idleTimer.reset();
+            //idleTimer.reset();
         }
 
         if (target == t2 && target.getX() > X) {

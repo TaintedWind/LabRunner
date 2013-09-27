@@ -21,13 +21,13 @@ public class Explosion extends ExplosiveParticles {
         this.isAnimated = true;
 
         try {
-            this.anim1 = new Image("explosion_1.png");
-            this.anim2 = new Image("explosion_2.png");
-            this.anim3 = new Image("explosion_3.png");
-            this.anim4 = new Image("explosion_4.png");
-            this.anim5 = new Image("explosion_5.png");
-            this.anim6 = new Image("explosion_6.png");
-            this.anim7 = new Image("explosion_7.png");
+            this.anim1 = new Image("./resources/explosion_1.png");
+            this.anim2 = new Image("./resources/explosion_2.png");
+            this.anim3 = new Image("./resources/explosion_3.png");
+            this.anim4 = new Image("./resources/explosion_4.png");
+            this.anim5 = new Image("./resources/explosion_5.png");
+            this.anim6 = new Image("./resources/explosion_6.png");
+            this.anim7 = new Image("./resources/explosion_7.png");
         } catch (SlickException e) {
             e.printStackTrace();
         }

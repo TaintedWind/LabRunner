@@ -28,10 +28,10 @@ public class Wire extends Tool {
         this.ammoAmount = -1;
 
         try {
-            defaultTexture = new Image("wire.png", false, Image.FILTER_NEAREST);
-            leftFacingTexture = new Image("wire.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/wire.png", false, Image.FILTER_NEAREST);
+            leftFacingTexture = new Image("./resources/wire.png", false, Image.FILTER_NEAREST);
             rightFacingTexture = leftFacingTexture.getFlippedCopy(true, false);
-            inventoryTexture = new Image("wire.png", false, Image.FILTER_NEAREST);
+            inventoryTexture = new Image("./resources/wire.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

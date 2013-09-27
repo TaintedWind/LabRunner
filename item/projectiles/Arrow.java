@@ -25,14 +25,14 @@ public class Arrow extends Projectile {
         this.dy = getAngleOfElevation() * 1.5;
 
         this.deleteOnTouch = false;
-        this.explodesOnTouch = true;
-        this.isAffectedByGravity = true;
+        this.explodesOnTouch = false;
+        this.isAffectedByGravity = false;
         this.knockbackStrength = 0.02;
 
         this.parentWeapon = p;
 
         try {
-            defaultTexture = new Image("arrow.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/arrow.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

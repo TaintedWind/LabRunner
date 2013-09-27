@@ -1,5 +1,6 @@
 package main;
 
+import gui.Controls;
 import gui.DeathMenu;
 import gui.GameScreen;
 import gui.MainMenu;
@@ -27,6 +28,7 @@ public class Main extends StateBasedGame {
     public static final int crafting = -5;
     public static final int brewing = -6;
     public static final int storage = -7;
+    public static final int controls = -8;
     
     //create a window object
     public static AppGameContainer window;
@@ -44,6 +46,7 @@ public class Main extends StateBasedGame {
         addState(new CraftingMenu(crafting));
         //addState(new BrewingMenu(brewing));
         addState(new StorageMenu(storage));
+        addState(new Controls(controls));
         
     }
 
@@ -57,6 +60,7 @@ public class Main extends StateBasedGame {
         getState(gamescreen).init(gc, this);
         getState(crafting).init(gc, this);
         getState(storage).init(gc, this);
+        getState(controls).init(gc, this);
         //load "menu" state on startup
         this.enterState(menu);
     }
@@ -77,7 +81,7 @@ public class Main extends StateBasedGame {
             window.setShowFPS(false);
             window.setVSync(true);
             window.setResizable(false);
-            window.setIcon("icon.png");
+            window.setIcon("./resources/icon.png");
             window.start();
         } catch (SlickException e) {
         }

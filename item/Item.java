@@ -69,7 +69,7 @@ public class Item extends Physics {
     public void attack() {
         
         if (ObjectList.player.getCollidingEnemy(ObjectList.player.range) != null) {
-            ((Physics) getCollidingEnemy(ObjectList.player.range)).knockBack(this, 0.02, -0.01);
+            ((Physics) getCollidingEnemy(ObjectList.player.range)).knockback(0.02, -0.01, this);
             ((AI) getCollidingEnemy(ObjectList.player.range)).health(-damage, this);
         }
 

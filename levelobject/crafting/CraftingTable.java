@@ -18,7 +18,7 @@ public class CraftingTable extends Level_Object {
         this.H = 33;
 
         try {
-            this.defaultTexture = new Image("crafting_table.png", false, Image.FILTER_NEAREST);
+            this.defaultTexture = new Image("./resources/crafting_table.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

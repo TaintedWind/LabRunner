@@ -33,7 +33,7 @@ public class Plunger extends Grapple {
         this.parentWeapon = p;
 
         try {
-            defaultTexture = new Image("plunger_projectile.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/plunger_projectile.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

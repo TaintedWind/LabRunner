@@ -325,7 +325,7 @@ public class Inventory {
         
         try {
             if (size8 == null) {
-                size8 = new UnicodeFont("font.ttf", 8, false, false);
+                size8 = new UnicodeFont("./resources/font.ttf", 8, false, false);
                 size8.addAsciiGlyphs();
                 size8.addGlyphs(400, 600);
                 size8.getEffects().add(new ColorEffect());
@@ -338,7 +338,7 @@ public class Inventory {
         //load images if null
         try {
             if (slotIcon == null) {
-                slotIcon = new Image("inventory_slot.png", false, Image.FILTER_NEAREST);
+                slotIcon = new Image("./resources/inventory_slot.png", false, Image.FILTER_NEAREST);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -346,7 +346,7 @@ public class Inventory {
 
         try {
             if (selectedSlotIcon == null) {
-                selectedSlotIcon = new Image("inventory_slot_selected.png", false, Image.FILTER_NEAREST);
+                selectedSlotIcon = new Image("./resources/inventory_slot_selected.png", false, Image.FILTER_NEAREST);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -370,11 +370,7 @@ public class Inventory {
                 
                 if (hotbar[i] != null) {
                     if (((Item)hotbar[i]).inventoryTexture != null) {
-                        String ammo = Integer.toString(((Item)hotbar[i]).ammoAmount);
                         g.drawImage(((Item)hotbar[i]).inventoryTexture, 16 + (i * 50), 16, null);
-                        if (((Item)hotbar[i]).ammoAmount != -1) {
-                            g.drawString(ammo, 18 + (i * 50), 18);
-                        }
                     } else {
                         
                     }              

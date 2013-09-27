@@ -22,7 +22,7 @@ public class Lava extends Liquid {
         this.particles = "smoke";
 
         try {
-            this.defaultTexture = new Image("lava.png");
+            this.defaultTexture = new Image("./resources/lava.png");
         } catch (SlickException e) {
             e.printStackTrace();
         }

@@ -46,17 +46,17 @@ public class Platform extends Physics {
         //g.drawRect((int) X + 2, (int) Y + 2, W, H);
         g.setColor(Color.white);
 
-        //For debugging
-        g.setColor(Color.gray);
-        g.setColor(Color.red);
-        g.drawRect(this.top.x, this.top.y, this.top.width, this.top.height);
-        g.setColor(Color.blue);
-        g.drawRect(this.bottom.x, this.bottom.y, this.bottom.width, this.bottom.height);
-        g.setColor(Color.green);
-        g.drawRect(this.left.x, this.left.y, this.left.width, this.left.height);
-        g.setColor(Color.yellow);
-        g.drawRect(this.right.x, this.right.y, this.right.width, this.right.height);
-
-        g.setColor(Color.white);
+          //For debugging
+//        g.setColor(Color.gray);
+//        g.setColor(Color.red);
+//        g.drawRect(this.top.x, this.top.y, this.top.width, this.top.height);
+//        g.setColor(Color.blue);
+//        g.drawRect(this.bottom.x, this.bottom.y, this.bottom.width, this.bottom.height);
+//        g.setColor(Color.green);
+//        g.drawRect(this.left.x, this.left.y, this.left.width, this.left.height);
+//        g.setColor(Color.yellow);
+//        g.drawRect(this.right.x, this.right.y, this.right.width, this.right.height);
+//
+//        g.setColor(Color.white);
     }
 }

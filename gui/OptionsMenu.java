@@ -34,7 +34,7 @@ public class OptionsMenu extends BasicGameState {
 
         g.scale(Screen.getWindowWidth() / 800, Screen.getWindowHeight() / 600);
         
-        this.background = new Image("title_screen_background.png");
+        this.background = new Image("./resources/title_screen_background.png");
         g.drawImage(this.background, 0, 0, null);
 
         //create settings button

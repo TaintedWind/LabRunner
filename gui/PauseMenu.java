@@ -51,15 +51,15 @@ public class PauseMenu extends BasicGameState {
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        transparent_black = new Image("transparent_black.png");
-        button = new Image("button.png");
-        button_mouseover = new Image("button_mouseover.png");
+        transparent_black = new Image("./resources/transparent_black.png");
+        button = new Image("./resources/button.png");
+        button_mouseover = new Image("./resources/button_mouseover.png");
         timeInMenu = 0;
         
         returnButton = new Rectangle(250, 200, 300, 50);
         saveAndQuitButton = new Rectangle(250, 300, 300, 50);
         
-        menuFont = new UnicodeFont("font.ttf", 16, false, false);
+        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());
@@ -77,7 +77,7 @@ public class PauseMenu extends BasicGameState {
         
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
-        g.drawString("GAME  PAUSED", 345, 100);
+        g.drawString("GAME PAUSED", 345, 100);
         
         if (returnButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
             g.drawImage(button_mouseover, 250, 200);
@@ -91,7 +91,7 @@ public class PauseMenu extends BasicGameState {
             g.drawImage(button, 250, 300);
         }
         
-        g.drawString("RETURN TO GAME", 330, 220);
+        g.drawString("RETURN TO GAME", 330, 218);
         g.drawString("QUIT TO TITLE", 335, 320);
         
     }

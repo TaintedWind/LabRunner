@@ -28,7 +28,7 @@ public class Bullet extends Projectile {
         this.dy = getAngleOfElevation() * 1.5;
 
         try {
-            defaultTexture = new Image("bullet.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/bullet.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

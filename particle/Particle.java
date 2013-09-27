@@ -18,7 +18,7 @@ public class Particle extends Physics {
     public void update() {
 
         if (animationTimer == null) {
-            animationTimer = new Timer(400);
+            animationTimer = new Timer(400, true, true);
         }
 
         if (isAnimated) {

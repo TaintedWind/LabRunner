@@ -22,7 +22,7 @@ public class Scientist extends AI {
         this.state = "idle";
 
         try {
-            this.defaultTexture = new Image("scientist.png");
+            this.defaultTexture = new Image("./resources/scientist.png");
         } catch (SlickException e) {
             e.printStackTrace();
         }

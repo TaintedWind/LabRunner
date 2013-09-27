@@ -19,7 +19,7 @@ public class Projectile extends Item {
     boolean deleteOnTouch, explodesOnTouch, isAffectedByGravity;
     double knockbackStrength;
     public Object parentWeapon;
-    Timer despawnTimer = new Timer(10000);
+    Timer despawnTimer = new Timer(10000, true, true);
 
     public void update() {
 
@@ -34,37 +34,30 @@ public class Projectile extends Item {
         middleHitbox.setBounds((int) X, (int) Y + (H / 3), W, H / 2);
         bottomHitbox.setBounds((int) X, (int) Y + H - bottomHitbox.height, W, H / 5);
         
-        if (isCollidingWithGround()) {
-            System.out.println(this+" is touching ground");
-        }
-        
-        if (isCollidingWithLeftSide()) {
-            System.out.println(this+" is touching left side");  
-        }
-        
         //if projectile is not colliding, move based on X and Y velocity
         if (isColliding() == false) {
             if (isAffectedByGravity) {
-               // gravity();
+                gravity();
             }
-
             velocity();
         }
 
-        //if the projectile is colliding and is set to delete on touch, then delete
-        if (isColliding() == true && deleteOnTouch == true || getCollidingLiquid(hitbox) != null) {
-            if (explodesOnTouch) {
-                explode();
-            }
-            
+        //if marked as explosive, explode :P
+        if (isColliding() && explodesOnTouch) {
+            explode();
+        }
+        
+        if (isColliding() && deleteOnTouch) {
             delete();
-            
         }
 
         //gets the colliding enemy and does damage (then deletes itself)
         if (getCollidingEnemy(hitbox) != null) {
-            ((Physics) getCollidingEnemy(hitbox)).knockBack(this, knockbackStrength, -0.01); //finish this
+            ((Physics) getCollidingEnemy(hitbox)).knockback(knockbackStrength, -0.01, this);
             ((AI) getCollidingEnemy(hitbox)).health(-damage, ObjectList.player);
+            if (explodesOnTouch) {
+                ParticleFactory.createExplosion(X, Y);
+            }
             delete();
         }
 

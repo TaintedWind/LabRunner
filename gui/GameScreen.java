@@ -36,16 +36,15 @@ public class GameScreen extends BasicGameState {
     public static Image screenshot;
     public static String levelName;
     org.newdawn.slick.geom.Rectangle backgroundRectangle = new org.newdawn.slick.geom.Rectangle(0, 0, 800, 600);
-    public static boolean isBackgroundImageTiled = false;
+    public static boolean isBackgroundImageTiled = false, consoleMode = false;
     public static Color backgroundColor = new Color(20, 20, 20);
-
     public static boolean leftMouseDown, rightMouseDown;
-    
     public static StateBasedGame state;
+    
 
     public GameScreen(int state) {
         
-    }
+    }     
 
     @Override
     public int getID() {
@@ -198,7 +197,7 @@ public class GameScreen extends BasicGameState {
             Inventory.setInventorySize(9);
             new Sword(ObjectList.player.X, ObjectList.player.Y, "iron");
         }
-        
+
         if (ObjectList.player.health == 0) {
             sbg.enterState(-3); //go to death screen if you die
         }

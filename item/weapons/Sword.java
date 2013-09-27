@@ -26,9 +26,9 @@ public class Sword extends Weapon {
 
         if (material == "stone") {
             try {
-                defaultTexture = new Image("sword_stone.png", false, Image.FILTER_NEAREST);
-                leftFacingTexture = new Image("sword_stone.png", false, Image.FILTER_NEAREST);
-                rightFacingTexture = new Image("sword_stone.png", false, Image.FILTER_NEAREST);
+                defaultTexture = new Image("./resources/sword_stone.png", false, Image.FILTER_NEAREST);
+                leftFacingTexture = new Image("./resources/sword_stone.png", false, Image.FILTER_NEAREST);
+                rightFacingTexture = new Image("./resources/sword_stone.png", false, Image.FILTER_NEAREST);
                 
                 this.name = "STONE SWORD";
                 
@@ -37,10 +37,10 @@ public class Sword extends Weapon {
             }
         } else if (material == "iron") {
             try {
-                defaultTexture = new Image("sword_iron.png", false, Image.FILTER_NEAREST);
-                leftFacingTexture = new Image("sword_iron.png", false, Image.FILTER_NEAREST);
-                rightFacingTexture = new Image("sword_iron.png", false, Image.FILTER_NEAREST);
-                inventoryTexture = new Image("sword_icon.png", false, Image.FILTER_NEAREST);
+                defaultTexture = new Image("./resources/sword_iron.png", false, Image.FILTER_NEAREST);
+                leftFacingTexture = new Image("./resources/sword_iron.png", false, Image.FILTER_NEAREST);
+                rightFacingTexture = new Image("./resources/sword_iron.png", false, Image.FILTER_NEAREST);
+                inventoryTexture = new Image("./resources/sword_icon.png", false, Image.FILTER_NEAREST);
                 this.name = "IRON SWORD";
                 
             } catch (SlickException e) {

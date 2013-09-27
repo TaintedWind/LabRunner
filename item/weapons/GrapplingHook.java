@@ -25,15 +25,15 @@ public class GrapplingHook extends Weapon {
         this.numberOfHands = 1;
         this.category = "ranged";
         
-        this.ammoAmount = -1; //infinitew ammo
-        
         this.name = "GRAPPLING HOOK";
+        
+        this.ammoAmount = -1;
 
         try {
-            defaultTexture = new Image("grapple.png", false, Image.FILTER_NEAREST);
-            rightFacingTexture = new Image("grapple.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/grapple.png", false, Image.FILTER_NEAREST);
+            rightFacingTexture = new Image("./resources/grapple.png", false, Image.FILTER_NEAREST);
             leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
-            inventoryTexture = new Image("bow_icon.png", false, Image.FILTER_NEAREST);
+            inventoryTexture = new Image("./resources/bow_icon.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

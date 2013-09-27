@@ -1,11 +1,12 @@
-package item.potions;
+package item.potions.duration;
 
 import player.Inventory;
 import database.ObjectList;
 import engine.Timer;
 import item.Item;
+import item.potions.Potion;
 
-public class Potion extends Item {
+public class DurationPotion extends Potion {
     
     int duration;
     boolean isActive = false;
@@ -31,11 +32,27 @@ public class Potion extends Item {
         if (Inventory.contains(this)) {
             alignToPlayer();
         }
+        
+        //if is actively adding effects, hide it and check to see if it has expired
+        if (isActive && duration > 0) {
+            Inventory.remove(this);
+            X = 9999;
+            Y = 9999;
+            affect();
+            durationTimer.update();
+            if (durationTimer.getTime() > duration) {
+                unaffect();
+                delete();
+            }
+        }
 
     }
     
     public void rightClickAction() {
-        affect();
+        if (gui.GameScreen.rightMouseDown == false) {
+            isActive = true;
+            affect();
+        }
     }
     
     public void affect() {

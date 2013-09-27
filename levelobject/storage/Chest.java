@@ -19,11 +19,11 @@ public class Chest extends Storage {
         this.W = 32;
         this.H = 32;
         
-        this.capacity = 5;
+        this.capacity = 40;
         this.storage = new Object[capacity];
 
         try {
-            this.defaultTexture = new Image("chest.png", false, Image.FILTER_NEAREST);
+            this.defaultTexture = new Image("./resources/chest.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

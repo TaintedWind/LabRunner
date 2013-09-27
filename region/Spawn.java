@@ -8,6 +8,8 @@ import platform.*;
 import levelobject.crafting.*;
 import levelobject.*;
 import database.ObjectList;
+import enemy.Scientist;
+import item.potions.instant.HealingPotion;
 import powerup.ammunition.Quiver;
 
 public class Spawn {
@@ -46,6 +48,14 @@ public class Spawn {
         new Door(750, 200);
         
         new Quiver(300, 500, 50);
+        
+        new Scientist(500, 500);
+        new NukeLauncher(50, 50);
+        
+        new HealingPotion(50, 50);
+        
+        
+        
     }
 
     public static void setLevelBackground() {

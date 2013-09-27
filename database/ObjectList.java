@@ -10,6 +10,7 @@ import enemy.AI;
 import engine.Timer;
 
 import java.util.LinkedList;
+import levelobject.Level_Object;
 import org.newdawn.slick.Graphics;
 import player.Inventory;
 
@@ -32,7 +33,9 @@ public class ObjectList {
         
        try {
             for (int i = 0; i <= ObjectList.timers.size(); i++) {
-                ((Timer) ObjectList.timers.get(i)).update();
+                if (((Timer)ObjectList.timers.get(i)).autoUpdate == true) {
+                    ((Timer)ObjectList.timers.get(i)).update();
+                }
 
             }
         } catch (Exception e) {
@@ -72,7 +75,7 @@ public class ObjectList {
 
         try {
             for (int o = 0; o <= ObjectList.objects.size(); o++) {
-                ((levelobject.Level_Object) ObjectList.objects.get(o)).update();
+                ((Level_Object) ObjectList.objects.get(o)).update();
 
             }
         } catch (Exception e) {
@@ -113,7 +116,7 @@ public class ObjectList {
         //render all powerups
         try {
             for (int o = 0; o <= ObjectList.powerups.size(); o++) {
-                ((PowerUp) ObjectList.powerups.get(o)).update();
+                ((PowerUp) ObjectList.powerups.get(o)).draw(g);
             }
         } catch (Exception e) {
         }

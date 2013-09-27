@@ -29,7 +29,7 @@ public class Missile extends Projectile {
         this.knockbackStrength = 0.03;
 
         try {
-            defaultTexture = new Image("rocket.png", false, Image.FILTER_NEAREST);
+            defaultTexture = new Image("./resources/rocket.png", false, Image.FILTER_NEAREST);
         } catch (SlickException e) {
             e.printStackTrace();
         }

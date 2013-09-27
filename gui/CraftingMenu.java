@@ -58,15 +58,15 @@ public class CraftingMenu extends BasicGameState {
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        transparent_black = new Image("transparent_black.png");
-        button = new Image("button.png");
-        button_mouseover = new Image("button_mouseover.png");
-        crafting_menu = new Image("crafting_gui.png");
+        transparent_black = new Image("./resources/transparent_black.png");
+        button = new Image("./resources/button.png");
+        button_mouseover = new Image("./resources/button_mouseover.png");
+        crafting_menu = new Image("./resources/crafting_gui.png");
         
         quitButton = new Rectangle(80, 500, 300, 50);
         craftButton = new Rectangle(420, 500, 300, 50);
         
-        menuFont = new UnicodeFont("font.ttf", 16, false, false);
+        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
         menuFont.addAsciiGlyphs();
         menuFont.addGlyphs(400, 600);
         menuFont.getEffects().add(new ColorEffect());
@@ -98,8 +98,8 @@ public class CraftingMenu extends BasicGameState {
         }
         
         
-        g.drawString("CANCEL", 200, 515);
-        g.drawString("CRAFT!", 540, 515);
+        g.drawString("CANCEL", 200, 518);
+        g.drawString("CRAFT!", 540, 518);
         
         //render the inventory
         for (int i = 1; i <= hotbar.length * 50; i += 50) {
