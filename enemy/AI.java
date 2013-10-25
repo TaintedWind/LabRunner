@@ -30,6 +30,8 @@ public class AI extends Physics {
 
     public void update() {
         
+        System.out.println(attackTimer.getTime());
+        
         //update hitboxes
         hitbox.setBounds((int) X, (int) Y, W, H);
         topHitbox.setBounds((int) X, (int) Y, W, H / 3);

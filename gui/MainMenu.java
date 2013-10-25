@@ -12,7 +12,11 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import database.ObjectList;
+import java.awt.Desktop;
 import java.awt.Rectangle;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import java.util.Calendar;
 import java.sql.Date;
@@ -20,19 +24,20 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.AngelCodeFont;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
-import region.Functions;
+import region.Levels;
+import static region.Levels.resetCanvas;
 
 public class MainMenu extends BasicGameState {
 
+    boolean changeLogButtonClicked = false, optionsButtonClicked = false, playButtonClicked = false;
     Image background;
     Image button;
     Image button_mouseover;
     Image title;
-    int confirmExit;
-    
-    Rectangle playButton;
-    
-    UnicodeFont menuFont;
+    Image scenery;
+    int sceneryX = -50;
+    static Desktop d; 
+    Rectangle playButton, optionsButton, quitButton, changelogString;
 
     public MainMenu(int state) {
     }
@@ -45,40 +50,76 @@ public class MainMenu extends BasicGameState {
     //loads images and such
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        this.background = new Image("./resources/title_screen_background.png");
+        this.background = new Image("./resources/title_background.png");
         this.title = new Image("./resources/title.png");
         this.button = new Image("./resources/button.png");
+        this.scenery = new Image("./resources/pansidetoside.png");
         this.button_mouseover = new Image("./resources/button_mouseover.png");
         
-        this.playButton = new Rectangle(260, 510, 300, 50);
+        d = Desktop.getDesktop();
         
-        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
-        menuFont.addAsciiGlyphs();
-        menuFont.addGlyphs(400, 600);
-        menuFont.getEffects().add(new ColorEffect());
-        menuFont.loadGlyphs();
+        this.playButton = new Rectangle(245, 260, 300, 50);
+        this.optionsButton = new Rectangle(245, 335, 300, 50);
+        this.quitButton = new Rectangle(245, 410, 300, 50);
+        this.changelogString = new Rectangle(620, 575, 300, 50);
         
+        database.GlobalVariables.mainFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
+        database.GlobalVariables.mainFont.addAsciiGlyphs();
+        database.GlobalVariables.mainFont.addGlyphs(400, 600);
+        database.GlobalVariables.mainFont.getEffects().add(new ColorEffect());
+        database.GlobalVariables.mainFont.loadGlyphs();
         
     }
 
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-        g.setFont(menuFont);
+        g.setFont(database.GlobalVariables.mainFont);
         
         g.scale(Screen.getWindowWidth() / 800, Screen.getWindowHeight() / 600);
         
         g.drawImage(this.background, 0, 0, null);
-        g.drawImage(this.title, 75, 50, null);
+        g.drawImage(this.scenery, sceneryX, -100, null);
+        g.drawImage(this.title, 63, 40, null);
+        
+        //sceneryX++;
+        
+        //when scenery reaches end of image, warp back to start
+        if (sceneryX == 0) {
+            sceneryX = 0 - (scenery.getWidth() - 800);
+        }
 
         g.setColor(Color.white);
+        
         if (playButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
-            g.drawImage(button_mouseover, 250, 510, null);
+            g.drawImage(button_mouseover, playButton.x, playButton.y, null);
         } else {
-            g.drawImage(button, 250, 510, null);
+            g.drawImage(button, playButton.x, playButton.y, null);
         }
-        g.drawString("PLAY GAME", 355, 528);
-        g.drawString("0.0.7-DEV", 645, 160);
+        
+        if (optionsButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
+            g.drawImage(button_mouseover, optionsButton.x, optionsButton.y, null);
+        } else {
+            g.drawImage(button, optionsButton.x, optionsButton.y, null);
+        }
+        
+        if (quitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
+            g.drawImage(button_mouseover, quitButton.x, quitButton.y, null);
+        } else {
+            g.drawImage(button, quitButton.x, quitButton.y, null);
+        }
+        
+        g.drawString("PLAY GAME", 348, 278);
+        g.drawString("OPTIONS", 353, 353);
+        g.drawString("QUIT GAME", 348, 428);
+        g.drawString("0.0.8-DEV", 640, 160);
+        
+        if (changelogString.contains(Mouse.getX(), 600 - Mouse.getY())) {
+            g.setColor(Color.yellow);
+        }
+
+        g.drawString("VIEW CHANGELOG", 625, 580);
+        g.setColor(Color.white);
 
 
     }
@@ -90,22 +131,43 @@ public class MainMenu extends BasicGameState {
 
         Input i = gc.getInput();
         
-        if (playButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
-            if (i.isMouseButtonDown(0)) {
-                 sbg.enterState(-8);
-                 Functions.resetCanvas(true);
-                 region.Spawn.loadLevel();
-                 ObjectList.player.reset();
+        if (i.isMouseButtonDown(0)) {
+            if (changelogString.contains(Mouse.getX(), 600 - Mouse.getY()) && changeLogButtonClicked == false) {
+                changeLogButtonClicked = true;
+            }
+            if (playButton.contains(Mouse.getX(), 600 - Mouse.getY()) && playButtonClicked == false) {
+                playButtonClicked = true;
+            }
+            if (optionsButton.contains(Mouse.getX(), 600 - Mouse.getY()) && optionsButtonClicked == false) {
+                optionsButtonClicked = true;
+            }
+        } else {
+            if (changelogString.contains(Mouse.getX(), 600 - Mouse.getY()) && changeLogButtonClicked == true) {
+                changeLogButtonClicked = false;
+                try {
+                    d.browse(new URI("https://github.com/Computerology/LabRunner/releases"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            if (playButton.contains(Mouse.getX(), 600 - Mouse.getY()) && playButtonClicked == true) {
+                sbg.enterState(-9);
+                ObjectList.player.reset();
+                resetCanvas(true);
+                playButtonClicked = false;
+            }
+            if (optionsButton.contains(Mouse.getX(), 600 - Mouse.getY()) && optionsButtonClicked == true) {
+                optionsButtonClicked = false;
+                sbg.enterState(-2);
             }
         }
 
-        if (i.isKeyDown(Input.KEY_ESCAPE)) {
-            this.confirmExit++;
-            if (this.confirmExit == 50) {
-                System.exit(0);
+        if (quitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
+            if (i.isMouseButtonDown(0)) {
+                 System.exit(0);
             }
-        } else {
-            this.confirmExit = 0;
         }
 
         if (i.isKeyDown(Input.KEY_F11)) {

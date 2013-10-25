@@ -28,7 +28,6 @@ public class Particle extends Physics {
     }
 
     public void animate() {
-        animationTimer.update();
     }
 
     public void delete() {

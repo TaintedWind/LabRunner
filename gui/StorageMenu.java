@@ -1,49 +1,32 @@
 package gui;
 
 import item.Item;
-import item.explosives.Bomb;
-import item.tools.Plunger;
-import item.weapons.Sword;
-import liquid.Lava;
-import liquid.Liquid;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import levelobject.LevelObject;
+import levelobject.storage.StorageUnit;
 import main.Screen;
-
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.StateBasedGame;
-
-import particle.ParticleFactory;
-import platform.NormalPlatform;
-import player.Inventory;
-import enemy.AI;
-import database.ObjectList;
-import static gui.GameScreen.backgroundImage;
-import static gui.GameScreen.screenshot;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import levelobject.Level_Object;
-import levelobject.storage.Storage;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
+import org.newdawn.slick.state.BasicGameState;
+import org.newdawn.slick.state.StateBasedGame;
+import player.Inventory;
 import static player.Inventory.hotbar;
 import static player.Inventory.selectedSlotNumber;
 
 public class StorageMenu extends BasicGameState {
     
-    Image transparent_black, button, button_mouseover, storage_menu;
-    UnicodeFont menuFont;
+    Image transparent_black, button, button_mouseover, storage_menu, storage_slot;
     Rectangle doneButton;
-    
     Rectangle[] hitboxes;
-    
     Object clickedItem;
     
     ArrayList<Object> storage_copy = new ArrayList<Object>();
@@ -65,15 +48,10 @@ public class StorageMenu extends BasicGameState {
         transparent_black = new Image("./resources/transparent_black.png");
         button = new Image("./resources/button.png");
         button_mouseover = new Image("./resources/button_mouseover.png");
-        storage_menu = new Image("./resources/storage_gui.png");
+        storage_menu = new Image("./resources/400_200_gui.png");
+        storage_slot = new Image("./resources/storage_slot.png");
         
         doneButton = new Rectangle(245, 500, 300, 50);
-        
-        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
-        menuFont.addAsciiGlyphs();
-        menuFont.addGlyphs(400, 600);
-        menuFont.getEffects().add(new ColorEffect());
-        menuFont.loadGlyphs();
         
     }
 
@@ -81,11 +59,11 @@ public class StorageMenu extends BasicGameState {
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
-        g.setFont(menuFont);
+        g.setFont(database.GlobalVariables.mainFont);
         
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
-        g.drawImage(storage_menu, 200, 200, null);
+        g.drawImage(storage_menu, 198, 200, null);
         g.drawString("STORAGE", 360, 100);
         
         if (doneButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
@@ -111,7 +89,7 @@ public class StorageMenu extends BasicGameState {
 
                 if (hotbar[i] != null) {
                     if (((Item)hotbar[i]).inventoryTexture != null && storage_copy.contains(hotbar[i]) == false) {
-                        g.drawImage(((Item)hotbar[i]).inventoryTexture, 16 + (i * 50), 16, null);
+                        g.drawImage(((Item)hotbar[i]).inventoryTexture, (i * 50) + 33 - (((Item)hotbar[i]).inventoryTexture.getWidth() / 2), 32 - (((Item)hotbar[i]).inventoryTexture.getHeight() / 2), null);
                     } else {
                         
                     }              
@@ -124,14 +102,35 @@ public class StorageMenu extends BasicGameState {
             
         }
         
+        g.setColor(Color.white);
+        
+        //draw storage slots
+        try {
+            for (int i = 0; i < storage.length; i++) {
+                    if (i <= 9) {
+                        g.drawImage(storage_slot, 220 + (i * 36) + 16 - (storage_slot.getWidth() / 2), 228 + 16 - (storage_slot.getHeight() / 2), null);
+                    } else if (i > 9 && i <= 19) {
+                        g.drawImage(storage_slot, 220 + ((i - 10) * 36) + 16 - (storage_slot.getWidth() / 2), 264 + 16 - (storage_slot.getHeight() / 2), null);                    
+                    } else if (i > 19 && i <= 29) {
+                        g.drawImage(storage_slot, 220 + ((i - 20) * 36) + 16 - (storage_slot.getWidth() / 2), 300 + 16 - (storage_slot.getHeight() / 2), null);                    
+                    } else if (i > 29 && i <= 39) {
+                        g.drawImage(storage_slot, 220 + ((i - 30) * 36) + 16 - (storage_slot.getWidth() / 2), 336 + 16 - (storage_slot.getHeight() / 2), null);
+                    } else {
+                        g.drawImage(storage_slot, 220 + ((i - 40) * 36) + 16 - (storage_slot.getWidth() / 2), 336 + 16 - (((Item)storage[i]).inventoryTexture.getHeight() / 2), null);    
+                    }
+            }
+        } catch (Exception e) {
+            
+        }
+        
         g.setColor(Color.gray);
         
         //draw highlight when mouse intersects hitbox
-            for (int i = 0; i < hitboxes.length; i++) {
-                if (((Rectangle)hitboxes[i]).intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
-                    g.fillRect(hitboxes[i].x, hitboxes[i].y, hitboxes[i].width, hitboxes[i].height);
-                }
+        for (int i = 0; i < hitboxes.length; i++) {
+            if (((Rectangle)hitboxes[i]).intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                g.fillRect(hitboxes[i].x, hitboxes[i].y, hitboxes[i].width, hitboxes[i].height);
             }
+        }
         
         g.setColor(Color.white);
             
@@ -140,15 +139,15 @@ public class StorageMenu extends BasicGameState {
             for (int i = 0; i < storage.length; i++) {
                 if (((Item)storage[i]) != null) {
                     if (i <= 9) {
-                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + (i * 36), 228, null);
+                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + (i * 36) + 16 - (((Item)storage[i]).inventoryTexture.getWidth() / 2), 228 + 16 - (((Item)storage[i]).inventoryTexture.getHeight() / 2), null);
                     } else if (i > 9 && i <= 19) {
-                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 10) * 36), 264, null);                    
+                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 10) * 36) + 16 - (((Item)storage[i]).inventoryTexture.getWidth() / 2), 264 + 16 - (((Item)storage[i]).inventoryTexture.getHeight() / 2), null);                    
                     } else if (i > 19 && i <= 29) {
-                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 20) * 36), 300, null);                    
+                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 20) * 36) + 16 - (((Item)storage[i]).inventoryTexture.getWidth() / 2), 300 + 16 - (((Item)storage[i]).inventoryTexture.getHeight() / 2), null);                    
                     } else if (i > 29 && i <= 39) {
-                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 30) * 36), 336, null);
+                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 30) * 36) + 16 - (((Item)storage[i]).inventoryTexture.getWidth() / 2), 336 + 16 - (((Item)storage[i]).inventoryTexture.getHeight() / 2), null);
                     } else {
-                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 40) * 36), 336, null);    
+                        g.drawImage(((Item)storage[i]).inventoryTexture, 220 + ((i - 40) * 36) + 16 - (((Item)storage[i]).inventoryTexture.getWidth() / 2), 336 + 16 - (((Item)storage[i]).inventoryTexture.getHeight() / 2), null);    
                     }
                 }
             }
@@ -166,7 +165,8 @@ public class StorageMenu extends BasicGameState {
         Input input = gc.getInput();
         
         //make an arraylist copy of recipe to do contain checks
-        storage = ((Level_Object)storageUnit).storage;
+        
+        storage = ((LevelObject)storageUnit).storage;
         storage_copy = new ArrayList<Object>(Arrays.asList(storage));
         hitboxes = new Rectangle[storage.length];
         
@@ -192,7 +192,7 @@ public class StorageMenu extends BasicGameState {
             //get clicked item and set it
             for (int i = 0; i < hitboxes.length; i++) {
                 if (((Rectangle)hitboxes[i]).intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
-                    clickedItem = ((Storage)storageUnit).storage[i];
+                    clickedItem = ((StorageUnit)storageUnit).storage[i];
                 }
             }
            
@@ -225,13 +225,12 @@ public class StorageMenu extends BasicGameState {
     public void addToStorage(Object clickedItem) {
         if (Inventory.getClickedSlot() >= 0 && Inventory.getClickedSlot() <= Inventory.hotbar.length) {
             if (storage_copy.contains(clickedItem) == false && clickedItem != null) {
-                
                 for (int i = 0; i < storage.length; i++) {
-                    if (((Storage)storageUnit).storage[i] == null && Inventory.contains(clickedItem) == true) {
-                        ((Storage)storageUnit).storage[i] = clickedItem;
+                    if (((StorageUnit)storageUnit).storage[i] == null && Inventory.contains(clickedItem) == true) {
+                        ((StorageUnit)storageUnit).storage[i] = clickedItem;
                         Inventory.remove(clickedItem);
                         ((Item)clickedItem).Y = 9999;
-                        System.out.println("Added "+clickedItem+" to "+storageUnit);
+                        System.out.println("Added "+((Item)clickedItem).name+" to "+storageUnit);
                     }
                 }
             }
@@ -240,11 +239,11 @@ public class StorageMenu extends BasicGameState {
     
     public void removeFromStorage(Object clickedItem) {
         for (int i = 0; i < storage.length; i++) {
-            if (((Storage)storageUnit).storage[i] == clickedItem && Inventory.contains(clickedItem) == false) {
+            if (((StorageUnit)storageUnit).storage[i] == clickedItem && Inventory.contains(clickedItem) == false) {
                 Inventory.add(clickedItem);
                 if (Inventory.contains(clickedItem)) {
-                    ((Storage)storageUnit).storage[i] = null;
-                    System.out.println("Removed "+clickedItem+" from "+storageUnit);
+                    ((StorageUnit)storageUnit).storage[i] = null;
+                    System.out.println("Removed "+((Item)clickedItem).name+" from "+storageUnit);
                 }
             }
         }

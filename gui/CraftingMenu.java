@@ -1,43 +1,27 @@
 package gui;
 
+import engine.Mouse;
 import item.Item;
-import item.explosives.Bomb;
-import item.tools.Plunger;
-import item.weapons.Sword;
-import liquid.Lava;
-import liquid.Liquid;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Arrays;
 import main.Screen;
-
-import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
-import org.newdawn.slick.state.StateBasedGame;
-
-import particle.ParticleFactory;
-import platform.NormalPlatform;
-import player.Inventory;
-import enemy.AI;
-import database.ObjectList;
-import static gui.GameScreen.backgroundImage;
-import static gui.GameScreen.screenshot;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Arrays;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
+import org.newdawn.slick.state.BasicGameState;
+import org.newdawn.slick.state.StateBasedGame;
+import player.Inventory;
 import static player.Inventory.hotbar;
 import static player.Inventory.selectedSlotNumber;
 
 public class CraftingMenu extends BasicGameState {
     
-    Image transparent_black, button, button_mouseover, crafting_menu;
-    UnicodeFont menuFont;
+    Image transparent_black, button, button_mouseover, crafting_menu, storage_slot;
     Rectangle quitButton, craftButton;
     
     ArrayList<Object> recipe_backup = new ArrayList<Object>();
@@ -61,16 +45,14 @@ public class CraftingMenu extends BasicGameState {
         transparent_black = new Image("./resources/transparent_black.png");
         button = new Image("./resources/button.png");
         button_mouseover = new Image("./resources/button_mouseover.png");
-        crafting_menu = new Image("./resources/crafting_gui.png");
+        crafting_menu = new Image("./resources/400_200_gui.png");
+        storage_slot = new Image("./resources/storage_slot.png");
         
         quitButton = new Rectangle(80, 500, 300, 50);
         craftButton = new Rectangle(420, 500, 300, 50);
-        
-        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
-        menuFont.addAsciiGlyphs();
-        menuFont.addGlyphs(400, 600);
-        menuFont.getEffects().add(new ColorEffect());
-        menuFont.loadGlyphs();
+
+        //load recipes
+        database.Recipes.loadRecipes();
         
     }
 
@@ -78,20 +60,20 @@ public class CraftingMenu extends BasicGameState {
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
-        g.setFont(menuFont);
+        g.setFont(database.GlobalVariables.mainFont);
         
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
         g.drawImage(crafting_menu, 200, 200, null);
         g.drawString("CRAFTING", 360, 100);
         
-        if (quitButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+        if (quitButton.intersects(Mouse.getX(), Mouse.getY(), 1, 1)) {
             g.drawImage(button_mouseover, 80, 500);           
         } else {
             g.drawImage(button, 80, 500);
         }
         
-        if (craftButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+        if (craftButton.intersects(Mouse.getX(), Mouse.getY(), 1, 1)) {
             g.drawImage(button_mouseover, 420, 500);           
         } else {
             g.drawImage(button, 420, 500);
@@ -116,7 +98,7 @@ public class CraftingMenu extends BasicGameState {
 
                 if (hotbar[i] != null) {
                     if (((Item)hotbar[i]).inventoryTexture != null && recipe_backup.contains(hotbar[i]) == false) {
-                        g.drawImage(((Item)hotbar[i]).inventoryTexture, 16 + (i * 50), 16, null);
+                        g.drawImage(((Item)hotbar[i]).inventoryTexture, (i * 50) + 33 - (((Item)hotbar[i]).inventoryTexture.getWidth() / 2), 32 - (((Item)hotbar[i]).inventoryTexture.getHeight() / 2), null);
                     } else {
                         
                     }              
@@ -139,9 +121,10 @@ public class CraftingMenu extends BasicGameState {
         }
         
         //draw the item preview
-        if (Inventory.craftedItemTexture != null) {
-            g.drawImage(Inventory.craftedItemTexture, 400 - Inventory.craftedItemTexture.getWidth() / 2, 400 - Inventory.craftedItemTexture.getHeight() - 10, null);
-        }
+//        if (Inventory.craftedItemTexture != null) {
+//            Image preview = Inventory.craftedItemTexture;
+//            g.drawImage(preview, 400 - preview.getWidth() / 2, 400 - preview.getHeight() - 10, null);
+//        }
         
     }
 
@@ -153,10 +136,7 @@ public class CraftingMenu extends BasicGameState {
         Input i = gc.getInput();
         
         //make an arraylist copy of recipe to do contain checks
-        recipe_backup = new ArrayList<Object>(Arrays.asList(recipe));
-        
-        //do a "fake" combine that returns the preview of the crafted item (for the render method to draw)
-        Inventory.combine(recipe[0], recipe[1], recipe[2], true);
+        recipe_backup = new ArrayList<Object>(Arrays.asList(recipe)); 
         
         if (i.isMouseButtonDown(0)) {
            if (Inventory.getClickedSlot() != -1) {
@@ -168,21 +148,21 @@ public class CraftingMenu extends BasicGameState {
             Screen.toggleFullScreen();
         }
         
-        if (craftButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+        if (craftButton.intersects(Mouse.getX(), Mouse.getY(), 1, 1)) {
             if (i.isMouseButtonDown(0)) {
                 if (recipe.length > 0) {
-                    Inventory.combine(recipe[0], recipe[1], recipe[2], false);
+                    Inventory.combine(recipe[0], recipe[1], recipe[2]);
                     recipe = new Object[3];
                     sbg.enterState(0);
                 }
             }        
         }
         
-        if (quitButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+        if (quitButton.intersects(Mouse.getX(), Mouse.getY(), 1, 1)) {
             if (i.isMouseButtonDown(0)) {
-                sbg.enterState(0);
                 recipe = null;
                 recipe = new Object[3];
+                sbg.enterState(0);
             }        
         }
         

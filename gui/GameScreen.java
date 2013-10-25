@@ -1,14 +1,13 @@
 package gui;
 
+import database.ObjectList;
+import engine.Mouse;
+import gui.overlay.Overlay;
 import item.Item;
-import item.explosives.Bomb;
-import item.tools.Plunger;
-import item.weapons.Sword;
-import liquid.Lava;
-import liquid.Liquid;
+import item.resources.Resource;
+import item.utilities.Tool;
+import java.util.Random;
 import main.Screen;
-
-import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -17,18 +16,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import particle.ParticleFactory;
-import platform.NormalPlatform;
 import player.Inventory;
-import enemy.AI;
-import database.ObjectList;
-import gui.overlay.Overlay;
-import item.weapons.Bow;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import levelobject.storage.Chest;
-import org.newdawn.slick.imageout.ImageOut;
 
 public class GameScreen extends BasicGameState {
 
@@ -40,6 +28,8 @@ public class GameScreen extends BasicGameState {
     public static Color backgroundColor = new Color(20, 20, 20);
     public static boolean leftMouseDown, rightMouseDown;
     public static StateBasedGame state;
+    public static boolean pansUpDown, pansLeftRight;
+    public static int activeSaveFile;
     
 
     public GameScreen(int state) {
@@ -53,7 +43,7 @@ public class GameScreen extends BasicGameState {
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        screenshot = new Image(800, 600);
+        screenshot = new Image(88, 55);
     }
 
     //draws state (screen) elements
@@ -64,7 +54,7 @@ public class GameScreen extends BasicGameState {
             g.setBackground(backgroundColor);
         }
         
-        g.scale(Screen.getWindowWidth() / 800, Screen.getWindowHeight() / 600);
+        //g.scale(Screen.getWindowWidth() / 800, Screen.getWindowHeight() / 600);
         
         if (screenshot.getWidth() != (int)Screen.getWindowWidth() || screenshot.getHeight() != (int)Screen.getWindowHeight()) {
             screenshot = null;
@@ -93,9 +83,30 @@ public class GameScreen extends BasicGameState {
         database.GlobalVariables.deltaTime = delta;
         Input i = gc.getInput();
         ObjectList.updateAllObjects();
-        
+
         state = sbg; //copy the sbg to a variable so external objects can use it
         
+        if (pansLeftRight) {
+             
+            ObjectList.player.X = Screen.getWindowWidth() / 2;
+            
+            if (ObjectList.player.X == Screen.getWindowWidth() / 2) {
+                ObjectList.moveAllObjects(-ObjectList.player.dx, 0);
+                if (ObjectList.player.walkingDir == "left") {
+                    ObjectList.moveAllObjects(0.3, 0);
+                } else if (ObjectList.player.walkingDir == "right") {
+                    ObjectList.moveAllObjects(-0.3, 0);
+                }
+            } 
+        }
+        
+        if (pansUpDown && pansLeftRight == false) {
+            if (ObjectList.player.Y > Screen.getWindowHeight() / 2) {
+                ObjectList.moveAllObjects(0, -0.2);
+            } else if (ObjectList.player.Y > Screen.getWindowHeight() / 2) {
+                ObjectList.moveAllObjects(0, 0.2);
+            }
+        }
 
         if (i.isMouseButtonDown(0)) {
             
@@ -118,6 +129,22 @@ public class GameScreen extends BasicGameState {
             rightMouseDown = false;
             
         }
+        
+        if (Mouse.getScrollingDirection() < 0) {
+            Inventory.selectedSlotNumber++;
+            Inventory.selectSlot(Inventory.selectedSlotNumber);
+        } else if (Mouse.getScrollingDirection() > 0) {
+            Inventory.selectedSlotNumber--;
+            Inventory.selectSlot(Inventory.selectedSlotNumber);
+        }
+        
+        if (Inventory.selectedSlotNumber >= Inventory.hotbar.length) {
+            Inventory.selectedSlotNumber = 0;
+            Inventory.selectSlot(Inventory.selectedSlotNumber); 
+        } else if (Inventory.selectedSlotNumber < 0) {
+            Inventory.selectedSlotNumber = Inventory.hotbar.length;
+            Inventory.selectSlot(Inventory.selectedSlotNumber);     
+        }
 
         if (i.isKeyDown(Input.KEY_1)) {
             Inventory.selectSlot(0);
@@ -139,10 +166,16 @@ public class GameScreen extends BasicGameState {
             Inventory.selectSlot(8);
         }
 
-        if (i.isKeyDown(Input.KEY_A)) {
+        if (i.isKeyDown(Input.KEY_A) && database.GlobalVariables.D == false) {
             database.GlobalVariables.A = true;
         } else {
             database.GlobalVariables.A = false;
+        }
+        
+        if (i.isKeyDown(Input.KEY_D) && database.GlobalVariables.A == false) {
+            database.GlobalVariables.D = true;
+        } else {
+            database.GlobalVariables.D = false;
         }
 
         if (i.isKeyDown(Input.KEY_W)) {
@@ -151,23 +184,23 @@ public class GameScreen extends BasicGameState {
             database.GlobalVariables.W = false;
         }
 
-        if (i.isKeyDown(Input.KEY_S)) {
-            database.GlobalVariables.S = true;
-            ObjectList.player.Y += 5;
-        } else {
-            database.GlobalVariables.S = false;
-        }
-
         if (i.isKeyDown(Input.KEY_E)) {
             database.GlobalVariables.E = true;
         } else {
             database.GlobalVariables.E = false;
         }
 
-        if (i.isKeyDown(Input.KEY_D)) {
-            database.GlobalVariables.D = true;
-        } else {
-            database.GlobalVariables.D = false;
+        if (i.isKeyDown(Input.KEY_C)) {
+            sbg.enterState(-5);
+        }
+        
+        if (i.isKeyDown(Input.KEY_Y)) {
+            //new Tool("PLUNGER", engine.Mouse.getX(), engine.Mouse.getY());
+            ((Tool)database.Recipes.getRecipeResult(1, true)).createNew(ObjectList.player.X, 0);
+        }
+        
+        if (i.isKeyDown(Input.KEY_LCONTROL) && i.isKeyDown(Input.KEY_Q)) {
+            Inventory.dropAll();
         }
 
         if (i.isKeyDown(Input.KEY_SPACE)) {
@@ -194,24 +227,30 @@ public class GameScreen extends BasicGameState {
         }
         
         if (i.isKeyDown(Input.KEY_X)) {
-            Inventory.setInventorySize(9);
-            new Sword(ObjectList.player.X, ObjectList.player.Y, "iron");
+            ObjectList.moveAllObjects(0.3, 0);
+        }
+        if (i.isKeyDown(Input.KEY_Z)) {
+            ObjectList.moveAllObjects(-0.3, 0);
         }
 
         if (ObjectList.player.health == 0) {
             sbg.enterState(-3); //go to death screen if you die
         }
         
-        if (ObjectList.player.X < 0) {
-            ObjectList.player.X = 0;
-        } else if (ObjectList.player.X > 800) {
-            ObjectList.player.X = 800 - ObjectList.player.W;
+        if (pansLeftRight == false) {
+            if (ObjectList.player.X < 0) {
+                ObjectList.player.X = 0;
+            } else if (ObjectList.player.X + ObjectList.player.W > 800) {
+                ObjectList.player.X = 800 - ObjectList.player.W;
+            }
         }
         
-        if (ObjectList.player.Y > 600) {
-            ObjectList.player.Y = 600 - ObjectList.player.H;
-        } else if (ObjectList.player.Y < 0) {
-            ObjectList.player.Y = 0;
+        if (pansUpDown == false) {
+            if (ObjectList.player.Y > 600) {
+                ObjectList.player.Y = 600 - ObjectList.player.H;
+            } else if (ObjectList.player.Y < 0) {
+                ObjectList.player.Y = 0;
+            }
         }
         
     }

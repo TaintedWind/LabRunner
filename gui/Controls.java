@@ -1,29 +1,14 @@
 package gui;
 
-import item.Item;
-import item.explosives.Bomb;
-import item.tools.Plunger;
-import item.weapons.Sword;
-import liquid.Lava;
-import liquid.Liquid;
 import main.Screen;
 
-import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import particle.ParticleFactory;
-import platform.NormalPlatform;
-import player.Inventory;
-import enemy.AI;
-import database.ObjectList;
-import static gui.GameScreen.backgroundImage;
-import static gui.GameScreen.screenshot;
 import java.awt.Rectangle;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.UnicodeFont;
@@ -31,7 +16,6 @@ import org.newdawn.slick.font.effects.ColorEffect;
 
 public class Controls extends BasicGameState {
     
-    UnicodeFont menuFont;
     Rectangle doneButton;
 
     public Controls(int state) {
@@ -47,19 +31,13 @@ public class Controls extends BasicGameState {
         
         doneButton = new Rectangle(245, 500, 300, 50);
         
-        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
-        menuFont.addAsciiGlyphs();
-        menuFont.addGlyphs(400, 600);
-        menuFont.getEffects().add(new ColorEffect());
-        menuFont.loadGlyphs();
-        
     }
 
     //draws state (screen) elements
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
-        g.setFont(menuFont);
+        g.setFont(database.GlobalVariables.mainFont);
         g.setBackground(Color.black);
         g.drawString("CONTROLS", 352, 100);
         

@@ -1,6 +1,6 @@
 package liquid;
 
-import levelobject.Level_Object;
+import levelobject.LevelObject;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;

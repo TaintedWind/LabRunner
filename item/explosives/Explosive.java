@@ -10,12 +10,43 @@ import player.Inventory;
 import database.ObjectList;
 import engine.Timer;
 import item.Item;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 public class Explosive extends Item {
 
     Timer detonationTimer;
+    
+    public Explosive(String n, int ID, double x, double y) {
+        this.X = x;
+        this.Y = y;
+        
+        
+        if (n.equals("GRENADE") || (n == "RANDOM" && ID == 1)) {
+            this.offsetX = 20;
+            this.offsetY = 45;
+            this.category = "explosives";
+            this.name = "GRENADE";
+            try {
+                defaultTexture = new Image("./resources/bomb.png", false, Image.FILTER_NEAREST);
+                leftFacingTexture = new Image("./resources/bomb.png", false, Image.FILTER_NEAREST);
+                rightFacingTexture = new Image("./resources/bomb.png", false, Image.FILTER_NEAREST);
+                inventoryTexture = new Image("./resources/bomb.png", false, Image.FILTER_NEAREST);
+            } catch (SlickException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.err.println(n+" ("+ID+") is not a valid item!");
+        }
+        
+        ObjectList.items.add(this);
+        
+    }
 
     public void update() {
+        
+        W = defaultTexture.getWidth();
+        H = defaultTexture.getHeight();
 
         if (detonationTimer != null) {
             if (detonationTimer.getTime() >= 750) {

@@ -25,7 +25,7 @@ public class ExplosiveParticles extends Particle {
     @Override
     public void update() {
          
-        range.setBounds((int)X - 20, (int)Y - 20, W + 20, H + 20);
+        range.setBounds((int)X - 50, (int)Y - 50, W + 50, H + 50);
 
         if (animationTimer == null) {
             animationTimer = new Timer(400, true, true);
@@ -52,7 +52,7 @@ public class ExplosiveParticles extends Particle {
 
         if (ObjectList.player.hitbox.intersects(range)) {
             System.out.println("Player intersects range of "+this);
-            ObjectList.player.knockback(0.02, -0.015, this);
+            ObjectList.player.knockback(0.04, -0.01, this);
             ObjectList.player.health(-5, this);
         }
         
@@ -66,6 +66,8 @@ public class ExplosiveParticles extends Particle {
     }
 
     public void draw(Graphics g) {
+        
+        System.out.println(animationTimer.getTime());
 
         if (animationTimer != null) {
 

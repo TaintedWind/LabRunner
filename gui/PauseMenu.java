@@ -1,42 +1,28 @@
 package gui;
 
-import item.Item;
-import item.explosives.Bomb;
-import item.tools.Plunger;
-import item.weapons.Sword;
-import liquid.Lava;
-import liquid.Liquid;
+import database.ObjectList;
+import io.IO;
+import java.awt.Rectangle;
 import main.Screen;
-
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
-import particle.ParticleFactory;
-import platform.NormalPlatform;
-import player.Inventory;
-import enemy.AI;
-import database.ObjectList;
-import static gui.GameScreen.backgroundImage;
-import static gui.GameScreen.screenshot;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.font.GlyphPage;
-import org.newdawn.slick.font.effects.ColorEffect;
+import static region.Levels.floorProgress;
+import static region.Levels.resetCanvas;
 
 public class PauseMenu extends BasicGameState {
     
     Image transparent_black, button, button_mouseover;
     int timeInMenu;
-    UnicodeFont menuFont;
+    
+    boolean saveAndQuitButtonClicked = false;
     
     Rectangle returnButton;
     Rectangle saveAndQuitButton;
@@ -59,12 +45,6 @@ public class PauseMenu extends BasicGameState {
         returnButton = new Rectangle(250, 200, 300, 50);
         saveAndQuitButton = new Rectangle(250, 300, 300, 50);
         
-        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
-        menuFont.addAsciiGlyphs();
-        menuFont.addGlyphs(400, 600);
-        menuFont.getEffects().add(new ColorEffect());
-        menuFont.loadGlyphs();
-        
     }
 
     //draws state (screen) elements
@@ -73,7 +53,7 @@ public class PauseMenu extends BasicGameState {
    
         g.scale(Screen.getWindowWidth() / 800, Screen.getWindowHeight() / 600);
         
-        g.setFont(menuFont);
+        g.setFont(database.GlobalVariables.mainFont);
         
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
@@ -92,7 +72,7 @@ public class PauseMenu extends BasicGameState {
         }
         
         g.drawString("RETURN TO GAME", 330, 218);
-        g.drawString("QUIT TO TITLE", 335, 320);
+        g.drawString("SAVE AND QUIT", 335, 318);
         
     }
 
@@ -102,6 +82,20 @@ public class PauseMenu extends BasicGameState {
 
         database.GlobalVariables.deltaTime = delta;
         Input i = gc.getInput();
+
+        if (i.isMouseButtonDown(0)) {
+            if (saveAndQuitButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1)) {
+                saveAndQuitButtonClicked = true;
+            }       
+           
+        } else {
+            if (saveAndQuitButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1) && saveAndQuitButtonClicked == true) {
+                saveAndQuitButtonClicked = false;
+                IO.saveGameToFile(gui.GameScreen.activeSaveFile);
+                floorProgress = 0;
+                sbg.enterState(-1);
+            } 
+        }
         
         if (returnButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
             if (i.isMouseButtonDown(0)) {
@@ -109,17 +103,11 @@ public class PauseMenu extends BasicGameState {
             }
         }
         
-        if (saveAndQuitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
-            if (i.isMouseButtonDown(0)) {
-                sbg.enterState(-1);
-            }
-        }
-        
         if (i.isKeyDown(Input.KEY_F11)) {
             Screen.toggleFullScreen();
         }
-        
 
     }
+
 }
 

@@ -15,15 +15,14 @@ import liquid.Liquid;
 
 public class Player extends Physics {
 
-    Image defaultTexture;
-    Image leftFacingTexture;
-    Image rightFacingTexture;
+    public Image defaultTexture, leftFacingTexture, rightFacingTexture;
     Color skinColor = Color.white;
     Timer animationTimer = new Timer(300, true, true);
     public String walkingDir, facingDir;
-    public double health;
-    public int jumpHeight;
-    public boolean isMoving, isJumping;
+    public double health = 101;
+    public double jumpHeight = -0.6;
+    public boolean isMoving;
+    public double attackMultiplier = 1, defenseMultiplier = 1, maxHealth = 100;
 
     public Player(int x, int y) {
 
@@ -33,8 +32,6 @@ public class Player extends Physics {
         this.H = 96;
         this.walkingDir = null;
         this.isMoving = false;
-        this.isJumping = false;
-        this.dx = 0.1;
 
         try {
             defaultTexture = new Image("./resources/player.png", false, Image.FILTER_NEAREST);
@@ -71,18 +68,19 @@ public class Player extends Physics {
     
     public void health(double amount, Object attacker) {
         
-        System.out.println("Adding: "+amount+" to player health");
+        System.out.println("Adding: "+amount / defenseMultiplier+" to player health");
 
         if (amount < 0) {
             skinColor = Color.red;
         }
-
-        this.health += amount;
+        
+        this.health += amount / defenseMultiplier;
+        System.out.println(defenseMultiplier);
 
         if (this.health < 0) {
             this.health = 0;
-        } else if (this.health > 100) {
-            this.health = 100;
+        } else if (this.health > maxHealth) {
+            this.health = maxHealth;
         }
 
     }
@@ -114,7 +112,7 @@ public class Player extends Physics {
     public void jump() {
         if (getCollidingLiquid(hitbox) == null && isCollidingWithGround() == true) {
             Y -= 0.01;
-            dy = -0.6;
+            dy = jumpHeight;
         }
     }
 

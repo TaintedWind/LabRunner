@@ -1,14 +1,15 @@
 package main;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.util.Date;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+import java.awt.DisplayMode;
 
 import org.newdawn.slick.SlickException;
 
 public class Screen {
     
-    static DisplayMode fullscreen, original = new DisplayMode(800, 600);
     static DisplayMode[] modes;
     
     public static void toggleFullScreen() throws SlickException {
@@ -21,6 +22,10 @@ public class Screen {
     
     public static void changeWindowSize(int width, int height) throws SlickException {
         main.Main.window.setDisplayMode(width, height, false);
+    }
+    
+    public static int getFPS() {
+        return main.Main.window.getFPS();
     }
     
     public static float getWindowY() {
@@ -45,6 +50,31 @@ public class Screen {
     
     public static float getWindowHeight() {
         return main.Main.window.getHeight();        
+    }
+    
+    public static int getRefreshRate() {
+        
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        
+
+        for (int i = 0; i < gs.length; i++) {
+            DisplayMode dm = gs[i].getDisplayMode();
+
+            int refreshRate = dm.getRefreshRate();
+            
+            if (refreshRate == DisplayMode.REFRESH_RATE_UNKNOWN) {
+              System.out.println("Unknown rate"); 
+            } else {
+              return refreshRate;
+            }
+
+            int bitDepth = dm.getBitDepth();
+            int numColors = (int) Math.pow(2, bitDepth);
+        }
+        
+        return 60;
+        
     }
     
 }

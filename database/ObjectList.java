@@ -10,7 +10,7 @@ import enemy.AI;
 import engine.Timer;
 
 import java.util.LinkedList;
-import levelobject.Level_Object;
+import levelobject.LevelObject;
 import org.newdawn.slick.Graphics;
 import player.Inventory;
 
@@ -29,7 +29,7 @@ public class ObjectList {
 
     public static void updateAllObjects() {
 
-        player.update();
+       player.update();
         
        try {
             for (int i = 0; i <= ObjectList.timers.size(); i++) {
@@ -75,7 +75,7 @@ public class ObjectList {
 
         try {
             for (int o = 0; o <= ObjectList.objects.size(); o++) {
-                ((Level_Object) ObjectList.objects.get(o)).update();
+                ((LevelObject) ObjectList.objects.get(o)).update();
 
             }
         } catch (Exception e) {
@@ -104,7 +104,7 @@ public class ObjectList {
         //render all objects
         try {
             for (int o = 0; o <= ObjectList.objects.size(); o++) {
-                ((levelobject.Level_Object) ObjectList.objects.get(o)).draw(g);
+                ((levelobject.LevelObject) ObjectList.objects.get(o)).draw(g);
 
             }
         } catch (Exception e) {
@@ -169,6 +169,77 @@ public class ObjectList {
 
 
     }
+    
+    public static void moveAllObjects(double x, double y) {
+        
+        double dx, dy;
+
+        dx = x * database.GlobalVariables.deltaTime;
+        dy = y * database.GlobalVariables.deltaTime;
+
+        try {
+            for (int i = 0; i <= ObjectList.items.size(); i++) {
+                ((Item) ObjectList.items.get(i)).X += dx;
+                ((Item) ObjectList.items.get(i)).Y += dy;
+
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            for (int i = 0; i <= ObjectList.particles.size(); i++) {
+                ((Particle) ObjectList.particles.get(i)).X += dx;
+                ((Particle) ObjectList.particles.get(i)).Y += dy;
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            for (int pl = 0; pl <= ObjectList.platforms.size(); pl++) {
+                ((NormalPlatform) ObjectList.platforms.get(pl)).X += dx;
+                ((NormalPlatform) ObjectList.platforms.get(pl)).Y += dy;
+
+            }
+        } catch (Exception e) {
+        }
+
+
+        try {
+            for (int pl = 0; pl <= ObjectList.enemies.size(); pl++) {
+                ((AI) ObjectList.enemies.get(pl)).X += dx;
+                ((AI) ObjectList.enemies.get(pl)).Y += dy;
+
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            for (int o = 0; o <= ObjectList.objects.size(); o++) {
+                ((LevelObject) ObjectList.objects.get(o)).X += dx;
+                ((LevelObject) ObjectList.objects.get(o)).Y += dy;
+
+            }
+        } catch (Exception e) {
+        }
+
+        try {
+            for (int o = 0; o <= ObjectList.powerups.size(); o++) {
+                ((PowerUp) ObjectList.powerups.get(o)).X += dx;
+                ((PowerUp) ObjectList.powerups.get(o)).Y += dy;
+            }
+        } catch (Exception e) {
+        }
+
+        for (int i = 0; i <= liquids.size(); i++) {
+            try {
+                if (liquids.get(i) != null) {
+                    ((Liquid) liquids.get(i)).X += dx;
+                    ((Liquid) liquids.get(i)).X += dy;
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
 
     //delete all objects when called (does 10 passes)
     public static void deleteAllObjects(boolean destroyInventory) {
@@ -209,7 +280,7 @@ public class ObjectList {
             for (int i = 0; i <= objects.size(); i++) {
                 try {
                     if (objects.get(i) != null) {
-                        ((levelobject.Level_Object) objects.get(i)).delete();
+                        ((levelobject.LevelObject) objects.get(i)).delete();
                     }
                 } catch (Exception e) {                 
                 }

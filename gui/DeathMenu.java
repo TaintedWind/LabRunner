@@ -1,15 +1,10 @@
 package gui;
 
-import item.Item;
-import item.explosives.Bomb;
-import item.tools.Plunger;
-import item.weapons.Sword;
-import liquid.Lava;
-import liquid.Liquid;
+import database.ObjectList;
+import io.IO;
 import main.Screen;
 
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -18,22 +13,17 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import particle.ParticleFactory;
-import platform.NormalPlatform;
-import player.Inventory;
-import enemy.AI;
-import database.ObjectList;
-import static gui.GameScreen.backgroundImage;
-import static gui.GameScreen.screenshot;
 import java.awt.Rectangle;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
+import static region.Levels.floorProgress;
+import static region.Levels.resetCanvas;
 
 public class DeathMenu extends BasicGameState {
     
     Image transparent_black, button, button_mouseover;
     int timeInMenu;
-    UnicodeFont menuFont;
+    boolean quitButtonClicked = false;
     
     Rectangle quitButton;
 
@@ -54,12 +44,6 @@ public class DeathMenu extends BasicGameState {
         
         quitButton = new Rectangle(250, 300, 300, 50);
         
-        menuFont = new UnicodeFont("./resources/font.ttf", 16, false, false);
-        menuFont.addAsciiGlyphs();
-        menuFont.addGlyphs(400, 600);
-        menuFont.getEffects().add(new ColorEffect());
-        menuFont.loadGlyphs();
-        
     }
 
     //draws state (screen) elements
@@ -68,7 +52,7 @@ public class DeathMenu extends BasicGameState {
         
         g.scale(Screen.getWindowWidth() / 800, Screen.getWindowHeight() / 600);
         
-        g.setFont(menuFont);
+        g.setFont(database.GlobalVariables.mainFont);
         
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
@@ -91,13 +75,19 @@ public class DeathMenu extends BasicGameState {
         database.GlobalVariables.deltaTime = delta;
         Input i = gc.getInput();
         
-        if (quitButton.contains(Mouse.getX(), 600 - Mouse.getY())) {
-            if (i.isMouseButtonDown(0)) {
+         if (i.isMouseButtonDown(0)) {
+            if (quitButton.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1) && quitButtonClicked == false) {
+                quitButtonClicked = true;
+            }       
+           
+        } else {
+            if (quitButton.contains(Mouse.getX(), 600 - Mouse.getY()) && quitButtonClicked == true) {
                 sbg.enterState(-1);
+                IO.deleteSaveFile(gui.GameScreen.activeSaveFile);
+                floorProgress = 0;
             }
         }
 
-        
         if (i.isKeyDown(Input.KEY_F11)) {
             Screen.toggleFullScreen();
         }

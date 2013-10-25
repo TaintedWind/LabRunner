@@ -1,6 +1,8 @@
 package engine;
 
 import database.ObjectList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Timer {
 
@@ -41,5 +43,8 @@ public class Timer {
 
     public int getTime() {
         return time;
+    }
+    
+    public void delay(int mill) {
     }
 }

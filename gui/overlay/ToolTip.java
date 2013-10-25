@@ -16,8 +16,6 @@ import player.Inventory;
 
 public class ToolTip {
     
-        static UnicodeFont menuFont;
-    
         public static void drawToolTip(Graphics g) throws SlickException {
           
 
@@ -44,8 +42,8 @@ public class ToolTip {
 
             try {
                 for (int i = 0; i <= ObjectList.objects.size(); i++) {
-                    if (((levelobject.Level_Object) ObjectList.objects.get(i)).hitbox.contains(mouseLocation)) {
-                        g.drawString(((levelobject.Level_Object) ObjectList.objects.get(i)).name, Mouse.getX() + 20, 600 - Mouse.getY());
+                    if (((levelobject.LevelObject) ObjectList.objects.get(i)).hitbox.contains(mouseLocation)) {
+                        g.drawString(((levelobject.LevelObject) ObjectList.objects.get(i)).name, Mouse.getX() + 20, 600 - Mouse.getY());
                     }
 
                 }

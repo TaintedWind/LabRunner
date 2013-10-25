@@ -1,16 +1,19 @@
 package player;
 
 import database.ObjectList;
+import database.Recipes;
 import item.Item;
-import item.tools.Plunger;
-import item.weapons.Bow;
-import item.weapons.GrapplingHook;
-import item.weapons.NukeLauncher;
+import item.projectiles.Projectile;
+import item.resources.Resource;
+import item.utilities.Tool;
+import item.weapons.*;
 import java.awt.Rectangle;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -19,11 +22,11 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 
 public class Inventory {
-    
-    static UnicodeFont size8;
 
     public static int selectedSlotNumber;
-    public static Image slotIcon, selectedSlotIcon, craftedItemTexture;
+    public static Image slotIcon, selectedSlotIcon;
+    
+    public static int ammoAmount = 0;
     
     public static Object[] hotbar_backup;
     public static Object[] hotbar = new Object[3];
@@ -41,16 +44,18 @@ public class Inventory {
     
     public static void add(Object o) {
 
-        //Adds "Object o" to the selected slot (if slot is full, adds to next empty slot
-
+        //adds "Object o" to the selected slot (if slot is full, adds to next empty slot
+        
         if (selectedSlotNumber <= hotbar.length) {
             if (hotbar[selectedSlotNumber] == null) {
                 hotbar[selectedSlotNumber] = o;
+                System.out.println("Added "+((Item)o).name+" to inventory");
             } else {
                 for (int i = 0; i < hotbar.length; i++) {
                     //if selected slot is full, add to an empty slot
                     if (hotbar[i] == null && Inventory.contains(o) == false) {
-                        hotbar[i] = o;                       
+                        hotbar[i] = o;
+                        System.out.println("Added "+((Item)o).name+" to inventory");
                     }
                 }
             }
@@ -58,59 +63,63 @@ public class Inventory {
         
     }
     
-    public static Object combine(Object i, Object ii, Object iii, boolean returnImage) {
+    public static void combine(Object i, Object ii, Object iii) {
         
-        String item1, item2, item3;
         ArrayList<String> recipe = new ArrayList<String>();
-        Object craftedItem;
+        int isMatchingRecipe = 0;
+        boolean processRecipes = true;
         
-        if (i != null) {
-            item1 = i.getClass().toString();            
-        } else {
-            item1 = "null";
+        //if any of the ingredients is null, add a new Null item :|
+        if (i == null) {
+            i = new Tool("null", 9999, 9999);
+        }
+        if (ii == null) {
+            ii = new Tool("null", 9999, 9999);    
+        }
+        if (iii == null) {
+            iii = new Tool("null", 9999, 9999); 
         }
         
-        if (ii != null) {
-            item2 = ii.getClass().toString();            
-        } else {
-            item2 = "null";
-        }
+        System.out.println(((Item)i).name);
+        System.out.println(((Item)ii).name);
+        System.out.println(((Item)iii).name);
+        
+        
+        //compare your items to each recipe
+        try {
+            for (int count = 0; count < database.Recipes.recipes.size() / 4 && processRecipes == true; count++) { //for each recipe
                 
-        if (iii != null) {
-            item3 = iii.getClass().toString();            
-        } else {
-            item3 = "null";
+                recipe = database.Recipes.getRecipe(count, true);
+                
+                if (recipe.get(0).equals(((Item)i).name) || recipe.get(0).equals(((Item)ii).name) || recipe.get(0).equals(((Item)iii).name)) {
+                    isMatchingRecipe++;
+                }
+                if (recipe.get(1).equals(((Item)i).name) || recipe.get(1).equals(((Item)ii).name) || recipe.get(1).equals(((Item)iii).name)) {
+                    isMatchingRecipe++;
+                }
+                if (recipe.get(2).equals(((Item)i).name) || recipe.get(2).equals(((Item)ii).name) || recipe.get(2).equals(((Item)iii).name)) {
+                    isMatchingRecipe++;
+                }
+                
+                if (isMatchingRecipe >= 3) {
+                    processRecipes = false;
+                    System.out.println("Items match: recipe #"+count);
+                    ((Item)i).delete();
+                    ((Item)ii).delete();
+                    ((Item)iii).delete();
+                    
+                    //creates the new item
+                    Item.newItem(database.Recipes.getRecipeResult(count, true).getClass().toString(), ((Item)database.Recipes.getRecipeResult(count, true)).name, 0, ObjectList.player.X, ObjectList.player.Y, true);
+                    
+                } else {
+                    System.out.println(isMatchingRecipe+"/3 ingredients matched");
+                    isMatchingRecipe = 0;
+                }
+            }
+        } catch (Exception e) { 
+            e.printStackTrace();
         }
         
-        recipe.add(item1);
-        recipe.add(item2);
-        recipe.add(item3);
-        
-        if (recipe.contains("class item.weapons.Bow") && recipe.contains("class item.tools.Plunger") && recipe.contains("class item.tools.Wire")) {
-            craftedItem = new GrapplingHook((int)ObjectList.player.X, (int)ObjectList.player.Y);
-        } else {
-            return null;
-        }
-        
-        //if returnImage is false, delete the items after.
-        if (returnImage == false) {
-            ((Item)i).delete();
-            ((Item)ii).delete();
-            ((Item)iii).delete();
-        }
-        
-        //if return image is true, set the image to the item texture, delete the created object and return null. else, return the object
-        if (returnImage == true) {
-            craftedItemTexture = ((Item)craftedItem).defaultTexture;
-            ((Item)craftedItem).delete();
-            return null;
-        } else {
-            System.out.println("Returning "+craftedItem);
-            craftedItemTexture = null;
-            return craftedItem;
-        }
-        
-    
     }
 
     public static boolean contains(Object o) {
@@ -147,6 +156,8 @@ public class Inventory {
     
     public static void setInventorySize(int newSize) {
         
+        System.out.println("Setting inventory size to"+newSize);
+        
         hotbar_backup = new Object[hotbar.length];
         
         System.arraycopy(hotbar, 0, hotbar_backup, 0, hotbar.length);
@@ -180,8 +191,10 @@ public class Inventory {
 
                 if (ObjectList.player.facingDir == "right") {
                     ((Item)hotbar[i]).X = ObjectList.player.X + 40;
+                    ((Item)hotbar[i]).dx = 0.1;
                 } else {
                     ((Item)hotbar[i]).X = ObjectList.player.X - 20;
+                    ((Item)hotbar[i]).dx = -0.1;
                 }
 
                 ((Item)hotbar[i]).Y = ObjectList.player.Y;
@@ -200,7 +213,7 @@ public class Inventory {
 
     public static void reset() {
         
-        //clears the inventory without dropping all the items
+        //clears the inventory by deleting all items, not dropping
         
         try {
             for (int i = 0; i < hotbar.length; i++) {
@@ -226,9 +239,11 @@ public class Inventory {
         try {
             
             if (ObjectList.player.facingDir == "right") {
-                ((Item)hotbar[selectedSlotNumber]).X = ObjectList.player.X + 40;
+                ((Item)hotbar[selectedSlotNumber]).X = ObjectList.player.X + 30;
+                ((Item)hotbar[selectedSlotNumber]).dx = 0.1;
             } else {
-                ((Item)hotbar[selectedSlotNumber]).X = ObjectList.player.X - 20;
+                ((Item)hotbar[selectedSlotNumber]).X = ObjectList.player.X - 30;
+                ((Item)hotbar[selectedSlotNumber]).dx = -0.1;
             }
 
             ((Item)hotbar[selectedSlotNumber]).Y = ObjectList.player.Y;
@@ -273,6 +288,9 @@ public class Inventory {
         
         if (slot <= hotbar.length - 1) {
             selectedSlotNumber = slot;
+        } else {
+            System.err.println("Selected slot number out of bounds!");
+            System.err.println("Inv.length = "+hotbar.length+", selected slot = "+slot);
         }
         
     }
@@ -285,6 +303,30 @@ public class Inventory {
             return null;
         }
         
+    }
+    
+    public static String getItemName(int slot) {
+        if (slot <= hotbar.length - 1) {
+            if (hotbar[slot] != null) {
+                return ((Item)hotbar[slot]).name;
+            } else {
+                return "null";
+            }
+        } else {
+            return "null";
+        }
+    }
+    
+    public static Object getItem(int slot) {
+        if (slot <= hotbar.length - 1) {
+            if (hotbar[slot] != null) {
+                return hotbar[slot];
+            } else {
+                return "null";
+            }
+        } else {
+            return "null";
+        }
     }
     
     public static int getClickedSlot() {
@@ -323,18 +365,6 @@ public class Inventory {
     
     public static void draw(Graphics g) {
         
-        try {
-            if (size8 == null) {
-                size8 = new UnicodeFont("./resources/font.ttf", 8, false, false);
-                size8.addAsciiGlyphs();
-                size8.addGlyphs(400, 600);
-                size8.getEffects().add(new ColorEffect());
-                size8.loadGlyphs();
-            }
-        } catch (SlickException e) {
-            
-        }
-        
         //load images if null
         try {
             if (slotIcon == null) {
@@ -366,11 +396,11 @@ public class Inventory {
         try {
             for (int i = 0; i <= hotbar.length; i++) {
 
-                g.setFont(size8);
+                g.setFont(database.GlobalVariables.mainFont);
                 
                 if (hotbar[i] != null) {
                     if (((Item)hotbar[i]).inventoryTexture != null) {
-                        g.drawImage(((Item)hotbar[i]).inventoryTexture, 16 + (i * 50), 16, null);
+                        g.drawImage(((Item)hotbar[i]).inventoryTexture, (i * 50) + 33 - (((Item)hotbar[i]).inventoryTexture.getWidth() / 2), 32 - (((Item)hotbar[i]).inventoryTexture.getHeight() / 2), null);
                     } else {
                         
                     }              

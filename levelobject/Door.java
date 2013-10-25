@@ -4,10 +4,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import region.Functions;
+import region.Levels;
 import database.ObjectList;
+import static region.Levels.floorProgress;
+import static region.Levels.loadLevel;
 
-public class Door extends Level_Object {
+public class Door extends LevelObject {
 
     public Door(int x, int y) {
         this.X = x;
@@ -28,8 +30,17 @@ public class Door extends Level_Object {
     }
     
     public void activate() {
+        
+        floorProgress++;
+        if (floorProgress == 10) {
+            System.out.println("Moving to next floor");
+            floorProgress = 0;
+            database.GlobalVariables.floorID++;
+            loadLevel(database.GlobalVariables.floorID, -1);
+        }
+        
         ObjectList.deleteAllObjects(false);
-        Functions.loadRandomLevel();
+        Levels.loadLevel(database.GlobalVariables.floorID, -1);
     }
     
 }

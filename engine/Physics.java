@@ -9,6 +9,7 @@ import platform.Platform;
 import enemy.AI;
 import item.Item;
 import item.projectiles.Projectile;
+import levelobject.LevelObject;
 import player.Inventory;
 import player.Player;
 import powerup.PowerUp;
@@ -25,6 +26,8 @@ public class Physics {
     public Rectangle range = new Rectangle();
     public double X, Y, dx, dy; //x, y, velocity
     public int W, H; //size
+    
+    
 
     public void gravity() {
 
@@ -61,56 +64,23 @@ public class Physics {
 
         if (isCollidingWithLeftSide() == false && isCollidingWithRightSide() == false) {
             X += dx * database.GlobalVariables.deltaTime;
+        } else {
+            dx = 0;
         }
         
-        if (isCollidingWithGround() == false && isCollidingWithBottom() == false) {
+        if (isCollidingWithGround() == false && isCollidingWithBottom() == false && isCollidingWithLiquid() == false) {
             Y += dy * database.GlobalVariables.deltaTime;
+        } else {
+            dy = 0;
         }
         
-        if (isCollidingWithGround() || isCollidingWithLiquid()) {
-            dy = 0;
-        }
-        if (isCollidingWithLiquid()) {
-            dy = 0;
-        }
-        if (isCollidingWithLeftSide()) {
-            dx = 0;
-        }
-        if (isCollidingWithRightSide()) {
-            dx = 0;
-        }
-        
-        if (isCollidingWithBottom()) {
-            dy = 0;
-        }
-
     }
 
     public void knockback(double xvel, double yvel, Object attacker) {
         
-        if (this == ObjectList.player) {
-            if (((Physics) attacker).X + ((Physics) attacker).W / 2 < X) {
-                Y -= 1;
-                dx = xvel * 1.5 * database.GlobalVariables.deltaTime;
-                System.out.println(attacker+" did knockback "+xvel+" on "+this);
-            } else {
-                Y -= 1;
-                dx = -xvel * database.GlobalVariables.deltaTime;
-                System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
-            }            
-        } else {
-            if (attacker == Inventory.getSelectedItem() || ((Projectile)attacker).parentWeapon == Inventory.getSelectedItem()) {
-                if (ObjectList.player.X + ObjectList.player.W / 2 < X) {
-                    Y -= 1;
-                    dx = +xvel * 1.5 * database.GlobalVariables.deltaTime;
-                    System.out.println(attacker+" did knockback "+xvel+" on "+this);
-                } else {
-                    Y -= 1;
-                    dx = -xvel * database.GlobalVariables.deltaTime;
-                    System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
-
-                }  
-            } else {
+        if (this.isCollidingWithBottom() == false && this.isCollidingWithLeftSide() == false && this.isCollidingWithRightSide() == false) {
+        
+            if (this == ObjectList.player) {
                 if (((Physics) attacker).X + ((Physics) attacker).W / 2 < X) {
                     Y -= 1;
                     dx = xvel * 1.5 * database.GlobalVariables.deltaTime;
@@ -120,14 +90,39 @@ public class Physics {
                     dx = -xvel * database.GlobalVariables.deltaTime;
                     System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
                 }            
+            } else {
+                if (attacker == Inventory.getSelectedItem() || ((Projectile)attacker).parentWeapon == Inventory.getSelectedItem()) {
+                    if (ObjectList.player.X + ObjectList.player.W / 2 < X) {
+                        Y -= 1;
+                        dx = +xvel * 1.5 * database.GlobalVariables.deltaTime;
+                        System.out.println(attacker+" did knockback "+xvel+" on "+this);
+                    } else {
+                        Y -= 1;
+                        dx = -xvel * database.GlobalVariables.deltaTime;
+                        System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
+
+                    }  
+                } else {
+                    if (((Physics) attacker).X + ((Physics) attacker).W / 2 < X) {
+                        Y -= 1;
+                        dx = xvel * 1.5 * database.GlobalVariables.deltaTime;
+                        System.out.println(attacker+" did knockback "+xvel+" on "+this);
+                    } else {
+                        Y -= 1;
+                        dx = -xvel * database.GlobalVariables.deltaTime;
+                        System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
+                    }            
+                }
+            }
+        
+        
+            if (((Physics)attacker).Y + ((Physics)attacker).H / 2 > Y) {
+               dy += yvel * database.GlobalVariables.deltaTime;
+            } else {
+                dy -= yvel * database.GlobalVariables.deltaTime;            
             }
         }
-
-        if (((Physics)attacker).Y + ((Physics)attacker).H / 2 > Y) {
-           dy += yvel * database.GlobalVariables.deltaTime;
-        } else {
-            dy -= yvel * database.GlobalVariables.deltaTime;            
-        }
+        
 
     }
 
@@ -185,6 +180,22 @@ public class Physics {
             for (int t = 0; t <= ObjectList.items.size(); t++) {
                 if (r.intersects(((Item) ObjectList.items.get(t)).hitbox)) {
                     return ObjectList.items.get(t);
+                }
+
+            }
+
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+    
+    public Object getCollidingLevelObject(Rectangle r) {
+
+        try {
+            for (int t = 0; t <= ObjectList.objects.size(); t++) {
+                if (r.intersects(((LevelObject) ObjectList.objects.get(t)).hitbox)) {
+                    return ObjectList.objects.get(t);
                 }
 
             }
@@ -263,6 +274,8 @@ public class Physics {
         for (int i = 0; i < ObjectList.platforms.size(); i++) {
             if (topHitbox.intersects(((Platform) ObjectList.platforms.get(i)).bottom)) {
                     Y = ((Platform) ObjectList.platforms.get(i)).Y + ((Platform) ObjectList.platforms.get(i)).H - 1;
+                    fallSpeed = 1;
+                    fallHeight = 1;
                     isCollidingWithBottom = true;
                     return true;
             }

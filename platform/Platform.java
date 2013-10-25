@@ -9,12 +9,16 @@ import org.newdawn.slick.Image;
 
 import database.ObjectList;
 import engine.Physics;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.newdawn.slick.SlickException;
 
 public class Platform extends Physics {
 
     Color borderColor;
     String category, material;
-    Image defaultTexture;
+    Image defaultTexture, screenshot;
+    boolean isPlatformImageRendered = false;
     Point i = new Point(0, 0), ii = new Point(500, 500), target = ii;
     //custom hitboxes for the platforms
     org.newdawn.slick.geom.Rectangle body = new org.newdawn.slick.geom.Rectangle(0, 0, 0, 0);
@@ -24,6 +28,15 @@ public class Platform extends Physics {
     public Rectangle top = new Rectangle(0, 0, 0, 0);
 
     public void update() {
+        
+        if (W % 32 != 0) {
+            W--;
+        }
+        
+        if (H % 32 != 0) {
+            H--;
+        }
+        
         body.setBounds((int) X, (int) Y, W, H);
         top.setBounds((int) X + 10, (int) Y, W - 20, 15);
         left.setBounds((int) X, (int) Y + 5, W / 16, H - 10);
@@ -37,14 +50,20 @@ public class Platform extends Physics {
     }
 
     public void draw(Graphics g) {
-
+        
+        for (int y = 0; y < H; y+=32) {
+            for (int x = 0; x < W; x+=32) {
+                g.drawImage(defaultTexture, (int)X + x, (int)Y + y);
+            }
+        }
+        
         g.setColor(Color.white);
-        g.texture(body, defaultTexture, 0.03f, 0.03f, false);
         g.setColor(borderColor);
         g.drawRect((int) X, (int) Y, W, H);
-        g.drawRect((int) X + 1, (int) Y + 1, W, H);
-        //g.drawRect((int) X + 2, (int) Y + 2, W, H);
+        g.drawRect((int) X+1, (int) Y+1, W, H);
         g.setColor(Color.white);
+
+            
 
           //For debugging
 //        g.setColor(Color.gray);
