@@ -34,7 +34,7 @@ public class Item extends Physics {
     protected String material;
     public String name;
     
-    Timer animationTimer = new Timer(1000, true, true);
+    Timer animationTimer = new Timer(1000, true, false);
 
     //this method is overriden by the different types of items (such as item.weapon or item.food)
     public void update() {
@@ -71,6 +71,7 @@ public class Item extends Physics {
     }
 
     public void leftClickAction() {
+
     }
 
     public void rightClickAction() {
@@ -85,34 +86,41 @@ public class Item extends Physics {
 
     }
     
-    //creates an item, can specify the class
-    public static void newItem(String c, String n, int ID, double X, double Y, boolean addToInventory) {
-        
-        Object o;
-        
-        if (c.equals("class item.explosives.Explosive")) {
-            o = new Explosive(n, ID, X, Y);
-        } else if (c.equals("class item.potions.DurationPotion")) {
-            o = new DurationPotion(n, ID, X, Y);
-        } else if (c.equals("class item.potions.Potion")) {
-            o = new Potion(n, ID, X, Y);
-        } else if (c.equals("class item.utilities.Tool")) {
-            o = new Tool(n, X, Y);
-        } else if (c.equals("class item.weapons.Weapon")) {
-            o = new Weapon(n, ID, X, Y);
-        } else if (c.equals("class item.resources.Resource")) {
-            System.out.println("newItem "+c+", "+n);
-            o = new Resource(n, ID, X, Y);
-        } else {
-            System.err.println("Item class "+c+" does not exist!");
-            o = null;
-        }
-        
-        if (o != null) {
-            if (addToInventory == true) {
-                Inventory.add(o);
+    //creates an item, can specify the class for simple item spawning throughout the code
+    public static Object newItem(String c, String n, int ID, double X, double Y, boolean addToInventory) {
+
+        try {
+            Object o;
+
+            if (c.equals("class item.explosives.Explosive")) {
+                o = new Explosive(n, ID, X, Y);
+            } else if (c.equals("class item.potions.DurationPotion")) {
+                o = new DurationPotion(n, ID, X, Y);
+            } else if (c.equals("class item.potions.Potion")) {
+                o = new Potion(n, ID, X, Y);
+            } else if (c.equals("class item.utilities.Tool")) {
+                o = new Tool(n, X, Y);
+            } else if (c.equals("class item.weapons.Weapon")) {
+                o = new Weapon(n, ID, X, Y);
+            } else if (c.equals("class item.resources.Resource")) {
+                o = new Resource(n, ID, X, Y);
+            } else {
+                System.err.println("Item class "+c+" does not exist!");
+                o = null;
             }
+            if (o != null) {
+                if (addToInventory == true) {
+                    Inventory.add(o);
+                }
+            }
+            
+            return o;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        
+        return null;
         
     }
 

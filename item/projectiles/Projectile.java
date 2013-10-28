@@ -107,7 +107,7 @@ public class Projectile extends Item {
             }
         
         } else if (n.equals("ANTIMATTER")) {
-            this.value = 20;
+            this.value = 40;
             this.damage = 0;
             this.parentWeapon = p;
             this.dx = xdir;
@@ -222,6 +222,11 @@ public class Projectile extends Item {
             if (this.name == "ANTIMATTER") {
                     if (ObjectList.player.facingDir == "right") {
                         if (X > Mouse.getX()) {
+                            ParticleFactory.createBlackHole(X, Y);
+                            delete();
+                        }
+                    } else {
+                        if (X < Mouse.getX()) {
                             ParticleFactory.createBlackHole(X, Y);
                             delete();
                         }

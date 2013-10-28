@@ -3,15 +3,18 @@ package region;
 import java.util.Random;
 
 import database.ObjectList;
+import enemy.Scientist;
+import gui.overlay.Overlay;
 import io.IO;
 import item.resources.Resource;
+import item.weapons.Weapon;
 import levelobject.Door;
 import levelobject.storage.StorageUnit;
 import org.newdawn.slick.Color;
 import particle.vacuum.VacuumParticles;
 import platform.NormalPlatform;
 import player.Inventory;
-import powerup.ammunition.Ammunition;
+import powerup.ammunition.AmmunitionCrate;
 
 public class Levels {
     
@@ -32,9 +35,12 @@ public class Levels {
         new Door(300, 300);
         new NormalPlatform(0, 550, 800, 1000, "concrete", Color.gray);
         
+        new Weapon("BLACK HOLE GUN", 0, 200, 200);
+        //new Scientist(550, 400);
+        
         //new VacuumParticles("BLACK HOLE", 500, 400);
         
-        new Ammunition(300, 300);
+        new AmmunitionCrate(400, 300);
         
         IO.saveGameToFile(gui.GameScreen.activeSaveFile);
         
@@ -48,8 +54,6 @@ public class Levels {
         database.GlobalVariables.floorID = f;
         database.GlobalVariables.levelID = l;
         resetCanvas(false);
-        
-        //this part might not work...
 
         if (l == -1) {
             Random r = new Random();
@@ -92,6 +96,8 @@ public class Levels {
     public static void resetCanvas(boolean destroyInventory) {
         
         System.out.println("Resetting level canvas");
+        
+        Overlay.clearAllFloatingText();
         
         gui.GameScreen.backgroundImage = null;
         gui.GameScreen.backgroundColor = null;

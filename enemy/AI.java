@@ -12,6 +12,7 @@ import player.Player;
 import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
+import gui.overlay.Overlay;
 
 /*this class defines all the movements that are possible for enemies (including those for land and air)
  * Enemies will override the update method to use only the appropriate methods
@@ -29,8 +30,6 @@ public class AI extends Physics {
     Timer attackTimer = new Timer(1000, true, true), idleTimer = new Timer(0, false, false);
 
     public void update() {
-        
-        System.out.println(attackTimer.getTime());
         
         //update hitboxes
         hitbox.setBounds((int) X, (int) Y, W, H);
@@ -67,7 +66,7 @@ public class AI extends Physics {
 
     public void attack(Object target) {
         ObjectList.player.health(-damage, this);
-        ObjectList.player.knockback(0.01, -0.01, this);
+        ObjectList.player.knockback(0.02, -0.015, this);
 
     }
 
@@ -82,6 +81,9 @@ public class AI extends Physics {
 
         if (amount < 0) {
             skinColor = Color.red;
+            Overlay.newFloatingText(Double.toString(amount), X, Y - 5, Color.red);
+        } else {
+            Overlay.newFloatingText(Double.toString(amount), X, Y - 5, Color.green);
         }
 
         this.health += amount;

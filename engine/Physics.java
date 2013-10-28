@@ -178,7 +178,7 @@ public class Physics {
 
         try {
             for (int t = 0; t <= ObjectList.items.size(); t++) {
-                if (r.intersects(((Item) ObjectList.items.get(t)).hitbox)) {
+                if (r.contains(((Item) ObjectList.items.get(t)).hitbox)) {
                     return ObjectList.items.get(t);
                 }
 

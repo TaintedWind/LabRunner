@@ -21,7 +21,7 @@ public class StorageUnit extends LevelObject {
         this.Y = y;
         
         if (n.equals("CHEST")) {
-            this.capacity = 21;
+            this.capacity = 40;
             try {
                 this.defaultTexture = new Image("./resources/chest.png", false, Image.FILTER_NEAREST);
             } catch (SlickException e) {
@@ -34,7 +34,7 @@ public class StorageUnit extends LevelObject {
         }
         
         this.storage = new Object[capacity];
-        generateRandomLoot(5, 1, 17);
+        generateRandomLoot(5, 0, 23);
         ObjectList.objects.add(this);
         
     }

@@ -83,7 +83,6 @@ public class GameScreen extends BasicGameState {
         database.GlobalVariables.deltaTime = delta;
         Input i = gc.getInput();
         ObjectList.updateAllObjects();
-
         state = sbg; //copy the sbg to a variable so external objects can use it
         
         if (pansLeftRight) {
@@ -113,6 +112,7 @@ public class GameScreen extends BasicGameState {
             if (Inventory.getSelectedItem() != null) {
                 ((Item) Inventory.getSelectedItem()).leftClickAction();
             }
+
             leftMouseDown = true;
             
         } else {
@@ -218,7 +218,7 @@ public class GameScreen extends BasicGameState {
         if (i.isKeyDown(Input.KEY_DELETE)) {
         }
 
-        if (i.isKeyDown(Input.KEY_Q)) {
+        if (i.isKeyDown(Input.KEY_Q) && i.isKeyDown(Input.KEY_E) == false) {
             Inventory.dropSelectedItem();
         }
 

@@ -11,6 +11,7 @@ import enemy.AI;
 import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
+import gui.overlay.Overlay;
 import liquid.Liquid;
 
 public class Player extends Physics {
@@ -72,6 +73,9 @@ public class Player extends Physics {
 
         if (amount < 0) {
             skinColor = Color.red;
+            Overlay.newFloatingText(Double.toString(amount), ObjectList.player.X, ObjectList.player.Y - 5, Color.red);
+        } else {
+            Overlay.newFloatingText(Double.toString(amount), ObjectList.player.X, ObjectList.player.Y - 5, Color.red);
         }
         
         this.health += amount / defenseMultiplier;

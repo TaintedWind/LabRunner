@@ -174,7 +174,7 @@ public class Weapon extends Item {
                 defaultTexture = new Image("./resources/blackhole_gun.png", false, Image.FILTER_NEAREST);
                 rightFacingTexture = new Image("./resources/blackhole_gun.png", false, Image.FILTER_NEAREST);
                 leftFacingTexture = rightFacingTexture.getFlippedCopy(true, false);
-                inventoryTexture = new Image("./resources/blackhole_gun.png", false, Image.FILTER_NEAREST);
+                inventoryTexture = new Image("./resources/blackhole_gun_icon.png", false, Image.FILTER_NEAREST);
             } catch (SlickException e) {
                 e.printStackTrace();
             }

@@ -1,5 +1,6 @@
 package gui;
 
+import database.Recipes;
 import engine.Mouse;
 import item.Item;
 import java.awt.Rectangle;
@@ -92,7 +93,7 @@ public class CraftingMenu extends BasicGameState {
             }
         }
         
-        //draw items   
+        //draw items
         try {
             for (int i = 0; i <= hotbar.length; i++) {
 
@@ -121,10 +122,10 @@ public class CraftingMenu extends BasicGameState {
         }
         
         //draw the item preview
-//        if (Inventory.craftedItemTexture != null) {
-//            Image preview = Inventory.craftedItemTexture;
-//            g.drawImage(preview, 400 - preview.getWidth() / 2, 400 - preview.getHeight() - 10, null);
-//        }
+        if (Inventory.craftedItemTexture != null) {
+            Image preview = Inventory.craftedItemTexture;
+            g.drawImage(preview, 400 - preview.getWidth() / 2, 400 - preview.getHeight() - 10, null);
+        }
         
     }
 
@@ -136,7 +137,9 @@ public class CraftingMenu extends BasicGameState {
         Input i = gc.getInput();
         
         //make an arraylist copy of recipe to do contain checks
-        recipe_backup = new ArrayList<Object>(Arrays.asList(recipe)); 
+        recipe_backup = new ArrayList<Object>(Arrays.asList(recipe));
+        //do a "fake" combine to return the item preview
+        Inventory.combine(recipe[0], recipe[1], recipe[2], true);
         
         if (i.isMouseButtonDown(0)) {
            if (Inventory.getClickedSlot() != -1) {
@@ -151,7 +154,7 @@ public class CraftingMenu extends BasicGameState {
         if (craftButton.intersects(Mouse.getX(), Mouse.getY(), 1, 1)) {
             if (i.isMouseButtonDown(0)) {
                 if (recipe.length > 0) {
-                    Inventory.combine(recipe[0], recipe[1], recipe[2]);
+                    Inventory.combine(recipe[0], recipe[1], recipe[2], false);
                     recipe = new Object[3];
                     sbg.enterState(0);
                 }

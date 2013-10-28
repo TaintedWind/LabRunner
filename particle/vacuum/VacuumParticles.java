@@ -67,7 +67,7 @@ public class VacuumParticles extends Particle {
     
     public void eatEverything() {
         
-        if (ObjectList.player.hitbox.intersects(range)) {
+        if (range.contains(ObjectList.player.hitbox)) {
             if (ObjectList.player.X > range.x && ObjectList.player.X < range.x + (range.width / 2)) {
                 ObjectList.player.X += 0.7 * database.GlobalVariables.deltaTime;
             } else if (ObjectList.player.X < range.x + range.width && ObjectList.player.X > range.x + (range.width / 2)) {
@@ -99,7 +99,9 @@ public class VacuumParticles extends Particle {
                 ((Physics)getCollidingEnemy(range)).dy = 0;
             }
             
-            ((Physics)getCollidingEnemy(range)).health(-0.5, this);
+            if (((Physics)getCollidingEnemy(hitbox)) != null) {
+                ((Physics)getCollidingEnemy(hitbox)).health(-5, this);
+            }
             
         }
         

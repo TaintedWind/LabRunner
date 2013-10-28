@@ -1,30 +1,22 @@
 package player;
 
 import database.ObjectList;
-import database.Recipes;
+import gui.overlay.Overlay;
 import item.Item;
-import item.projectiles.Projectile;
-import item.resources.Resource;
 import item.utilities.Tool;
-import item.weapons.*;
 import java.awt.Rectangle;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.lwjgl.input.Mouse;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.font.effects.ColorEffect;
 
 public class Inventory {
 
     public static int selectedSlotNumber;
-    public static Image slotIcon, selectedSlotIcon;
+    public static Image slotIcon, selectedSlotIcon, craftedItemTexture;
     
     public static int ammoAmount = 0;
     
@@ -49,12 +41,14 @@ public class Inventory {
         if (selectedSlotNumber <= hotbar.length) {
             if (hotbar[selectedSlotNumber] == null) {
                 hotbar[selectedSlotNumber] = o;
+                Overlay.newFloatingText(((Item)o).name, ObjectList.player.X, ObjectList.player.Y - 10, Color.white);
                 System.out.println("Added "+((Item)o).name+" to inventory");
             } else {
                 for (int i = 0; i < hotbar.length; i++) {
                     //if selected slot is full, add to an empty slot
                     if (hotbar[i] == null && Inventory.contains(o) == false) {
                         hotbar[i] = o;
+                        Overlay.newFloatingText(((Item)o).name, ObjectList.player.X, ObjectList.player.Y - 10, Color.white);
                         System.out.println("Added "+((Item)o).name+" to inventory");
                     }
                 }
@@ -63,63 +57,64 @@ public class Inventory {
         
     }
     
-    public static void combine(Object i, Object ii, Object iii) {
+    public static void combine(Object i, Object ii, Object iii, boolean returnImage) {
         
+        ArrayList<String> user_recipe = new ArrayList<String>();
         ArrayList<String> recipe = new ArrayList<String>();
-        int isMatchingRecipe = 0;
         boolean processRecipes = true;
-        
-        //if any of the ingredients is null, add a new Null item :|
+
+        //replace any null objects
         if (i == null) {
-            i = new Tool("null", 9999, 9999);
+          i = new Tool("null", 9999, 9999);
         }
         if (ii == null) {
-            ii = new Tool("null", 9999, 9999);    
+          ii = new Tool("null", 9999, 9999);    
         }
         if (iii == null) {
-            iii = new Tool("null", 9999, 9999); 
+          iii = new Tool("null", 9999, 9999); 
         }
         
-        System.out.println(((Item)i).name);
-        System.out.println(((Item)ii).name);
-        System.out.println(((Item)iii).name);
+        //add objects to user_recipe
+        user_recipe.add(((Item)i).name);
+        user_recipe.add(((Item)ii).name);
+        user_recipe.add(((Item)iii).name);
         
+        //sort the user recipe alphabetically
+        Collections.sort(user_recipe);
+        System.out.println("USER RECIPE: "+user_recipe);
         
-        //compare your items to each recipe
         try {
-            for (int count = 0; count < database.Recipes.recipes.size() / 4 && processRecipes == true; count++) { //for each recipe
-                
-                recipe = database.Recipes.getRecipe(count, true);
-                
-                if (recipe.get(0).equals(((Item)i).name) || recipe.get(0).equals(((Item)ii).name) || recipe.get(0).equals(((Item)iii).name)) {
-                    isMatchingRecipe++;
-                }
-                if (recipe.get(1).equals(((Item)i).name) || recipe.get(1).equals(((Item)ii).name) || recipe.get(1).equals(((Item)iii).name)) {
-                    isMatchingRecipe++;
-                }
-                if (recipe.get(2).equals(((Item)i).name) || recipe.get(2).equals(((Item)ii).name) || recipe.get(2).equals(((Item)iii).name)) {
-                    isMatchingRecipe++;
-                }
-                
-                if (isMatchingRecipe >= 3) {
-                    processRecipes = false;
-                    System.out.println("Items match: recipe #"+count);
-                    ((Item)i).delete();
-                    ((Item)ii).delete();
-                    ((Item)iii).delete();
-                    
-                    //creates the new item
-                    Item.newItem(database.Recipes.getRecipeResult(count, true).getClass().toString(), ((Item)database.Recipes.getRecipeResult(count, true)).name, 0, ObjectList.player.X, ObjectList.player.Y, true);
-                    
-                } else {
-                    System.out.println(isMatchingRecipe+"/3 ingredients matched");
-                    isMatchingRecipe = 0;
-                }
-            }
-        } catch (Exception e) { 
+          for (int c = 0; c < database.Recipes.recipes.size() && processRecipes == true; c++) {
+              
+              //get recipe c from the database and sort
+              recipe = database.Recipes.getRecipeIngredients(c, false);
+              Collections.sort(recipe);
+              
+              //if it matches the user_recipe, spawn a new instance of the result and stop checking the database
+              if (recipe.equals(user_recipe)) {
+                  processRecipes = false;
+                  System.out.println("Items match: recipe #"+c);
+                  ((Item)i).delete();
+                  ((Item)ii).delete();
+                  ((Item)iii).delete();
+                  
+                  Object result = ((Item)Item.newItem(database.Recipes.getRecipeResult(c, true).getClass().toString(), ((Item)database.Recipes.getRecipeResult(c, true)).name, 0, ObjectList.player.X, ObjectList.player.Y, false));
+                  craftedItemTexture = ((Item)result).inventoryTexture;
+                  
+                  //hhhnnngggghh
+                  
+                  if (returnImage == true) {
+                      ((Item)result).delete();
+                  }
+                  
+              } else {
+                  System.out.println("Does not match recipe #"+c);
+                  System.out.println(recipe);
+              }
+          }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
     }
 
     public static boolean contains(Object o) {
@@ -140,7 +135,7 @@ public class Inventory {
     
     public static void remove(Object o) {
         
-        //wipes the slot that the opject is in. called by item.delete()
+        //wipes the slot that the opject is in
         
         try {
             for (int i = 0; i <= hotbar.length; i++) {
