@@ -5,35 +5,38 @@ import org.newdawn.slick.Graphics;
 
 import particle.ParticleFactory;
 
-import enemy.AI;
+import ai.enemy.Enemy;
 import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
 
 import item.Item;
 import item.weapons.Weapon;
+import java.awt.Point;
 import main.Screen;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Line;
+import player.Player;
 
 public class Projectile extends Item {
 
     boolean deleteOnTouch, explodesOnTouch, isAffectedByGravity, collidedOnce = false;
     double knockbackStrength;
-    public Object parentWeapon;
+    public Object parentEntity; //whoever shot the projectile (player/enemy)
     Timer despawnTimer = new Timer(10000, true, true);
     double initialDX, initialDY;
     Line rope = new Line(0, 0, 0, 0);
     public int value;
+    Point target;
     
-    public Projectile(String n, double x, double y, double xdir, Object p) {
-        this.parentWeapon = p;
+    public Projectile(String n, double x, double y, double xdir, Object p, Point t) {
+        this.parentEntity = p;
         this.X = x;
         this.Y = y;
         this.name = n;
-        
+        this.target = t;
         this.dx = xdir;
         this.dy = getAngleOfElevation();
         
@@ -69,7 +72,7 @@ public class Projectile extends Item {
         } else if (n.equals("MISSILE")) {
             this.value = 10;
             this.damage = 10;
-            this.parentWeapon = p;
+            this.parentEntity = p;
             this.dx = xdir;
             this.dy = getAngleOfElevation();
             this.deleteOnTouch = true;
@@ -94,8 +97,8 @@ public class Projectile extends Item {
             } catch (SlickException e) {
                 e.printStackTrace();
             }
-        } else if (n.equals("GRAPPLE") && ((Weapon)parentWeapon).ammoLimitReached == false) {
-            ((Weapon)parentWeapon).ammoLimitReached = true;
+        } else if (n.equals("GRAPPLE") && ((Weapon)parentEntity).ammoLimitReached == false) {
+            ((Weapon)parentEntity).ammoLimitReached = true;
             this.dy = getAngleOfElevation();
             this.initialDX = dx;
             this.initialDY = dy;
@@ -109,7 +112,7 @@ public class Projectile extends Item {
         } else if (n.equals("ANTIMATTER")) {
             this.value = 40;
             this.damage = 0;
-            this.parentWeapon = p;
+            this.parentEntity = p;
             this.dx = xdir;
             this.dy = getAngleOfElevation();
             this.deleteOnTouch = true;
@@ -147,7 +150,7 @@ public class Projectile extends Item {
         
         if (this.name.equals("GRAPPLE")) {
 
-            rope.set((int)((Item)parentWeapon).X + (int)((Item)parentWeapon).W / 2, (int)((Item)parentWeapon).Y + ((Item)parentWeapon).H / 2, (int)X + (W / 2), (int)Y + H);
+            rope.set((int)((Item)parentEntity).X + (int)((Item)parentEntity).W / 2, (int)((Item)parentEntity).Y + ((Item)parentEntity).H / 2, (int)X + (W / 2), (int)Y + H);
             
             if (isColliding() == true) {
                 
@@ -163,7 +166,7 @@ public class Projectile extends Item {
                 ObjectList.player.fallHeight = 0;
                 ObjectList.player.fallSpeed = 0; 
                 ObjectList.player.Y -= 0.01;
-                if (gui.GameScreen.pansLeftRight) {
+                if (region.Levels.pansLeftRight) {
                     ObjectList.player.dx = initialDX / 1.5;
                     ObjectList.player.dy = initialDY / 1.5;
                 } else {
@@ -197,7 +200,7 @@ public class Projectile extends Item {
                     ObjectList.player.fallHeight = 0;
                     ObjectList.player.fallSpeed = 0; 
                     ObjectList.player.Y -= 0.01;
-                    if (gui.GameScreen.pansLeftRight) {
+                    if (region.Levels.pansLeftRight) {
                         ObjectList.player.dx = initialDX / 1.5;
                         ObjectList.player.dy = initialDY / 1.5;
                     } else {
@@ -221,12 +224,12 @@ public class Projectile extends Item {
             
             if (this.name == "ANTIMATTER") {
                     if (ObjectList.player.facingDir == "right") {
-                        if (X > Mouse.getX()) {
+                        if (X > target.x) {
                             ParticleFactory.createBlackHole(X, Y);
                             delete();
                         }
                     } else {
-                        if (X < Mouse.getX()) {
+                        if (X < target.x) {
                             ParticleFactory.createBlackHole(X, Y);
                             delete();
                         }
@@ -249,11 +252,17 @@ public class Projectile extends Item {
             if (isColliding() && deleteOnTouch) {
                 delete();
             }
+            
+            if (ObjectList.player.hitbox.intersects(hitbox) && parentEntity != ObjectList.player) {
+                ObjectList.player.knockback(knockbackStrength, -0.01, this);
+                ObjectList.player.health(-damage, this);
+                delete();
+            }
 
-            //gets the colliding enemy and does damage (then deletes itself)
-            if (getCollidingEnemy(hitbox) != null) {
+            //gets the colliding enemy and does damage, only if it was not the enemy that shot the projectile (then deletes itself)
+            if (getCollidingEnemy(hitbox) != null && parentEntity != getCollidingEnemy(hitbox)) {
                 ((Physics) getCollidingEnemy(hitbox)).knockback(knockbackStrength, -0.01, this);
-                ((AI) getCollidingEnemy(hitbox)).health(-damage * ObjectList.player.attackMultiplier, ObjectList.player); //when ranged enemies are added, change from player's damage to the shooter's damage
+                ((Enemy) getCollidingEnemy(hitbox)).health(-damage * ObjectList.player.attackMultiplier, ObjectList.player); //when ranged enemies are added, change from player's damage to the shooter's damage
                 if (explodesOnTouch) {
                     explode();
                 }
@@ -275,33 +284,31 @@ public class Projectile extends Item {
     public double getAngleOfElevation() {
 
         //takes the parent of the projectile (aka the gun that shot it) as a parameter
-
-        double targetX = Mouse.getX();
-        double targetY = Mouse.getY();
+        double targetX = target.x, targetY = target.y;
         double heightOfOpposite, lengthOfAdjacent;
 
-        if (ObjectList.player.facingDir == "right") {
-            heightOfOpposite = targetY - ((Physics) parentWeapon).Y + ((Physics) parentWeapon).H / 2;
-            lengthOfAdjacent = targetX - ((Physics) parentWeapon).X;
+        if (((Physics)parentEntity).facingDir == "right") {
+            heightOfOpposite = targetY - ((Physics) parentEntity).Y + ((Physics) parentEntity).H / 2;
+            lengthOfAdjacent = targetX - ((Physics) parentEntity).X;
         } else {
-            heightOfOpposite = targetY - ((Physics) parentWeapon).Y + ((Physics) parentWeapon).H / 2;
-            lengthOfAdjacent = ((Physics) parentWeapon).X - targetX;
+            heightOfOpposite = targetY - ((Physics) parentEntity).Y + ((Physics) parentEntity).H / 2;
+            lengthOfAdjacent = ((Physics) parentEntity).X - targetX;
         }
 
         double angleInRadians = heightOfOpposite / lengthOfAdjacent;
         System.out.println(angleInRadians - 0.15);
         
-        if (angleInRadians - 0.15 > 0) {
+        if (angleInRadians > 0) {
             if (angleInRadians > 1.5) {
                 return 1.5;
             } else {
-                return angleInRadians - 0.2;
+                return angleInRadians;
             }
         } else {
             if (angleInRadians < -1.5) {
                 return -1.5;
             } else {
-                return angleInRadians - 0.15;
+                return angleInRadians;
             }
         }
         
@@ -309,13 +316,9 @@ public class Projectile extends Item {
     }
 
     public void rotateImageToTarget() {
-        
-        //finish this!!! :\ if angle is > 1.2 then set angle to 60 or something
-
-        //System.out.println(getAngleOfElevation() * 80 + 180);
 
         if (defaultTexture != null) {
-            if (ObjectList.player.facingDir == "right") {
+            if (((Physics)parentEntity).facingDir == "right") {
                 if (getAngleOfElevation() * 80 < 60 && getAngleOfElevation() * 80 > -60) {
                     defaultTexture.setRotation((float) getAngleOfElevation() * 80);
                 } else {
@@ -325,7 +328,7 @@ public class Projectile extends Item {
                         defaultTexture.setRotation((float) -60);
                     }
                 }
-            } else if (ObjectList.player.facingDir == "left") {
+            } else if (((Physics)parentEntity).facingDir == "left") {
                 if (getAngleOfElevation() * 80 < 60 && getAngleOfElevation() * 80 > -60) {
                     defaultTexture.setRotation((float) -getAngleOfElevation() * 80 + 180);
                 } else {
@@ -339,10 +342,7 @@ public class Projectile extends Item {
         } else {
             System.err.println(this.name+" defaultTexture is null!");
         }
-    }
-    
-    public void createNew(double x, double y) {
-        new Projectile(name, x, y, dx, ObjectList.player);
+        
     }
     
     public void draw(Graphics g) {
@@ -350,7 +350,7 @@ public class Projectile extends Item {
         g.drawImage(defaultTexture, (int)X, (int)Y, null);
         if (this.name.equals("GRAPPLE")) {
             g.setColor(Color.black);
-            g.drawLine((int)((Item)parentWeapon).X + (int)((Item)parentWeapon).W / 2, (int)((Item)parentWeapon).Y + ((Item)parentWeapon).H / 2, (int)X + (W / 2), (int)Y + H);
+            g.drawLine((int)((Item)parentEntity).X + (int)((Item)parentEntity).W / 2, (int)((Item)parentEntity).Y + ((Item)parentEntity).H / 2, (int)X + (W / 2), (int)Y + H);
         }
     }
 }

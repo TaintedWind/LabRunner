@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 import liquid.Liquid;
 
 import platform.Platform;
-import enemy.AI;
+import ai.enemy.Enemy;
 import item.Item;
 import item.projectiles.Projectile;
 import levelobject.LevelObject;
@@ -27,8 +27,8 @@ public class Physics {
     public double X, Y, dx, dy; //x, y, velocity
     public int W, H; //size
     
+    public String facingDir = "left";
     
-
     public void gravity() {
 
         if (isCollidingWithGround() == false && isCollidingWithLiquid() == false) {
@@ -81,7 +81,7 @@ public class Physics {
         if (this.isCollidingWithBottom() == false && this.isCollidingWithLeftSide() == false && this.isCollidingWithRightSide() == false) {
         
             if (this == ObjectList.player) {
-                if (((Physics) attacker).X + ((Physics) attacker).W / 2 < X) {
+                if (((Physics) attacker).X + ((Physics) attacker).W / 2 < X + (W / 2)) {
                     Y -= 1;
                     dx = xvel * 1.5 * database.GlobalVariables.deltaTime;
                     System.out.println(attacker+" did knockback "+xvel+" on "+this);
@@ -91,8 +91,8 @@ public class Physics {
                     System.out.println(attacker+" did knockback "+xvel * -1+" on "+this);
                 }            
             } else {
-                if (attacker == Inventory.getSelectedItem() || ((Projectile)attacker).parentWeapon == Inventory.getSelectedItem()) {
-                    if (ObjectList.player.X + ObjectList.player.W / 2 < X) {
+                if (attacker == Inventory.getSelectedItem() || ((Projectile)attacker).parentEntity == ObjectList.player) {
+                    if (ObjectList.player.X + ObjectList.player.W / 2 < X + (W / 2)) {
                         Y -= 1;
                         dx = +xvel * 1.5 * database.GlobalVariables.deltaTime;
                         System.out.println(attacker+" did knockback "+xvel+" on "+this);
@@ -130,8 +130,26 @@ public class Physics {
 
         try {
             for (int t = 0; t <= ObjectList.enemies.size(); t++) {
-                if (r.intersects(((AI) ObjectList.enemies.get(t)).hitbox)) {
-                    return ObjectList.enemies.get(t);
+                if (r.intersects(((Enemy) ObjectList.enemies.get(t)).hitbox)) {
+                    if (ObjectList.enemies.get(t) != this) {
+                        return ObjectList.enemies.get(t);
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+    
+    public Object getCollidingPlatform(Rectangle r) {
+
+        try {
+            for (int t = 0; t <= ObjectList.platforms.size(); t++) {
+                if (r.intersects(((Platform) ObjectList.platforms.get(t)).body)) {
+                    return ObjectList.platforms.get(t);
                 }
 
             }
@@ -143,22 +161,6 @@ public class Physics {
     }
 
     public Object getCollidingLiquid(Rectangle r) {
-
-        try {
-            for (int t = 0; t <= ObjectList.liquids.size(); t++) {
-                if (r.intersects(((Liquid) ObjectList.liquids.get(t)).hitbox)) {
-                    return ObjectList.liquids.get(t);
-                }
-
-            }
-
-        } catch (Exception e) {
-        }
-
-        return null;
-    }
-
-    public Object getCollidingPlatform(Rectangle r) {
 
         try {
             for (int t = 0; t <= ObjectList.liquids.size(); t++) {

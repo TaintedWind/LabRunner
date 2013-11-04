@@ -21,7 +21,7 @@ public class Platform extends Physics {
     boolean isPlatformImageRendered = false;
     Point i = new Point(0, 0), ii = new Point(500, 500), target = ii;
     //custom hitboxes for the platforms
-    org.newdawn.slick.geom.Rectangle body = new org.newdawn.slick.geom.Rectangle(0, 0, 0, 0);
+    public Rectangle body = new Rectangle(0, 0, 0, 0);
     public Rectangle bottom = new Rectangle(0, 0, 0, 0);
     public Rectangle left = new Rectangle(0, 0, 0, 0);
     public Rectangle right = new Rectangle(0, 0, 0, 0);

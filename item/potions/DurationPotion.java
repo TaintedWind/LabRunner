@@ -137,7 +137,7 @@ public class DurationPotion extends Item {
         if (gui.GameScreen.rightMouseDown == false && getCollidingLevelObject(Mouse.getRectangle()) == null) {
             isActive = true;
             affect();
-            new Resource("BOTTLE", 0, (int)ObjectList.player.X, (int)ObjectList.player.Y);
+            new Resource("BOTTLE", 0, (int)ObjectList.player.X, (int)ObjectList.player.Y, true);
         }
     }
     

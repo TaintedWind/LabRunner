@@ -1,7 +1,7 @@
 package particle.vacuum;
 
 import particle.exploding.*;
-import enemy.AI;
+import ai.enemy.Enemy;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
@@ -69,15 +69,14 @@ public class VacuumParticles extends Particle {
         
         if (range.contains(ObjectList.player.hitbox)) {
             if (ObjectList.player.X > range.x && ObjectList.player.X < range.x + (range.width / 2)) {
-                ObjectList.player.X += 0.7 * database.GlobalVariables.deltaTime;
+                ObjectList.player.dx = 0.7;
             } else if (ObjectList.player.X < range.x + range.width && ObjectList.player.X > range.x + (range.width / 2)) {
-                ObjectList.player.X -= 0.7 * database.GlobalVariables.deltaTime;
+                ObjectList.player.dx = -0.7;
             }
             
             if (ObjectList.player.Y > range.y + (range.height / 2.5)) {
-                ObjectList.player.Y -= 0.2 * database.GlobalVariables.deltaTime;
+                ObjectList.player.dy = 0.2;
                 ObjectList.player.fallHeight = 0;
-                ObjectList.player.dy = 0;
             }
             
             if (ObjectList.player.hitbox.intersects(hitbox)) {

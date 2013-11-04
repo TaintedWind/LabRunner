@@ -1,6 +1,6 @@
 package particle.floating;
 
-import enemy.AI;
+import ai.enemy.Enemy;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 

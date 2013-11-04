@@ -1,7 +1,7 @@
 package gui.overlay;
 
 import database.ObjectList;
-import enemy.AI;
+import ai.enemy.Enemy;
 import item.Item;
 import java.awt.Graphics2D;
 import java.awt.Point;

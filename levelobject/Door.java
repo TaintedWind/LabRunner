@@ -35,12 +35,12 @@ public class Door extends LevelObject {
         if (floorProgress == 10) {
             System.out.println("Moving to next floor");
             floorProgress = 0;
-            database.GlobalVariables.floorID++;
-            loadLevel(database.GlobalVariables.floorID, -1);
+            Levels.floorID++;
+            loadLevel(Levels.floorID, -1);
         }
         
         ObjectList.deleteAllObjects(false);
-        Levels.loadLevel(database.GlobalVariables.floorID, -1);
+        Levels.loadLevel(Levels.floorID, -1);
     }
     
 }

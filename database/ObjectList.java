@@ -6,13 +6,14 @@ import liquid.Liquid;
 import platform.NormalPlatform;
 import player.Player;
 import powerup.PowerUp;
-import enemy.AI;
+import ai.enemy.Enemy;
 import engine.Timer;
 
 import java.util.LinkedList;
 import levelobject.LevelObject;
 import org.newdawn.slick.Graphics;
 import player.Inventory;
+import region.Levels;
 
 public class ObjectList {
 
@@ -67,7 +68,7 @@ public class ObjectList {
 
         try {
             for (int pl = 0; pl <= ObjectList.enemies.size(); pl++) {
-                ((AI) ObjectList.enemies.get(pl)).update();
+                ((Enemy) ObjectList.enemies.get(pl)).update();
 
             }
         } catch (Exception e) {
@@ -98,7 +99,7 @@ public class ObjectList {
         }
 
     }
-
+        
     public static void renderAllObjects(Graphics g) {
 
         //render all objects
@@ -133,7 +134,7 @@ public class ObjectList {
         //render enemies
         try {
             for (int pl = 0; pl <= ObjectList.enemies.size(); pl++) {
-                ((AI) ObjectList.enemies.get(pl)).draw(g);
+                ((Enemy) ObjectList.enemies.get(pl)).draw(g);
 
             }
         } catch (Exception e) {
@@ -176,6 +177,8 @@ public class ObjectList {
 
         dx = x * database.GlobalVariables.deltaTime;
         dy = y * database.GlobalVariables.deltaTime;
+        
+        Levels.endOfLevel += dx; //update the end of the level so newly loaded objects know where to go
 
         try {
             for (int i = 0; i <= ObjectList.items.size(); i++) {
@@ -206,8 +209,8 @@ public class ObjectList {
 
         try {
             for (int pl = 0; pl <= ObjectList.enemies.size(); pl++) {
-                ((AI) ObjectList.enemies.get(pl)).X += dx;
-                ((AI) ObjectList.enemies.get(pl)).Y += dy;
+                ((Enemy) ObjectList.enemies.get(pl)).X += dx;
+                ((Enemy) ObjectList.enemies.get(pl)).Y += dy;
 
             }
         } catch (Exception e) {
@@ -244,7 +247,7 @@ public class ObjectList {
     //delete all objects when called (does 10 passes)
     public static void deleteAllObjects(boolean destroyInventory) {
 
-        System.out.println("Clearing level canvas...");
+        System.out.println("Deleting all objects (destroyInventory: "+destroyInventory+")");
 
         for (int pass = 0; pass <= 10; pass++) {
 
@@ -288,7 +291,7 @@ public class ObjectList {
             for (int i = 0; i <= enemies.size(); i++) {
                 try {
                     if (enemies.get(i) != null) {
-                        ((AI) enemies.get(i)).delete();
+                        ((Enemy) enemies.get(i)).delete();
                     }
                 } catch (Exception e) {
                 }

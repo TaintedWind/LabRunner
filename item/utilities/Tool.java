@@ -13,7 +13,7 @@ public class Tool extends Item {
     
     //things that repair or manipulate other objects, also comes in two types: affecting and interacting
     
-    public Tool(String n, double x, double y) {
+    public Tool(String n, double x, double y, boolean processImmediately) {
         
         this.X = x;
         this.Y = y;
@@ -36,7 +36,9 @@ public class Tool extends Item {
             this.name = "NULL";
         }
         
-        ObjectList.items.add(this);
+        if (processImmediately) {
+            ObjectList.items.add(this);
+        }
         
     }
 
@@ -85,7 +87,7 @@ public class Tool extends Item {
     
     public void createNew(double x, double y) {
         System.out.println(name);
-        new Tool(name, x, y);
+        new Tool(name, x, y, true);
     }
     
 }

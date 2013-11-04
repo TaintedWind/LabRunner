@@ -6,7 +6,7 @@ public class Achievements {
         System.out.println("Loading achievements...");
     }
     
-    public static String getAchievement(int ID) {
+    public static String addAchievement(int ID) {
         return "null";
     }
      

@@ -1,6 +1,8 @@
 package player;
 
 import database.ObjectList;
+import database.recipe.RecipeIngredient;
+import database.recipe.Recipes;
 import gui.overlay.Overlay;
 import item.Item;
 import item.utilities.Tool;
@@ -16,7 +18,7 @@ import org.newdawn.slick.Image;
 public class Inventory {
 
     public static int selectedSlotNumber;
-    public static Image slotIcon, selectedSlotIcon, craftedItemTexture;
+    public static Image slotIcon, selectedSlotIcon;
     
     public static int ammoAmount = 0;
     
@@ -57,7 +59,7 @@ public class Inventory {
         
     }
     
-    public static void combine(Object i, Object ii, Object iii, boolean returnImage) {
+    public static void combine(Object i, Object ii, Object iii) {
         
         ArrayList<String> user_recipe = new ArrayList<String>();
         ArrayList<String> recipe = new ArrayList<String>();
@@ -65,13 +67,13 @@ public class Inventory {
 
         //replace any null objects
         if (i == null) {
-          i = new Tool("null", 9999, 9999);
+          i = new Tool("null", 0, 0, false);
         }
         if (ii == null) {
-          ii = new Tool("null", 9999, 9999);    
+          ii = new Tool("null", 0, 0, false);    
         }
         if (iii == null) {
-          iii = new Tool("null", 9999, 9999); 
+          iii = new Tool("null", 0, 0, false); 
         }
         
         //add objects to user_recipe
@@ -84,10 +86,10 @@ public class Inventory {
         System.out.println("USER RECIPE: "+user_recipe);
         
         try {
-          for (int c = 0; c < database.Recipes.recipes.size() && processRecipes == true; c++) {
+          for (int c = 0; c < database.recipe.Recipes.recipes.size() / 4 && processRecipes == true; c++) {
               
               //get recipe c from the database and sort
-              recipe = database.Recipes.getRecipeIngredients(c, false);
+              recipe = database.recipe.Recipes.getRecipeIngredients(c, false);
               Collections.sort(recipe);
               
               //if it matches the user_recipe, spawn a new instance of the result and stop checking the database
@@ -98,14 +100,7 @@ public class Inventory {
                   ((Item)ii).delete();
                   ((Item)iii).delete();
                   
-                  Object result = ((Item)Item.newItem(database.Recipes.getRecipeResult(c, true).getClass().toString(), ((Item)database.Recipes.getRecipeResult(c, true)).name, 0, ObjectList.player.X, ObjectList.player.Y, false));
-                  craftedItemTexture = ((Item)result).inventoryTexture;
-                  
-                  //hhhnnngggghh
-                  
-                  if (returnImage == true) {
-                      ((Item)result).delete();
-                  }
+                  Item.newItem(((RecipeIngredient)database.recipe.Recipes.getRecipeResult(c, true)).type, ((RecipeIngredient)database.recipe.Recipes.getRecipeResult(c, true)).name, 0, ObjectList.player.X, ObjectList.player.Y, false, true);
                   
               } else {
                   System.out.println("Does not match recipe #"+c);

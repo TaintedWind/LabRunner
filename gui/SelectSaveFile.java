@@ -117,7 +117,7 @@ public class SelectSaveFile extends BasicGameState {
                 if (IO.saveFileExists(1)) {
                     IO.loadGameFromFile(1);
                 } else {
-                    Levels.loadSpawn();
+                    Levels.generateFloor();
                 }
                 sbg.enterState(-8);
                 
@@ -128,7 +128,7 @@ public class SelectSaveFile extends BasicGameState {
                 if (IO.saveFileExists(2)) {
                     IO.loadGameFromFile(2);
                 } else {
-                    Levels.loadSpawn();
+                    Levels.loadLevel(Levels.floorID, Levels.levelID);
                 }
             }
             if (gameThreeButton.intersects(engine.Mouse.getX(), engine.Mouse.getY(), 1, 1)) {
@@ -136,7 +136,7 @@ public class SelectSaveFile extends BasicGameState {
                 if (IO.saveFileExists(3)) {
                     IO.loadGameFromFile(3);
                 } else {
-                    Levels.loadSpawn();
+                    Levels.loadLevel(Levels.floorID, Levels.levelID);
                 }
                 sbg.enterState(-8);
             }

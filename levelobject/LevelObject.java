@@ -33,7 +33,6 @@ public class LevelObject extends Physics {
         gravity();
 
         if (gui.GameScreen.rightMouseDown == true && hitbox.intersects(Mouse.getX(), 600 - Mouse.getY(), 1, 1) && ObjectList.player.range.intersects(hitbox)) {
-            System.out.println("Mouse is intersecting hitbox of "+this);
             activate();
         }
 

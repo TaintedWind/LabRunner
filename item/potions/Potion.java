@@ -102,7 +102,7 @@ public class Potion extends Item {
     public void rightClickAction() {
         if (getCollidingLevelObject(Mouse.getRectangle()) == null) {
             affect();
-            new Resource("BOTTLE", 0, (int)ObjectList.player.X, (int)ObjectList.player.Y);
+            new Resource("BOTTLE", 0, (int)ObjectList.player.X, (int)ObjectList.player.Y, true);
             delete();
         }
     }

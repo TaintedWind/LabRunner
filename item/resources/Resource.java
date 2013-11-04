@@ -12,7 +12,7 @@ public class Resource extends Item {
     int handleLength;
     boolean swings;
     
-    public Resource(String n, int ID, double x, double y) {
+    public Resource(String n, int ID, double x, double y, boolean processImmediately) {
         
         this.X = x;
         this.Y = y;
@@ -350,7 +350,9 @@ public class Resource extends Item {
             System.err.println(n+" is not a valid item name!");
         }
         
-        ObjectList.items.add(this);
+        if (processImmediately) {
+            ObjectList.items.add(this);
+        }
         
     }
 

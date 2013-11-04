@@ -1,12 +1,13 @@
 package gui;
 
-import database.Recipes;
+import database.recipe.Recipes;
 import engine.Mouse;
 import item.Item;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import main.Screen;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -22,13 +23,13 @@ import static player.Inventory.selectedSlotNumber;
 
 public class CraftingMenu extends BasicGameState {
     
-    Image transparent_black, button, button_mouseover, crafting_menu, storage_slot;
+    public static Image transparent_black, button, button_mouseover, crafting_menu, storage_slot, itemPreview, arrow;
     Rectangle quitButton, craftButton;
+    int mouseDown = 0;
     
     ArrayList<Object> recipe_backup = new ArrayList<Object>();
     
-    Object[] recipe = new Object[3];
-    Object itemPreview;
+    public static Object[] recipe = new Object[3];
     
     StateBasedGame sbg2;
     
@@ -48,12 +49,13 @@ public class CraftingMenu extends BasicGameState {
         button_mouseover = new Image("./resources/button_mouseover.png");
         crafting_menu = new Image("./resources/400_200_gui.png");
         storage_slot = new Image("./resources/storage_slot.png");
+        arrow = new Image("./resources/arrow_gui.png");
         
         quitButton = new Rectangle(80, 500, 300, 50);
         craftButton = new Rectangle(420, 500, 300, 50);
 
         //load recipes
-        database.Recipes.loadRecipes();
+        database.recipe.Recipes.loadRecipes();
         
     }
 
@@ -66,7 +68,7 @@ public class CraftingMenu extends BasicGameState {
         g.drawImage(gui.GameScreen.screenshot, 0, 0);
         g.drawImage(transparent_black, 0, 0, null);
         g.drawImage(crafting_menu, 200, 200, null);
-        g.drawString("CRAFTING", 360, 100);
+        g.drawString("CRAFTING", 355, 100);
         
         if (quitButton.intersects(Mouse.getX(), Mouse.getY(), 1, 1)) {
             g.drawImage(button_mouseover, 80, 500);           
@@ -112,20 +114,35 @@ public class CraftingMenu extends BasicGameState {
             
         }
         
-        //draw items in recipe slots
+        //draw recipe slots
         try {
-            for (int i = 0; i <= recipe.length; i++) {
-                g.drawImage(((Item)recipe[i]).defaultTexture, 300 + (i * 115) - ((Item)recipe[i]).W, 300 - ((Item)recipe[i]).H - 10, null);
+            for (int i = 0; i < recipe.length; i++) {
+                g.drawImage(storage_slot, 240 + (i * 50) + 16 - (storage_slot.getWidth() / 2), 275 + 16 - (storage_slot.getHeight() / 2), null);
+                g.drawImage(storage_slot, 525, 275 + 16 - (storage_slot.getHeight() / 2));
+                g.drawImage(arrow, 435, 278 + 16 - (storage_slot.getHeight() / 2));
             }
         } catch (Exception e) {
             
         }
         
-        //draw the item preview
-        if (Inventory.craftedItemTexture != null) {
-            Image preview = Inventory.craftedItemTexture;
-            g.drawImage(preview, 400 - preview.getWidth() / 2, 400 - preview.getHeight() - 10, null);
+        g.setColor(Color.white);
+            
+        //draw items in recipe slots
+        try {
+            for (int i = 0; i < recipe.length; i++) {
+                if (((Item)recipe[i]) != null) {
+                    g.drawImage(((Item)recipe[i]).inventoryTexture, 240 + (i * 50) + 16 - (((Item)recipe[i]).inventoryTexture.getWidth() / 2), 275 + 16 - (((Item)recipe[i]).inventoryTexture.getHeight() / 2), null);
+                }
+            }
+        } catch (Exception e) {
+            
         }
+        
+        //draw the item preview (itemPreview is set by the addToRecipe function below)
+        if (itemPreview != null) {
+            g.drawImage(itemPreview, 530 + 16 - (itemPreview.getWidth() / 2), 275 + 16 - (itemPreview.getHeight() / 2));
+        }
+
         
     }
 
@@ -138,13 +155,14 @@ public class CraftingMenu extends BasicGameState {
         
         //make an arraylist copy of recipe to do contain checks
         recipe_backup = new ArrayList<Object>(Arrays.asList(recipe));
-        //do a "fake" combine to return the item preview
-        Inventory.combine(recipe[0], recipe[1], recipe[2], true);
         
-        if (i.isMouseButtonDown(0)) {
+        if (i.isMouseButtonDown(0) && mouseDown == 0) {
+           mouseDown = 1;
            if (Inventory.getClickedSlot() != -1) {
                 addToRecipe(Inventory.hotbar[Inventory.getClickedSlot()]);
            }
+        } else {
+            mouseDown = 0;
         }
         
         if (i.isKeyDown(Input.KEY_F11)) {
@@ -154,8 +172,11 @@ public class CraftingMenu extends BasicGameState {
         if (craftButton.intersects(Mouse.getX(), Mouse.getY(), 1, 1)) {
             if (i.isMouseButtonDown(0)) {
                 if (recipe.length > 0) {
-                    Inventory.combine(recipe[0], recipe[1], recipe[2], false);
+                    if (itemPreview != null) { //only combine if there is acually an item in the output
+                        Inventory.combine(recipe[0], recipe[1], recipe[2]);
+                    }
                     recipe = new Object[3];
+                    CraftingMenu.itemPreview = null;
                     sbg.enterState(0);
                 }
             }        
@@ -163,8 +184,8 @@ public class CraftingMenu extends BasicGameState {
         
         if (quitButton.intersects(Mouse.getX(), Mouse.getY(), 1, 1)) {
             if (i.isMouseButtonDown(0)) {
-                recipe = null;
                 recipe = new Object[3];
+                CraftingMenu.itemPreview = null;
                 sbg.enterState(0);
             }        
         }
@@ -183,6 +204,9 @@ public class CraftingMenu extends BasicGameState {
                 }
                 
                 System.out.println("Added "+clickedItem+" to recipe!");
+                
+                itemPreview = Recipes.getRecipePreview();
+                
             }
         }
     }

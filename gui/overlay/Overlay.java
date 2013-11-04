@@ -63,13 +63,6 @@ public class Overlay {
                 g.setColor(Color.white);
                 g.drawString(((Item)Inventory.getSelectedItem()).name, 10, 60);
             }
-            
-            if (gui.GameScreen.levelName != null) {
-                g.setColor(Color.gray);
-                g.drawString(gui.GameScreen.levelName, 12, 77);
-                g.setColor(Color.white);
-                g.drawString(gui.GameScreen.levelName, 10, 75);
-            }            
 
             //draw FPS
             g.setColor(Color.gray);

@@ -5,6 +5,7 @@ import engine.Mouse;
 import player.Inventory;
 import item.Item;
 import item.projectiles.Projectile;
+import java.awt.Point;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
@@ -15,7 +16,7 @@ public class Weapon extends Item {
     public boolean ammoLimitReached;
     public String ammunition;
     
-    public Weapon(String n, int ID, double x, double y) {
+    public Weapon(String n, int ID, double x, double y, boolean processImmediately) {
         this.X = x;
         this.Y = y;
         this.name = n;
@@ -182,7 +183,9 @@ public class Weapon extends Item {
             System.out.println(n+" is not a valid weapon name!");
         }
         
-        ObjectList.items.add(this);
+        if (processImmediately) {
+            ObjectList.items.add(this);
+        }
         
     }
 
@@ -263,9 +266,9 @@ public class Weapon extends Item {
         System.out.println(Inventory.ammoAmount);
         
         if (ObjectList.player.facingDir == "right") {
-            Inventory.ammoAmount -= ((Projectile)new Projectile(this.ammunition, (int) X + W, (int) Y + (H / 2), strength, this)).value;
+            Inventory.ammoAmount -= ((Projectile)new Projectile(this.ammunition, (int) X + W, (int) Y + (H / 2), strength, ObjectList.player, new Point(Mouse.getX(), Mouse.getY()))).value;
         } else {
-            Inventory.ammoAmount -= ((Projectile)new Projectile(this.ammunition, (int) X + W, (int) Y + (H / 2), -strength, this)).value;
+            Inventory.ammoAmount -= ((Projectile)new Projectile(this.ammunition, (int) X, (int) Y + (H / 2), -strength, ObjectList.player, new Point(Mouse.getX(), Mouse.getY()))).value;
         }
     }
 }

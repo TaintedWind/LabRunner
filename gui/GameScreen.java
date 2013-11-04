@@ -17,18 +17,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import player.Inventory;
+import region.Levels;
 
 public class GameScreen extends BasicGameState {
 
-    public static Image backgroundImage;
     public static Image screenshot;
-    public static String levelName;
-    org.newdawn.slick.geom.Rectangle backgroundRectangle = new org.newdawn.slick.geom.Rectangle(0, 0, 800, 600);
-    public static boolean isBackgroundImageTiled = false, consoleMode = false;
-    public static Color backgroundColor = new Color(20, 20, 20);
     public static boolean leftMouseDown, rightMouseDown;
     public static StateBasedGame state;
-    public static boolean pansUpDown, pansLeftRight;
     public static int activeSaveFile;
     
 
@@ -50,8 +45,8 @@ public class GameScreen extends BasicGameState {
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-        if (backgroundColor != null) {
-            g.setBackground(backgroundColor);
+        if (region.Levels.backgroundColor != null) {
+            g.setBackground(region.Levels.backgroundColor);
         }
         
         //g.scale(Screen.getWindowWidth() / 800, Screen.getWindowHeight() / 600);
@@ -62,10 +57,10 @@ public class GameScreen extends BasicGameState {
             System.out.println("Set screenshot capture area to: "+screenshot.getWidth()+", "+screenshot.getHeight());
         }
 
-        if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, null);
-            if (isBackgroundImageTiled == true) {
-                g.texture(backgroundRectangle, backgroundImage, 0.03f, 0.03f, false); 
+        if (region.Levels.backgroundImage != null) {
+            g.drawImage(region.Levels.backgroundImage, 0, 0, null);
+            if (region.Levels.isBackgroundImageTiled == true) {
+                //tile the background
             }
         }
 
@@ -85,7 +80,7 @@ public class GameScreen extends BasicGameState {
         ObjectList.updateAllObjects();
         state = sbg; //copy the sbg to a variable so external objects can use it
         
-        if (pansLeftRight) {
+        if (region.Levels.pansLeftRight) {
              
             ObjectList.player.X = Screen.getWindowWidth() / 2;
             
@@ -97,14 +92,6 @@ public class GameScreen extends BasicGameState {
                     ObjectList.moveAllObjects(-0.3, 0);
                 }
             } 
-        }
-        
-        if (pansUpDown && pansLeftRight == false) {
-            if (ObjectList.player.Y > Screen.getWindowHeight() / 2) {
-                ObjectList.moveAllObjects(0, -0.2);
-            } else if (ObjectList.player.Y > Screen.getWindowHeight() / 2) {
-                ObjectList.moveAllObjects(0, 0.2);
-            }
         }
 
         if (i.isMouseButtonDown(0)) {
@@ -194,11 +181,6 @@ public class GameScreen extends BasicGameState {
             sbg.enterState(-5);
         }
         
-        if (i.isKeyDown(Input.KEY_Y)) {
-            //new Tool("PLUNGER", engine.Mouse.getX(), engine.Mouse.getY());
-            ((Tool)database.Recipes.getRecipeResult(1, true)).createNew(ObjectList.player.X, 0);
-        }
-        
         if (i.isKeyDown(Input.KEY_LCONTROL) && i.isKeyDown(Input.KEY_Q)) {
             Inventory.dropAll();
         }
@@ -225,32 +207,23 @@ public class GameScreen extends BasicGameState {
         if (i.isKeyDown(Input.KEY_F11)) {
             Screen.toggleFullScreen();
         }
-        
-        if (i.isKeyDown(Input.KEY_X)) {
-            ObjectList.moveAllObjects(0.3, 0);
-        }
-        if (i.isKeyDown(Input.KEY_Z)) {
-            ObjectList.moveAllObjects(-0.3, 0);
-        }
 
         if (ObjectList.player.health == 0) {
             sbg.enterState(-3); //go to death screen if you die
         }
         
-        if (pansLeftRight == false) {
+        if (region.Levels.pansLeftRight == false) {
             if (ObjectList.player.X < 0) {
                 ObjectList.player.X = 0;
+                ObjectList.player.dy = 0;
             } else if (ObjectList.player.X + ObjectList.player.W > 800) {
                 ObjectList.player.X = 800 - ObjectList.player.W;
             }
         }
         
-        if (pansUpDown == false) {
-            if (ObjectList.player.Y > 600) {
-                ObjectList.player.Y = 600 - ObjectList.player.H;
-            } else if (ObjectList.player.Y < 0) {
-                ObjectList.player.Y = 0;
-            }
+        if (ObjectList.player.Y > 1000) {
+            ObjectList.player.health(-ObjectList.player.maxHealth, null);
+        } else if (ObjectList.player.Y < 0) {
         }
         
     }

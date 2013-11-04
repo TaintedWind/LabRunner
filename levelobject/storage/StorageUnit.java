@@ -1,6 +1,7 @@
 package levelobject.storage;
 
 import database.ObjectList;
+import static gui.StorageMenu.storageUnit;
 import item.Item;
 import item.explosives.Explosive;
 import item.resources.Resource;
@@ -9,6 +10,7 @@ import java.util.Random;
 import org.newdawn.slick.Image;
 import levelobject.LevelObject;
 import org.newdawn.slick.SlickException;
+import player.Inventory;
 
 public class StorageUnit extends LevelObject {
 
@@ -19,6 +21,8 @@ public class StorageUnit extends LevelObject {
         
         this.X = x;
         this.Y = y;
+        
+        this.name = n;
         
         if (n.equals("CHEST")) {
             this.capacity = 40;
@@ -42,28 +46,40 @@ public class StorageUnit extends LevelObject {
     @Override
     public void activate() {
         
-        System.out.println("Opening chest");
-        
         gui.StorageMenu.storageUnit = this;
         gui.GameScreen.state.enterState(-7);
 
     }
     
-    public void addItem(Object o, int slot) {
+    public void addItem(Object o) {
         
-        //adds item to specific slot (unless slot is -1, then add to next available)
+        //adds item to next available slot
         
-        if (slot == -1) {
-            for (int i = 0; i != capacity; i++) {       
-                if (storage[i] == null) {
-                    storage[i] = o;
+        System.out.println(ObjectList.items.size());
+        
+        for (int i = 0; i != capacity; i++) {       
+            if (storage[i] == null && contains(o) == false) {
+                storage[i] = o;
+                ObjectList.items.remove(o);
+                System.out.println("Added "+((Item)o).name+" to "+name);
+            }      
+        }
+                
+    }
+    
+    public void removeItem(Object o) {
+        
+        //removes item from chest
+        
+        System.out.println(ObjectList.items.size());
+        
+        for (int i = 0; i != capacity; i++) {
+            if (contains(o)) {
+                if (storage[i] == o) {
+                    ObjectList.items.add(o);
+                    storage[i] = null;
+                    System.out.println("Removed "+((Item)o).name+" from "+name);
                 }      
-            }    
-        } else {
-            if (storage[slot] == null) {
-                storage[slot] = o;
-            } else {
-                System.out.println("Slot "+slot+" is full!");
             }
         }
         
@@ -78,7 +94,7 @@ public class StorageUnit extends LevelObject {
                     
                     if (randomNull != 0) { //if the randomNull variable is not 0 (amount determines the chance)
                         if (randomID > 0 && randomID < max) { //only spawn an item in if the random ID is within the ID range
-                            storage[i] = new Resource("RANDOM", randomID, 9999, 9999);
+                            storage[i] = new Resource("RANDOM", randomID, X, Y, false);
                         }
                     } else {
                         storage[i] = null;
@@ -90,8 +106,6 @@ public class StorageUnit extends LevelObject {
     }
     
     public void delete() {
-        
-        System.out.println("Deleting storage unit...");
         
         for (int i = 0; i != capacity; i++) {
             if (storage[i] != null) {
@@ -105,6 +119,17 @@ public class StorageUnit extends LevelObject {
     
     public Object getItem(int index) {
         return storage[index];
+    }
+    
+    public boolean contains(Object o) {
+        for (int i = 0; i != capacity; i++) {
+            if (storage[i] == o) {
+                return true;
+            }
+        }
+        
+        return false;
+        
     }
     
 }

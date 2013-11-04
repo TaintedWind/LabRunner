@@ -1,6 +1,6 @@
 package particle.exploding;
 
-import enemy.AI;
+import ai.enemy.Enemy;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
@@ -45,18 +45,19 @@ public class ExplosiveParticles extends Particle {
     
     public void doKnockBack() {
         
-        if (getCollidingEnemy(range) != null) {
-            ((AI)getCollidingEnemy(range)).knockback(0.02, -0.01, this);
-            ((AI)getCollidingEnemy(range)).health(-5, range);
-        }
+        //if (animationTimer.getTime() < 100) {
+            if (getCollidingEnemy(range) != null) {
+                ((Enemy)getCollidingEnemy(range)).knockback(1, -0.02, this);
+                ((Enemy)getCollidingEnemy(range)).health(-5, range);
+            }
 
-        if (ObjectList.player.hitbox.intersects(range)) {
-            System.out.println("Player intersects range of "+this);
-            ObjectList.player.knockback(0.04, -0.01, this);
-            ObjectList.player.health(-5, this);
-        }
-        
-        
+            if (ObjectList.player.hitbox.intersects(range)) {
+                System.out.println("Player intersects range of "+this);
+                ObjectList.player.knockback(0.03, -0.01, this);
+                ObjectList.player.health(-5, this);
+            }
+        //}
+  
     }
 
     public void animate() {
@@ -66,8 +67,6 @@ public class ExplosiveParticles extends Particle {
     }
 
     public void draw(Graphics g) {
-        
-        System.out.println(animationTimer.getTime());
 
         if (animationTimer != null) {
 

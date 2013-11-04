@@ -1,4 +1,4 @@
-package enemy;
+package ai.enemy;
 
 import java.awt.Rectangle;
 
@@ -13,23 +13,31 @@ import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
 import gui.overlay.Overlay;
+import item.projectiles.Projectile;
+import particle.ParticleFactory;
 
 /*this class defines all the movements that are possible for enemies (including those for land and air)
  * Enemies will override the update method to use only the appropriate methods
  */
 
-public class AI extends Physics {
+public class Enemy extends Physics {
 
     int damage;
     int idleMovementDelay;
     double health, maxHealth;
     Image defaultTexture;
-    String state;
+    public String state, name;
     Point target, t1, t2;
     Color skinColor = Color.white;
-    Timer attackTimer = new Timer(1000, true, true), idleTimer = new Timer(0, false, false);
+    Timer attackTimer, idleTimer;
+    boolean explodesOnDeath;
+    String ammo;
+    Rectangle cliffDetection = new Rectangle(0, 0, 0, 0);
 
     public void update() {
+        
+        W = defaultTexture.getWidth();
+        H = defaultTexture.getHeight();
         
         //update hitboxes
         hitbox.setBounds((int) X, (int) Y, W, H);
@@ -55,18 +63,66 @@ public class AI extends Physics {
     }
 
     public void followPlayer() {
-        if (isCollidingWithGround()) {
+        
+        if (ObjectList.player.X > X) {
+            facingDir = "right";
+        } else {
+            facingDir = "left";
+        }
+        
+        if (isCollidingWithGround() && isNearCliff() == false) {
             if (ObjectList.player.X > X) {
-                X += 0.2 * database.GlobalVariables.deltaTime;
+                moveRight();
             } else {
-                X -= 0.2 * database.GlobalVariables.deltaTime;
+                moveLeft();
             }
+        }
+    }
+    
+    public void moveLeft() {
+        if (getCollidingEnemy(hitbox) == null) {
+            X -= 0.2 * database.GlobalVariables.deltaTime;
+            facingDir = "left";
+        } else {
+            if (((Physics)getCollidingEnemy(hitbox)).X > X) {
+                X--;
+            } else {
+                X++;
+            }
+        }
+    }
+    
+    public void moveRight() {
+        if (getCollidingEnemy(hitbox) == null) {
+            X += 0.2 * database.GlobalVariables.deltaTime;
+            facingDir = "right";
+        } else {
+            if (((Physics)getCollidingEnemy(hitbox)).X > X) {
+                X--;
+            } else {
+                X++;
+            }
+        }
+    }
+    
+    public void jump() {
+        if (isCollidingWithGround()) {
+            Y -= 0.1;
+            dy = -0.3;
+        }
+    }
+    
+    public void shoot() {
+        if (ObjectList.player.X > X) {
+            new Projectile(ammo, X + W + 10, Y + (W / 2), 1, this, new java.awt.Point((int)ObjectList.player.X, (int)ObjectList.player.Y + 20));
+        } else {
+            new Projectile(ammo, X - 10, Y + (W / 2), -1, this, new java.awt.Point((int)ObjectList.player.X, (int)ObjectList.player.Y + 20));
         }
     }
 
     public void attack(Object target) {
-        ObjectList.player.health(-damage, this);
-        ObjectList.player.knockback(0.02, -0.015, this);
+        ((Physics)target).health(-damage, this);
+        ((Physics)target).knockback(0.02, -0.01, this);
 
     }
 
@@ -92,6 +148,9 @@ public class AI extends Physics {
             this.health = maxHealth;
         } else if (this.health < 0 || this.health == 0) {
             this.health = 0;
+            if (explodesOnDeath) {
+                ParticleFactory.createExplosion(X, Y);
+            }
             this.delete();
         }
     }
@@ -116,6 +175,14 @@ public class AI extends Physics {
         }
 
     }
+    
+    public boolean isNearCliff() {
+        if (getCollidingPlatform(cliffDetection) != null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     public void delete() {
         ObjectList.enemies.remove(this);
@@ -135,9 +202,11 @@ public class AI extends Physics {
         skinColor = Color.white;
         g.setColor(Color.white);
 
-        /*g.setColor(Color.red);
-        g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+        g.setColor(Color.red);
+        g.drawRect(cliffDetection.x, cliffDetection.y, cliffDetection.width, cliffDetection.height);
         g.setColor(Color.blue);
-        g.drawRect(range.x, range.y, range.width, range.height);*/
+        g.drawRect(range.x, range.y, range.width, range.height);
+        g.setColor(Color.green);
+        g.drawRect(lineofsight.x, lineofsight.y, lineofsight.width, lineofsight.height);
     }
 }

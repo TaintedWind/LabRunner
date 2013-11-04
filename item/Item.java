@@ -8,7 +8,7 @@ import player.Inventory;
 import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
-import enemy.AI;
+import ai.enemy.Enemy;
 import item.explosives.Explosive;
 import item.potions.DurationPotion;
 import item.potions.Potion;
@@ -79,15 +79,17 @@ public class Item extends Physics {
 
     public void attack() {
         
-        if (ObjectList.player.getCollidingEnemy(ObjectList.player.range) != null) {
+        if (ObjectList.player.getCollidingEnemy(ObjectList.player.range) != null && this.getClass() == Weapon.class) {
             ((Physics) getCollidingEnemy(ObjectList.player.range)).knockback(0.02, -0.01, this);
-            ((AI) getCollidingEnemy(ObjectList.player.range)).health(-damage * ObjectList.player.attackMultiplier, this);
+            ((Enemy) getCollidingEnemy(ObjectList.player.range)).health(-damage * ObjectList.player.attackMultiplier, this);
         }
 
     }
     
     //creates an item, can specify the class for simple item spawning throughout the code
-    public static Object newItem(String c, String n, int ID, double X, double Y, boolean addToInventory) {
+    public static Object newItem(String c, String n, int ID, double X, double Y, boolean addToInventory, boolean process) {
+        
+        System.out.println("Creating new item: "+c+", "+n+", "+X+", "+Y+", "+addToInventory);
 
         try {
             Object o;
@@ -99,21 +101,23 @@ public class Item extends Physics {
             } else if (c.equals("class item.potions.Potion")) {
                 o = new Potion(n, ID, X, Y);
             } else if (c.equals("class item.utilities.Tool")) {
-                o = new Tool(n, X, Y);
+                o = new Tool(n, X, Y, process);
             } else if (c.equals("class item.weapons.Weapon")) {
-                o = new Weapon(n, ID, X, Y);
+                o = new Weapon(n, ID, X, Y, process);
             } else if (c.equals("class item.resources.Resource")) {
-                o = new Resource(n, ID, X, Y);
+                o = new Resource(n, ID, X, Y, process);
             } else {
                 System.err.println("Item class "+c+" does not exist!");
                 o = null;
             }
+            
             if (o != null) {
                 if (addToInventory == true) {
                     Inventory.add(o);
                 }
             }
             
+            //System.out.println("Created new item: "+((Item)o).name+", "+((Item)o).X+", "+((Item)o).Y);
             return o;
             
         } catch (Exception e) {

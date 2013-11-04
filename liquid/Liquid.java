@@ -6,7 +6,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
-import enemy.AI;
+import ai.enemy.Enemy;
 import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
@@ -46,7 +46,7 @@ public class Liquid extends Physics {
 
         if (damageTimer.getTime() > 500) {
             if (getCollidingEnemy(hitbox) != null && category == "danger") {
-                ((AI) getCollidingEnemy(hitbox)).health(-damage, this);
+                ((Enemy) getCollidingEnemy(hitbox)).health(-damage, this);
             }
             if (ObjectList.player.hitbox.intersects(hitbox)) {
                 ObjectList.player.health(-damage, this);

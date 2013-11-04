@@ -225,14 +225,8 @@ public class StorageMenu extends BasicGameState {
     public void addToStorage(Object clickedItem) {
         if (Inventory.getClickedSlot() >= 0 && Inventory.getClickedSlot() <= Inventory.hotbar.length) {
             if (storage_copy.contains(clickedItem) == false && clickedItem != null) {
-                for (int i = 0; i < storage.length; i++) {
-                    if (((StorageUnit)storageUnit).storage[i] == null && Inventory.contains(clickedItem) == true) {
-                        ((StorageUnit)storageUnit).storage[i] = clickedItem;
-                        Inventory.remove(clickedItem);
-                        ((Item)clickedItem).Y = 9999;
-                        System.out.println("Added "+((Item)clickedItem).name+" to "+storageUnit);
-                    }
-                }
+                Inventory.remove(clickedItem);
+                ((StorageUnit)storageUnit).addItem(clickedItem);
             }
         }
     }
@@ -242,8 +236,7 @@ public class StorageMenu extends BasicGameState {
             if (((StorageUnit)storageUnit).storage[i] == clickedItem && Inventory.contains(clickedItem) == false) {
                 Inventory.add(clickedItem);
                 if (Inventory.contains(clickedItem)) {
-                    ((StorageUnit)storageUnit).storage[i] = null;
-                    System.out.println("Removed "+((Item)clickedItem).name+" from "+storageUnit);
+                    ((StorageUnit)storageUnit).removeItem(clickedItem);
                 }
             }
         }

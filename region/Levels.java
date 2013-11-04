@@ -1,48 +1,69 @@
 package region;
 
-import java.util.Random;
-
 import database.ObjectList;
-import enemy.Scientist;
 import gui.overlay.Overlay;
 import io.IO;
 import item.resources.Resource;
 import item.weapons.Weapon;
+import java.util.Random;
 import levelobject.Door;
 import levelobject.storage.StorageUnit;
 import org.newdawn.slick.Color;
-import particle.vacuum.VacuumParticles;
+import org.newdawn.slick.Image;
 import platform.NormalPlatform;
-import player.Inventory;
 import powerup.ammunition.AmmunitionCrate;
 
 public class Levels {
     
-    public static int floorProgress = 0;
+    public static int floorProgress = 0, endOfLevel, floorID = 0, levelID = 0;
+    public static boolean pansLeftRight, bottomExitTopEntrance;
     
-    public static void loadSpawn() {
+    static int lastNum;
+    
+    public static Image backgroundImage;
+    public static boolean isBackgroundImageTiled = false;
+    public static Color backgroundColor = new Color(20, 20, 20);  
+    
+    public static void generateFloor() {
         
-        System.out.println("Loading spawn...");
+        endOfLevel = 0;
+        pansLeftRight = true;
         
-        database.GlobalVariables.floorID = 0;
-        database.GlobalVariables.levelID = 0;
-        ObjectList.player.X = 20;
-        ObjectList.player.Y = 450;
-        gui.GameScreen.backgroundColor = new Color(30, 30, 30);
+        for (int i = 0; i != 10; i++) {
+            loadRandomLevel();
+        }
         
-        new StorageUnit("CHEST", 100, 0);
-        new Resource("GOLD", 0, 200, 400);
-        new Door(300, 300);
-        new NormalPlatform(0, 550, 800, 1000, "concrete", Color.gray);
+    }
+    
+    public static void loadRandomLevel() {
+        Random r = new Random();
+        int max = 0;
+        int rndm = 0;
         
-        new Weapon("BLACK HOLE GUN", 0, 200, 200);
-        //new Scientist(550, 400);
         
-        //new VacuumParticles("BLACK HOLE", 500, 400);
+        if (floorID == 0) { //set the max to however many levels are created for the specific floor (see below)
+            max = 3;
+        } else if (floorID == 1) {
+            max = 12;
+        }
         
-        new AmmunitionCrate(400, 300);
+        if (lastNum % 2 == 0) { //if the last number was even (aka bottom entrance, top exit), generate an odd number
+            while (true) {
+                rndm = r.nextInt(max);
+                if (rndm % 2 != 0 && rndm != 0) {
+                    break;
+                }
+            }
+        } else { //if the last number was odd (aka top entrance, bottom exit), generate an even number
+            while (true) {
+                rndm = r.nextInt(max);
+                if (rndm % 2 == 0 && rndm != 0) {
+                    break;
+                }
+            }
+        }
         
-        IO.saveGameToFile(gui.GameScreen.activeSaveFile);
+        loadLevel(floorID, rndm);
         
     }
 
@@ -50,63 +71,46 @@ public class Levels {
 
         //loads random if -1, else load the ID
         
-        int level;
-        database.GlobalVariables.floorID = f;
-        database.GlobalVariables.levelID = l;
-        resetCanvas(false);
-
-        if (l == -1) {
-            Random r = new Random();
-            level = r.nextInt(4);
-        } else {
-            level = l;
-        }
+        int level = l;
+        lastNum = l;
         
-        System.out.println("Loading floor "+f+", room "+level);
+        //System.out.println("Loading floor "+f+", room "+level);
         
-        //level creation
+        //level creation (odd numbered levels are bottom entrance, top exit)
         if (f == 0) {
             if (level == 0) {
                 loadLevel(0, 1);
             } else if (level == 1) {
-                ObjectList.player.X = 20;
-                ObjectList.player.Y = 450;
-                new NormalPlatform(0, 550, 800, 1000, "concrete", null);
-                new Door(300, 300);
-
+                new NormalPlatform(endOfLevel, 550, 800, 1000, "concrete", null);
+                new NormalPlatform(endOfLevel, 0, 100, 400, "concrete", null);
+                new StorageUnit("CHEST", endOfLevel + 200, 400);
             } else if (level == 2) {
-                ObjectList.player.X = 20;
-                ObjectList.player.Y = 450;
-                new NormalPlatform(0, 550, 800, 1000, "concrete", null);
-                new Door(300, 300);
-
-            } else if (level == 3) {
-                ObjectList.player.X = 20;
-                ObjectList.player.Y = 450;
-                new NormalPlatform(0, 550, 800, 1000, "concrete", null);
-                new Door(300, 300);
-
+                new NormalPlatform(endOfLevel, 550, 800, 1000, "concrete", null);
+                new NormalPlatform(endOfLevel, 200, 100, 1000, "concrete", null);
             } else {
                 System.out.println("No level exists with ID " + level+" on floor "+f);
+                endOfLevel-=800;
             }
         }
+        
+        endOfLevel+=800;
 
     }
     
     public static void resetCanvas(boolean destroyInventory) {
         
-        System.out.println("Resetting level canvas");
+        System.out.println("Clearing level canvas (destroyInventory: "+destroyInventory+")");
         
         Overlay.clearAllFloatingText();
         
-        gui.GameScreen.backgroundImage = null;
-        gui.GameScreen.backgroundColor = null;
-        gui.GameScreen.isBackgroundImageTiled = false;
-        gui.GameScreen.pansLeftRight = false;
-        gui.GameScreen.pansUpDown = false;
+        backgroundImage = null;
+        backgroundColor = null;
+        isBackgroundImageTiled = false;
+        pansLeftRight = false;
 
         ObjectList.deleteAllObjects(destroyInventory);
         
     }
     
 }
+

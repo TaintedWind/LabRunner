@@ -7,7 +7,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import enemy.AI;
+import ai.enemy.Enemy;
 import database.ObjectList;
 import engine.Physics;
 import engine.Timer;
@@ -19,11 +19,11 @@ public class Player extends Physics {
     public Image defaultTexture, leftFacingTexture, rightFacingTexture;
     Color skinColor = Color.white;
     Timer animationTimer = new Timer(300, true, true);
-    public String walkingDir, facingDir;
-    public double health = 101;
+    public String walkingDir;
+    public double health = 1000000;
     public double jumpHeight = -0.6;
     public boolean isMoving;
-    public double attackMultiplier = 1, defenseMultiplier = 1, maxHealth = 100;
+    public double attackMultiplier = 1, defenseMultiplier = 1, maxHealth = 1000000;
 
     public Player(int x, int y) {
 
@@ -121,7 +121,7 @@ public class Player extends Physics {
     }
 
     public void reset() {
-        health = 100;
+        health = maxHealth;
         fallHeight = 0;
         fallSpeed = 0;
         dy = 0;
